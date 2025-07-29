@@ -541,10 +541,22 @@ const App: React.FC = () => {
     }
 
     // Always scroll to top when changing sections
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth'
-    });
+    // Target the scrollable card body container
+    setTimeout(() => {
+      const cardBody = document.querySelector('.p-card .p-card-body');
+      if (cardBody) {
+        cardBody.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        });
+      } else {
+        // Fallback to window scroll
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        });
+      }
+    }, 50); // Small delay to ensure DOM is updated
   };
 
   const getCompletionIcon = (isComplete: boolean) => {
