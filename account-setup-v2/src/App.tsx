@@ -731,7 +731,7 @@ const App: React.FC = () => {
         </div>
       </div>
 
-        <div className="flex" style={{ height: 'calc(100vh - 200px)' }}>
+        <div className="flex" style={{ height: 'calc(100vh - 140px)' }}>
           {/* Desktop Sidebar */}
           <div 
             className="hidden lg:block sidebar-container" 
@@ -1013,33 +1013,6 @@ const App: React.FC = () => {
           </Card>
           </div>
         </div>
-      </div>
-
-      {/* Fixed Bottom Navigation Footer - Separated buttons */}
-      {/* Previous Button - Outside sidebar on left */}
-      <div className="fixed-footer-previous">
-        <Button 
-          label="Previous" 
-          icon="pi pi-arrow-left"
-          severity="secondary"
-          onClick={handlePreviousSection}
-          disabled={getPreviousSectionAndEntity() === null}
-          className="px-4 py-2"
-          style={{ fontSize: '0.875rem' }}
-        />
-      </div>
-      
-      {/* Next Button - Right corner */}
-      <div className="fixed-footer-next">
-        <Button 
-          label="Next" 
-          icon="pi pi-arrow-right"
-          iconPos="right"
-          onClick={handleNextSection}
-          disabled={getNextSectionAndEntity() === null}
-          className="px-4 py-2 next-button"
-          style={{ fontSize: '0.875rem' }}
-        />
       </div>
     </div>
   );

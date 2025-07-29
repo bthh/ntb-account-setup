@@ -68,7 +68,6 @@
   margin-top: 60px;
   height: calc(100vh - 60px);
   overflow: hidden;
-  padding-bottom: 60px; /* Space for fixed footer */
 }
 
 /* Parent Sidebar Navigation */
@@ -398,7 +397,7 @@
 /* Ensure card body allows scrolling */
 .p-card .p-card-body {
   padding: 1.5rem;
-  max-height: calc(100vh - 200px); /* Account for header, padding, and footer */
+  max-height: calc(100vh - 140px); /* Account for header and padding */
   overflow-y: auto;
   display: flex;
   flex-direction: column;
@@ -913,33 +912,3 @@
   background: #3b82f6 !important;
 }
 
-/* Fixed Bottom Navigation - Previous Button (outside sidebar) */
-.fixed-footer-previous {
-  position: fixed;
-  bottom: 1rem;
-  left: 220px; /* Just outside parent sidebar (200px + 20px margin) */
-  z-index: 900;
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
-  padding: 0.5rem;
-}
-
-/* Fixed Bottom Navigation - Next Button (right corner) */
-.fixed-footer-next {
-  position: fixed;
-  bottom: 1rem;
-  right: 1rem;
-  z-index: 900;
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
-  padding: 0.5rem;
-}
-
-/* Mobile adjustments for footer buttons */
-@media (max-width: 1024px) {
-  .fixed-footer-previous {
-    left: 1rem; /* Align to left edge on mobile */
-  }
-}
