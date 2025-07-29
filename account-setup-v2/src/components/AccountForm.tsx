@@ -159,7 +159,19 @@ export const AccountForm: React.FC<AccountFormProps> = ({
       });
     } else {
       // For other sections, check required fields
-      const fields = requiredFields[section];
+      let fields = requiredFields[section];
+      
+      // Handle firm-details differently for members vs accounts
+      if (section === 'firm-details') {
+        if (memberId) {
+          // Member firm details - use existing fields
+          fields = requiredFields[section];
+        } else if (accountId) {
+          // Account firm details - use investment-focused fields
+          fields = ['investmentObjectives', 'recommendations', 'alternativeSuggestions'];
+        }
+      }
+      
       if (!fields || fields.length === 0) {
         // If no required fields are defined, consider it complete
         isComplete = true;
@@ -180,12 +192,22 @@ export const AccountForm: React.FC<AccountFormProps> = ({
     const newCompletionStatus = { ...completionStatus };
     
     // Determine if this is a member or account section
-    if (['owner-details', 'firm-details'].includes(section) && memberId) {
+    if (['owner-details'].includes(section) && memberId) {
+      if (!newCompletionStatus.members[memberId]) {
+        newCompletionStatus.members[memberId] = {};
+      }
+      newCompletionStatus.members[memberId][section] = isComplete;
+    } else if (section === 'firm-details' && memberId) {
       if (!newCompletionStatus.members[memberId]) {
         newCompletionStatus.members[memberId] = {};
       }
       newCompletionStatus.members[memberId][section] = isComplete;
     } else if (['account-setup', 'funding'].includes(section) && accountId) {
+      if (!newCompletionStatus.accounts[accountId]) {
+        newCompletionStatus.accounts[accountId] = {};
+      }
+      newCompletionStatus.accounts[accountId][section] = isComplete;
+    } else if (section === 'firm-details' && accountId) {
       if (!newCompletionStatus.accounts[accountId]) {
         newCompletionStatus.accounts[accountId] = {};
       }
@@ -597,10 +619,10 @@ export const AccountForm: React.FC<AccountFormProps> = ({
     </div>
   );
 
-  const renderFirmDetailsForm = () => (
+  const renderMemberFirmDetailsForm = () => (
     <div className="grid">
       <div className="col-12">
-        <Card title="Net Worth Assessment" className="mb-4">
+        <Card title={`${getCurrentEntityName()} - Firm Details`} className="mb-4">
           <div className="grid">
             <div className="col-12 md:col-6">
               <label htmlFor="totalNetWorth" className="block text-900 font-medium mb-2">
@@ -908,6 +930,73 @@ export const AccountForm: React.FC<AccountFormProps> = ({
       </div>
     </div>
   );
+
+  const renderAccountFirmDetailsForm = () => (
+    <div className="grid">
+      <div className="col-12">
+        <Card title={`${getCurrentEntityName()} - Firm Details`} className="mb-4">
+          <div className="grid">
+            {/* Investment Objectives */}
+            <div className="col-12">
+              <label htmlFor="investmentObjectives" className="block text-900 font-medium mb-2">
+                Investment Objectives *
+              </label>
+              <InputTextarea
+                id="investmentObjectives"
+                value={getContextData('investmentObjectives')}
+                onChange={(e) => handleInputChange('investmentObjectives', e.target.value)}
+                className="w-full"
+                rows={4}
+                placeholder="Describe the investment objectives for this account..."
+                disabled={isReviewMode}
+              />
+            </div>
+
+            {/* Recommendations */}
+            <div className="col-12">
+              <label htmlFor="recommendations" className="block text-900 font-medium mb-2">
+                Recommendations *
+              </label>
+              <InputTextarea
+                id="recommendations"
+                value={getContextData('recommendations')}
+                onChange={(e) => handleInputChange('recommendations', e.target.value)}
+                className="w-full"
+                rows={4}
+                placeholder="Provide investment recommendations for this account..."
+                disabled={isReviewMode}
+              />
+            </div>
+
+            {/* Alternative Suggestions */}
+            <div className="col-12">
+              <label htmlFor="alternativeSuggestions" className="block text-900 font-medium mb-2">
+                Alternative Suggestions *
+              </label>
+              <InputTextarea
+                id="alternativeSuggestions"
+                value={getContextData('alternativeSuggestions')}
+                onChange={(e) => handleInputChange('alternativeSuggestions', e.target.value)}
+                className="w-full"
+                rows={4}
+                placeholder="Suggest alternative investment options for this account..."
+                disabled={isReviewMode}
+              />
+            </div>
+          </div>
+        </Card>
+      </div>
+    </div>
+  );
+
+  const renderFirmDetailsForm = () => {
+    if (memberId) {
+      return renderMemberFirmDetailsForm();
+    } else if (accountId) {
+      return renderAccountFirmDetailsForm();
+    }
+    return <div>No entity selected</div>;
+  };
 
   const renderAccountSetupForm = () => {
     const isTrustAccount = accountId === 'trust-account';
