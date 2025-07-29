@@ -1,0 +1,6 @@
+# Production robots.txt
+User-agent: *
+Allow: /
+
+# Sitemap (add when available)
+# Sitemap: /sitemap.xml

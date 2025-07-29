@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Account Setup</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header-left">
+                <h1>New Account Setup</h1>
+                <span class="beta-badge">Beta</span>
+            </div>
+            <div class="header-right">
+                <button id="reviewToggleBtn" class="review-toggle-btn">Review</button>
+            </div>
+        </header>
+
+        <div class="content">
+            <div class="sidebar">
+                <div class="household-navigation">
+                    <h2>Smith Family Household</h2>
+                    <div class="navigation-section">
+                        <h3>Household Members</h3>
+                        <div class="household-members">
+                            <div class="member-item">
+                                <div class="member-header" data-member="john-smith">
+                                    <div class="member-icon individual"></div>
+                                    <div class="member-info">
+                                        <strong>John Smith</strong>
+                                        <span>Primary Account Holder</span>
+                                    </div>
+                                    <div class="completion-status incomplete"></div>
+                                    <div class="expand-icon">▼</div>
+                                </div>
+                                <div class="member-details">
+                                    <div class="detail-section">
+                                        <div class="detail-item active" data-section="owner-details">
+                                            <span class="detail-icon">👤</span>
+                                            <span>Owner Details</span>
+                                            <span class="completion-status incomplete"></span>
+                                        </div>
+                                        <div class="detail-item" data-section="firm-details">
+                                            <span class="detail-icon">🏢</span>
+                                            <span>Firm Details</span>
+                                            <span class="completion-status incomplete"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="member-item">
+                                <div class="member-header" data-member="mary-smith">
+                                    <div class="member-icon individual"></div>
+                                    <div class="member-info">
+                                        <strong>Mary Smith</strong>
+                                        <span>Joint Account Holder</span>
+                                    </div>
+                                    <div class="completion-status incomplete"></div>
+                                    <div class="expand-icon">▼</div>
+                                </div>
+                                <div class="member-details">
+                                    <div class="detail-section">
+                                        <div class="detail-item" data-section="owner-details">
+                                            <span class="detail-icon">👤</span>
+                                            <span>Owner Details</span>
+                                            <span class="completion-status incomplete"></span>
+                                        </div>
+                                        <div class="detail-item" data-section="firm-details">
+                                            <span class="detail-icon">🏢</span>
+                                            <span>Firm Details</span>
+                                            <span class="completion-status incomplete"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="member-item">
+                                <div class="member-header" data-member="smith-trust">
+                                    <div class="member-icon trust"></div>
+                                    <div class="member-info">
+                                        <strong>Smith Family Trust</strong>
+                                        <span>Trust Entity</span>
+                                    </div>
+                                    <div class="completion-status incomplete"></div>
+                                    <div class="expand-icon">▼</div>
+                                </div>
+                                <div class="member-details">
+                                    <div class="detail-section">
+                                        <div class="detail-item" data-section="owner-details">
+                                            <span class="detail-icon">👤</span>
+                                            <span>Owner Details</span>
+                                            <span class="completion-status incomplete"></span>
+                                        </div>
+                                        <div class="detail-item" data-section="firm-details">
+                                            <span class="detail-icon">🏢</span>
+                                            <span>Firm Details</span>
+                                            <span class="completion-status incomplete"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="navigation-section">
+                        <h3>Account Types</h3>
+                        <div class="account-types">
+                            <div class="account-item">
+                                <div class="account-header" data-account="joint-account">
+                                    <div class="account-icon joint"></div>
+                                    <div class="account-info">
+                                        <strong>Joint Account</strong>
+                                        <span>John & Mary Smith</span>
+                                    </div>
+                                    <div class="completion-status incomplete"></div>
+                                    <div class="expand-icon">▼</div>
+                                </div>
+                                <div class="account-details">
+                                    <div class="detail-section">
+                                        <div class="detail-item" data-section="account-setup">
+                                            <span class="detail-icon">⚙️</span>
+                                            <span>Account Setup</span>
+                                            <span class="completion-status incomplete"></span>
+                                        </div>
+                                        <div class="detail-item" data-section="funding">
+                                            <span class="detail-icon">💰</span>
+                                            <span>Funding</span>
+                                            <span class="completion-status incomplete"></span>
+                                        </div>
+                                        <div class="detail-item" data-section="firm-details">
+                                            <span class="detail-icon">🏢</span>
+                                            <span>Firm Details</span>
+                                            <span class="completion-status incomplete"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="account-item">
+                                <div class="account-header" data-account="individual-account">
+                                    <div class="account-icon individual"></div>
+                                    <div class="account-info">
+                                        <strong>Individual Account</strong>
+                                        <span>Mary Smith</span>
+                                    </div>
+                                    <div class="completion-status incomplete"></div>
+                                    <div class="expand-icon">▼</div>
+                                </div>
+                                <div class="account-details">
+                                    <div class="detail-section">
+                                        <div class="detail-item" data-section="account-setup">
+                                            <span class="detail-icon">⚙️</span>
+                                            <span>Account Setup</span>
+                                            <span class="completion-status incomplete"></span>
+                                        </div>
+                                        <div class="detail-item" data-section="funding">
+                                            <span class="detail-icon">💰</span>
+                                            <span>Funding</span>
+                                            <span class="completion-status incomplete"></span>
+                                        </div>
+                                        <div class="detail-item" data-section="firm-details">
+                                            <span class="detail-icon">🏢</span>
+                                            <span>Firm Details</span>
+                                            <span class="completion-status incomplete"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="account-item">
+                                <div class="account-header" data-account="trust-account">
+                                    <div class="account-icon trust"></div>
+                                    <div class="account-info">
+                                        <strong>Family Trust Account</strong>
+                                        <span>Smith Family Trust</span>
+                                    </div>
+                                    <div class="completion-status incomplete"></div>
+                                    <div class="expand-icon">▼</div>
+                                </div>
+                                <div class="account-details">
+                                    <div class="detail-section">
+                                        <div class="detail-item" data-section="account-setup">
+                                            <span class="detail-icon">⚙️</span>
+                                            <span>Account Setup</span>
+                                            <span class="completion-status incomplete"></span>
+                                        </div>
+                                        <div class="detail-item" data-section="funding">
+                                            <span class="detail-icon">💰</span>
+                                            <span>Funding</span>
+                                            <span class="completion-status incomplete"></span>
+                                        </div>
+                                        <div class="detail-item" data-section="firm-details">
+                                            <span class="detail-icon">🏢</span>
+                                            <span>Firm Details</span>
+                                            <span class="completion-status incomplete"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="main-content">
+                <form class="account-form">
+                    <section class="form-section">
+                        <h3>Account Owner Details</h3>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="firstName">First Name</label>
+                                <input type="text" id="firstName" name="firstName" value="John">
+                            </div>
+                            <div class="form-group">
+                                <label for="middleInitial">Middle Initial</label>
+                                <input type="text" id="middleInitial" name="middleInitial" value="A">
+                            </div>
+                            <div class="form-group">
+                                <label for="lastName">Last Name</label>
+                                <input type="text" id="lastName" name="lastName" value="Smith">
+                            </div>
+                            <div class="form-group">
+                                <label for="dateOfBirth">Date of Birth</label>
+                                <input type="date" id="dateOfBirth" name="dateOfBirth" value="1985-06-15">
+                            </div>
+                            <div class="form-group">
+                                <label for="ssn">Social Security Number</label>
+                                <input type="text" id="ssn" name="ssn" placeholder="***-**-****">
+                            </div>
+                            <div class="form-group">
+                                <label for="phoneHome">Phone (Home)</label>
+                                <input type="tel" id="phoneHome" name="phoneHome" value="(555) 123-4567">
+                            </div>
+                            <div class="form-group">
+                                <label for="phoneMobile">Phone (Mobile)</label>
+                                <input type="tel" id="phoneMobile" name="phoneMobile" value="(555) 987-6543">
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email Address</label>
+                                <input type="email" id="email" name="email" value="john.smith@example.com">
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="form-section">
+                        <h3>Address Information</h3>
+                        <div class="form-grid">
+                            <div class="form-group full-width">
+                                <label for="homeAddress">Home Address</label>
+                                <input type="text" id="homeAddress" name="homeAddress" value="123 Main Street, Anytown, ST 12345">
+                            </div>
+                            <div class="form-group full-width">
+                                <label for="mailingAddress">Mailing Address</label>
+                                <input type="text" id="mailingAddress" name="mailingAddress" value="Same as home address">
+                            </div>
+                            <div class="form-group">
+                                <label for="citizenship">Citizenship Type</label>
+                                <select id="citizenship" name="citizenship">
+                                    <option value="us-citizen">US Citizen</option>
+                                    <option value="permanent-resident">Permanent Resident</option>
+                                    <option value="non-resident">Non-Resident Alien</option>
+                                </select>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="form-section">
+                        <h3>Identification</h3>
+                        <div class="file-upload">
+                            <div class="upload-area">
+                                <div class="upload-icon">📄</div>
+                                <div class="upload-info">
+                                    <span class="file-name">passport.jpg</span>
+                                    <button type="button" class="upload-btn">Change File</button>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="form-section">
+                        <h3>Employment Information</h3>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="employmentStatus">Employment Status</label>
+                                <select id="employmentStatus" name="employmentStatus">
+                                    <option value="employed">Employed</option>
+                                    <option value="self-employed">Self-Employed</option>
+                                    <option value="retired">Retired</option>
+                                    <option value="unemployed">Unemployed</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="annualIncome">Annual Income Range</label>
+                                <select id="annualIncome" name="annualIncome">
+                                    <option value="under-50k">Under $50,000</option>
+                                    <option value="50k-100k">$50,000 - $100,000</option>
+                                    <option value="100k-250k">$100,000 - $250,000</option>
+                                    <option value="250k-500k">$250,000 - $500,000</option>
+                                    <option value="over-500k">Over $500,000</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="netWorth">Net Worth Range</label>
+                                <select id="netWorth" name="netWorth">
+                                    <option value="under-100k">Under $100,000</option>
+                                    <option value="100k-500k">$100,000 - $500,000</option>
+                                    <option value="500k-1m">$500,000 - $1,000,000</option>
+                                    <option value="1m-5m">$1,000,000 - $5,000,000</option>
+                                    <option value="over-5m">Over $5,000,000</option>
+                                </select>
+                            </div>
+                            <div class="form-group full-width">
+                                <label for="fundsSource">Source of Funds</label>
+                                <textarea id="fundsSource" name="fundsSource" rows="3" placeholder="Please describe the source of funds for this account..."></textarea>
+                            </div>
+                        </div>
+                        
+                        <div class="disclosure-questions">
+                            <h4>Disclosure Questions</h4>
+                            <div class="question-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="disclosures" value="affiliated">
+                                    I am affiliated with a financial services firm
+                                </label>
+                            </div>
+                            <div class="question-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="disclosures" value="professional">
+                                    I am a professional financial advisor
+                                </label>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="form-section">
+                        <h3>Trusted Contact Information</h3>
+                        <p class="section-description">Add an emergency contact who can be reached if we're unable to contact you.</p>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="trustedName">Contact Name</label>
+                                <input type="text" id="trustedName" name="trustedName" placeholder="Full name">
+                            </div>
+                            <div class="form-group">
+                                <label for="trustedPhone">Contact Phone</label>
+                                <input type="tel" id="trustedPhone" name="trustedPhone" placeholder="Phone number">
+                            </div>
+                            <div class="form-group">
+                                <label for="trustedEmail">Contact Email</label>
+                                <input type="email" id="trustedEmail" name="trustedEmail" placeholder="Email address">
+                            </div>
+                            <div class="form-group">
+                                <label for="trustedRelationship">Relationship</label>
+                                <select id="trustedRelationship" name="trustedRelationship">
+                                    <option value="">Select relationship</option>
+                                    <option value="spouse">Spouse</option>
+                                    <option value="parent">Parent</option>
+                                    <option value="child">Child</option>
+                                    <option value="sibling">Sibling</option>
+                                    <option value="friend">Friend</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+                    </section>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn-secondary">Save</button>
+                        <button type="submit" class="btn-primary">Continue to Review</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
