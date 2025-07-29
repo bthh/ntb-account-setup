@@ -414,7 +414,7 @@
   filter: drop-shadow(0 2px 4px rgba(16, 185, 129, 0.3));
 }
 
-.pi-times-circle.text-danger {
+.pi-exclamation-circle.text-danger {
   color: #ef4444 !important;
   transition: all 0.3s ease;
   display: flex;
@@ -485,7 +485,7 @@
   color: #10b981 !important;
 }
 
-.section-nav-item.active .completion-icon.pi-times-circle.text-danger {
+.section-nav-item.active .completion-icon.pi-exclamation-circle.text-danger {
   color: #fbbf24 !important;
 }
 
@@ -864,4 +864,49 @@
 .p-button:not(.back-button):not(.next-button):not(.funding-type-button):not(.review-toggle-button) {
   padding: 0.5rem 0.75rem !important;
   font-size: 0.875rem !important;
+}
+
+/* Make all placeholders italic */
+::placeholder {
+  font-style: italic !important;
+}
+
+::-webkit-input-placeholder {
+  font-style: italic !important;
+}
+
+::-moz-placeholder {
+  font-style: italic !important;
+}
+
+:-ms-input-placeholder {
+  font-style: italic !important;
+}
+
+:-moz-placeholder {
+  font-style: italic !important;
+}
+
+/* PrimeReact specific placeholder styling */
+.p-inputtext::placeholder,
+.p-inputtextarea::placeholder,
+.p-dropdown-label.p-placeholder {
+  font-style: italic !important;
+}
+
+/* Review Mode Toggle Styling */
+.review-mode-toggle {
+  width: 3rem !important;
+  height: 1.5rem !important;
+}
+
+.review-mode-toggle .p-button {
+  width: 3rem !important;
+  height: 1.5rem !important;
+  border-radius: 0.75rem !important;
+  padding: 0 !important;
+}
+
+.review-mode-toggle .p-button-label {
+  display: none !important;
 }

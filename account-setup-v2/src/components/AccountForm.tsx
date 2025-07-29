@@ -215,9 +215,9 @@ export const AccountForm: React.FC<AccountFormProps> = ({
     
     if (accountId) {
       const account = [
-        { id: 'joint-account', name: 'Joint Account' },
-        { id: 'individual-account', name: 'Individual Account' },
-        { id: 'trust-account', name: 'Family Trust Account' }
+        { id: 'joint-account', name: 'John & Mary Smith Joint Account' },
+        { id: 'individual-account', name: 'Mary Smith Individual Account' },
+        { id: 'trust-account', name: 'Smith Family Trust Account' }
       ].find(a => a.id === accountId);
       return account?.name || 'Unknown Account';
     }
@@ -1848,9 +1848,6 @@ export const AccountForm: React.FC<AccountFormProps> = ({
           <div className="funding-dashboard">
             <div className="flex justify-content-between align-items-center mb-4">
               <h3 className="text-xl font-semibold m-0">Funding Types</h3>
-              <div className="text-sm text-600">
-                Max: 4 per type, 20 total
-              </div>
             </div>
             
             {/* Smaller buttons in a single row */}

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Sidebar } from 'primereact/sidebar';
 import { Button } from 'primereact/button';
+import { ToggleButton } from 'primereact/togglebutton';
 import { Badge } from 'primereact/badge';
 import { Toast } from 'primereact/toast';
 import { Card } from 'primereact/card';
@@ -22,6 +23,8 @@ const App: React.FC = () => {
   const [sidebarVisible, setSidebarVisible] = useState(false);
   const [sidebarWidth, setSidebarWidth] = useState(320); // Default width in pixels
   const [isResizing, setIsResizing] = useState(false);
+  const [expandedMemberTabs, setExpandedMemberTabs] = useState<number[]>([0]); // Track expanded member tabs (by index)
+  const [expandedAccountTabs, setExpandedAccountTabs] = useState<number[]>([]); // Track expanded account tabs (by index)
   const [currentSection, setCurrentSection] = useState<Section>('owner-details');
   const [currentMember, setCurrentMember] = useState<string>('john-smith');
   const [currentAccount, setCurrentAccount] = useState<string>('');
@@ -507,15 +510,39 @@ const App: React.FC = () => {
     if (memberId) {
       setCurrentMember(memberId);
       setCurrentAccount(''); // Clear account when switching to member
+      
+      // Auto-expand the accordion for the current member
+      const memberIds = ['john-smith', 'mary-smith', 'smith-trust'];
+      const memberIndex = memberIds.indexOf(memberId);
+      if (memberIndex !== -1) {
+        setExpandedMemberTabs(prev => {
+          if (!prev.includes(memberIndex)) {
+            return [...prev, memberIndex];
+          }
+          return prev;
+        });
+      }
     }
     if (accountId) {
       setCurrentAccount(accountId);
       setCurrentMember(''); // Clear member when switching to account
+      
+      // Auto-expand the accordion for the current account
+      const accountIds = ['joint-account', 'individual-account', 'trust-account'];
+      const accountIndex = accountIds.indexOf(accountId);
+      if (accountIndex !== -1) {
+        setExpandedAccountTabs(prev => {
+          if (!prev.includes(accountIndex)) {
+            return [...prev, accountIndex];
+          }
+          return prev;
+        });
+      }
     }
   };
 
   const getCompletionIcon = (isComplete: boolean) => {
-    return isComplete ? 'pi pi-check-circle' : 'pi pi-times-circle';
+    return isComplete ? 'pi pi-check-circle' : 'pi pi-exclamation-circle';
   };
 
   const getCompletionSeverity = (isComplete: boolean) => {
@@ -693,12 +720,16 @@ const App: React.FC = () => {
             className="px-3 py-2 next-button"
             style={{ fontSize: '0.875rem' }}
           />
-          <Button 
-            label={isReviewMode ? "✓ Review Mode" : "Review"} 
-            icon={isReviewMode ? "pi pi-check" : "pi pi-eye"}
-            onClick={() => setIsReviewMode(!isReviewMode)}
-            className={`review-toggle-button ${isReviewMode ? 'active' : ''}`}
-          />
+          <div className="flex align-items-center gap-2">
+            <span className="text-sm font-medium text-600">Review Mode</span>
+            <ToggleButton
+              checked={isReviewMode}
+              onChange={(e) => setIsReviewMode(e.value)}
+              onLabel=""
+              offLabel=""
+              className="review-mode-toggle"
+            />
+          </div>
         </div>
       </div>
 
@@ -718,7 +749,11 @@ const App: React.FC = () => {
                   <i className="pi pi-users"></i>
                   Members
                 </div>
-              <Accordion multiple>
+              <Accordion 
+                multiple 
+                activeIndex={expandedMemberTabs}
+                onTabChange={(e) => setExpandedMemberTabs(e.index as number[])}
+              >
                 {memberData.map((member) => (
                   <AccordionTab
                     key={member.id}
@@ -769,7 +804,11 @@ const App: React.FC = () => {
                 <i className="pi pi-briefcase"></i>
                 Accounts
               </div>
-              <Accordion multiple>
+              <Accordion 
+                multiple 
+                activeIndex={expandedAccountTabs}
+                onTabChange={(e) => setExpandedAccountTabs(e.index as number[])}
+              >
                 {accountData.map((account) => (
                   <AccordionTab
                     key={account.id}
@@ -844,7 +883,11 @@ const App: React.FC = () => {
                 <i className="pi pi-users"></i>
                 Smith Household Members
               </div>
-              <Accordion multiple>
+              <Accordion 
+                multiple 
+                activeIndex={expandedMemberTabs}
+                onTabChange={(e) => setExpandedMemberTabs(e.index as number[])}
+              >
                 {memberData.map((member) => (
                   <AccordionTab
                     key={member.id}
@@ -898,7 +941,11 @@ const App: React.FC = () => {
                 <i className="pi pi-briefcase"></i>
                 Accounts
               </div>
-              <Accordion multiple>
+              <Accordion 
+                multiple 
+                activeIndex={expandedAccountTabs}
+                onTabChange={(e) => setExpandedAccountTabs(e.index as number[])}
+              >
                 {accountData.map((account) => (
                   <AccordionTab
                     key={account.id}
