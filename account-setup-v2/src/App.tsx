@@ -703,6 +703,23 @@ const App: React.FC = () => {
           <Badge value="Beta" severity="info" />
         </div>
         <div className="flex align-items-center gap-2">
+          <Button 
+            label="Previous" 
+            icon="pi pi-arrow-left"
+            severity="secondary"
+            onClick={handlePreviousSection}
+            disabled={getPreviousSectionAndEntity() === null}
+            className="px-3 py-2"
+            style={{ fontSize: '0.875rem' }}
+          />
+          <Button 
+            label="Next" 
+            icon="pi pi-arrow-right"
+            onClick={handleNextSection}
+            disabled={getNextSectionAndEntity() === null}
+            className="px-3 py-2 next-button"
+            style={{ fontSize: '0.875rem' }}
+          />
           <div className="flex align-items-center gap-2">
             <span className="text-sm font-medium text-600">Review Mode</span>
             <InputSwitch
@@ -998,28 +1015,31 @@ const App: React.FC = () => {
         </div>
       </div>
 
-      {/* Fixed Bottom Navigation Footer */}
-      <div className="fixed-navigation-footer">
-        <div className="flex justify-content-between align-items-center">
-          <Button 
-            label="Previous" 
-            icon="pi pi-arrow-left"
-            severity="secondary"
-            onClick={handlePreviousSection}
-            disabled={getPreviousSectionAndEntity() === null}
-            className="px-4 py-2"
-            style={{ fontSize: '0.875rem' }}
-          />
-          <Button 
-            label="Next" 
-            icon="pi pi-arrow-right"
-            iconPos="right"
-            onClick={handleNextSection}
-            disabled={getNextSectionAndEntity() === null}
-            className="px-4 py-2 next-button"
-            style={{ fontSize: '0.875rem' }}
-          />
-        </div>
+      {/* Fixed Bottom Navigation Footer - Separated buttons */}
+      {/* Previous Button - Outside sidebar on left */}
+      <div className="fixed-footer-previous">
+        <Button 
+          label="Previous" 
+          icon="pi pi-arrow-left"
+          severity="secondary"
+          onClick={handlePreviousSection}
+          disabled={getPreviousSectionAndEntity() === null}
+          className="px-4 py-2"
+          style={{ fontSize: '0.875rem' }}
+        />
+      </div>
+      
+      {/* Next Button - Right corner */}
+      <div className="fixed-footer-next">
+        <Button 
+          label="Next" 
+          icon="pi pi-arrow-right"
+          iconPos="right"
+          onClick={handleNextSection}
+          disabled={getNextSectionAndEntity() === null}
+          className="px-4 py-2 next-button"
+          style={{ fontSize: '0.875rem' }}
+        />
       </div>
     </div>
   );

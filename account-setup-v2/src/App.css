@@ -913,25 +913,33 @@
   background: #3b82f6 !important;
 }
 
-/* Fixed Bottom Navigation Footer */
-.fixed-navigation-footer {
+/* Fixed Bottom Navigation - Previous Button (outside sidebar) */
+.fixed-footer-previous {
   position: fixed;
-  bottom: 0;
-  left: 200px; /* Account for parent sidebar */
-  right: 0;
-  height: 60px;
-  background: white;
-  border-top: 1px solid #e5e7eb;
-  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+  bottom: 1rem;
+  left: 220px; /* Just outside parent sidebar (200px + 20px margin) */
   z-index: 900;
-  padding: 0 2rem;
-  display: flex;
-  align-items: center;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+  padding: 0.5rem;
 }
 
-/* Mobile adjustments for footer */
+/* Fixed Bottom Navigation - Next Button (right corner) */
+.fixed-footer-next {
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+  z-index: 900;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+  padding: 0.5rem;
+}
+
+/* Mobile adjustments for footer buttons */
 @media (max-width: 1024px) {
-  .fixed-navigation-footer {
-    left: 0;
+  .fixed-footer-previous {
+    left: 1rem; /* Align to left edge on mobile */
   }
 }
