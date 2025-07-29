@@ -894,19 +894,20 @@
   font-style: italic !important;
 }
 
-/* Review Mode Toggle Styling */
+/* Review Mode Toggle Switch Styling */
 .review-mode-toggle {
-  width: 3rem !important;
-  height: 1.5rem !important;
+  transform: scale(1.2);
 }
 
-.review-mode-toggle .p-button {
-  width: 3rem !important;
-  height: 1.5rem !important;
+.review-mode-toggle .p-toggleswitch-slider {
   border-radius: 0.75rem !important;
-  padding: 0 !important;
+  transition: all 0.3s ease !important;
 }
 
-.review-mode-toggle .p-button-label {
-  display: none !important;
+.review-mode-toggle:not(.p-toggleswitch-checked) .p-toggleswitch-slider {
+  background: #e5e7eb !important;
+}
+
+.review-mode-toggle.p-toggleswitch-checked .p-toggleswitch-slider {
+  background: #3b82f6 !important;
 }
