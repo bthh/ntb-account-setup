@@ -20,6 +20,8 @@ const App: React.FC = () => {
   const toast = useRef<Toast>(null);
   const isInitialLoad = useRef(true);
   const [sidebarVisible, setSidebarVisible] = useState(false);
+  const [sidebarWidth, setSidebarWidth] = useState(320); // Default width in pixels
+  const [isResizing, setIsResizing] = useState(false);
   const [currentSection, setCurrentSection] = useState<Section>('owner-details');
   const [currentMember, setCurrentMember] = useState<string>('john-smith');
   const [currentAccount, setCurrentAccount] = useState<string>('');
@@ -303,6 +305,45 @@ const App: React.FC = () => {
     }
   }, [currentSection, currentMember, currentAccount]);
 
+  // Resize handlers for sidebar
+  const handleMouseDown = () => {
+    setIsResizing(true);
+  };
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!isResizing) return;
+      
+      const newWidth = e.clientX - 200; // Subtract parent sidebar width
+      const minWidth = 250;
+      const maxWidth = 500;
+      
+      if (newWidth >= minWidth && newWidth <= maxWidth) {
+        setSidebarWidth(newWidth);
+      }
+    };
+
+    const handleMouseUp = () => {
+      setIsResizing(false);
+    };
+
+    if (isResizing) {
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+      document.body.style.cursor = 'col-resize';
+      document.body.style.userSelect = 'none';
+    } else {
+      document.body.style.cursor = '';
+      document.body.style.userSelect = '';
+    }
+
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+      document.body.style.cursor = '';
+      document.body.style.userSelect = '';
+    };
+  }, [isResizing]);
 
   const getNextSectionAndEntity = () => {
     // Define navigation order
@@ -663,7 +704,10 @@ const App: React.FC = () => {
 
         <div className="flex" style={{ height: 'calc(100vh - 140px)' }}>
           {/* Desktop Sidebar */}
-          <div className="hidden lg:block w-2 sidebar-container">
+          <div 
+            className="hidden lg:block sidebar-container" 
+            style={{ width: `${sidebarWidth}px`, position: 'relative' }}
+          >
             <div className="household-title">
               Smith Household
             </div>
@@ -769,6 +813,21 @@ const App: React.FC = () => {
                 ))}
               </Accordion>
             </div>
+            {/* Resize Handle */}
+            <div 
+              className="sidebar-resize-handle"
+              onMouseDown={handleMouseDown}
+              style={{
+                position: 'absolute',
+                right: 0,
+                top: 0,
+                bottom: 0,
+                width: '4px',
+                cursor: 'col-resize',
+                backgroundColor: isResizing ? '#3b82f6' : 'transparent',
+                transition: 'background-color 0.2s ease'
+              }}
+            />
           </div>
         </div>
 
