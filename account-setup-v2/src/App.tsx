@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Sidebar } from 'primereact/sidebar';
 import { Button } from 'primereact/button';
-import { ToggleSwitch } from 'primereact/toggleswitch';
+import { InputSwitch } from 'primereact/inputswitch';
 import { Badge } from 'primereact/badge';
 import { Toast } from 'primereact/toast';
 import { Card } from 'primereact/card';
@@ -722,7 +722,7 @@ const App: React.FC = () => {
           />
           <div className="flex align-items-center gap-2">
             <span className="text-sm font-medium text-600">Review Mode</span>
-            <ToggleSwitch
+            <InputSwitch
               checked={isReviewMode}
               onChange={(e) => setIsReviewMode(e.value)}
               className="review-mode-toggle"

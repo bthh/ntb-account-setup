@@ -894,20 +894,20 @@
   font-style: italic !important;
 }
 
-/* Review Mode Toggle Switch Styling */
+/* Review Mode InputSwitch Styling */
 .review-mode-toggle {
   transform: scale(1.2);
 }
 
-.review-mode-toggle .p-toggleswitch-slider {
+.review-mode-toggle .p-inputswitch-slider {
   border-radius: 0.75rem !important;
   transition: all 0.3s ease !important;
 }
 
-.review-mode-toggle:not(.p-toggleswitch-checked) .p-toggleswitch-slider {
+.review-mode-toggle:not(.p-inputswitch-checked) .p-inputswitch-slider {
   background: #e5e7eb !important;
 }
 
-.review-mode-toggle.p-toggleswitch-checked .p-toggleswitch-slider {
+.review-mode-toggle.p-inputswitch-checked .p-inputswitch-slider {
   background: #3b82f6 !important;
 }
