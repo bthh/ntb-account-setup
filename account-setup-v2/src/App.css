@@ -68,6 +68,7 @@
   margin-top: 60px;
   height: calc(100vh - 60px);
   overflow: hidden;
+  padding-bottom: 60px; /* Space for fixed footer */
 }
 
 /* Parent Sidebar Navigation */
@@ -397,7 +398,7 @@
 /* Ensure card body allows scrolling */
 .p-card .p-card-body {
   padding: 1.5rem;
-  max-height: calc(100vh - 140px); /* Account for header and padding */
+  max-height: calc(100vh - 200px); /* Account for header, padding, and footer */
   overflow-y: auto;
   display: flex;
   flex-direction: column;
@@ -910,4 +911,27 @@
 
 .review-mode-toggle.p-inputswitch-checked .p-inputswitch-slider {
   background: #3b82f6 !important;
+}
+
+/* Fixed Bottom Navigation Footer */
+.fixed-navigation-footer {
+  position: fixed;
+  bottom: 0;
+  left: 200px; /* Account for parent sidebar */
+  right: 0;
+  height: 60px;
+  background: white;
+  border-top: 1px solid #e5e7eb;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+  z-index: 900;
+  padding: 0 2rem;
+  display: flex;
+  align-items: center;
+}
+
+/* Mobile adjustments for footer */
+@media (max-width: 1024px) {
+  .fixed-navigation-footer {
+    left: 0;
+  }
 }
