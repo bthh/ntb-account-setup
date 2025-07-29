@@ -539,6 +539,12 @@ const App: React.FC = () => {
         });
       }
     }
+
+    // Always scroll to top when changing sections
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
   };
 
   const getCompletionIcon = (isComplete: boolean) => {
