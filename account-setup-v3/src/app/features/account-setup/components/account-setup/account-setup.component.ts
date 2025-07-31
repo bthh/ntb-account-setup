@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 
@@ -642,7 +642,7 @@ interface DropdownOption {
     }
   `]
 })
-export class AccountSetupComponent implements OnInit {
+export class AccountSetupComponent implements OnInit, OnChanges {
   @Input() formData: FormData = {};
   @Input() entityId: string = '';
   @Input() isReviewMode: boolean = false;
@@ -715,6 +715,13 @@ export class AccountSetupComponent implements OnInit {
     this.setupFormSubscriptions();
   }
 
+  ngOnChanges(changes: SimpleChanges) {
+    if ((changes['formData'] || changes['entityId']) && this.accountForm) {
+      this.loadFormData();
+      this.updateAccountType();
+    }
+  }
+
   private initializeForm() {
     this.accountForm = this.fb.group({
       accountType: ['', Validators.required],
@@ -773,6 +780,12 @@ export class AccountSetupComponent implements OnInit {
     this.isTrustAccount = event.value === 'trust';
     this.isIraAccount = event.value === 'roth-ira' || event.value === 'ira';
     
+  }
+
+  private updateAccountType() {
+    const accountType = this.accountForm.get('accountType')?.value;
+    this.isTrustAccount = accountType === 'trust';
+    this.isIraAccount = accountType === 'roth-ira' || accountType === 'ira';
   }
 
   handleAddTrustee() {

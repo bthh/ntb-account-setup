@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 
@@ -422,7 +422,7 @@ interface DropdownOption {
     }
   `]
 })
-export class FirmDetailsComponent implements OnInit {
+export class FirmDetailsComponent implements OnInit, OnChanges {
   @Input() formData: FormData = {};
   @Input() entityId: string = '';
   @Input() isReviewMode: boolean = false;
@@ -500,6 +500,12 @@ export class FirmDetailsComponent implements OnInit {
     this.initializeForm();
     this.loadFormData();
     this.setupFormSubscriptions();
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if ((changes['formData'] || changes['entityId']) && this.firmForm) {
+      this.loadFormData();
+    }
   }
 
   private initializeForm() {

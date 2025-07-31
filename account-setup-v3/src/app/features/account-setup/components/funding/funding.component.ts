@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 
@@ -581,7 +581,7 @@ interface FundingInstances {
     }
   `]
 })
-export class FundingComponent implements OnInit {
+export class FundingComponent implements OnInit, OnChanges {
   @Input() formData: FormData = {};
   @Input() entityId: string = '';
   @Input() isReviewMode: boolean = false;
@@ -642,6 +642,12 @@ export class FundingComponent implements OnInit {
   ngOnInit() {
     this.initializeForm();
     this.loadFundingData();
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if ((changes['formData'] || changes['entityId']) && this.fundingForm) {
+      this.loadFundingData();
+    }
   }
 
   private initializeForm() {
