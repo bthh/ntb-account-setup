@@ -47,7 +47,7 @@ interface DropdownOption {
       <form *ngIf="!isReviewMode" [formGroup]="ownerForm" (ngSubmit)="onSubmit()">
         
         <!-- Personal Information Card -->
-        <p-card class="mb-4">
+        <p-card header="Personal Information" class="mb-4">
           <div class="grid">
             <div class="col-12 md:col-4">
               <label for="firstName" class="block text-900 font-medium mb-2">
@@ -184,7 +184,7 @@ interface DropdownOption {
         </p-card>
 
         <!-- Address Information Card -->
-        <p-card class="mb-4">
+        <p-card header="Address Information" class="mb-4">
           <div class="grid">
             <div class="col-12">
               <label for="homeAddress" class="block text-900 font-medium mb-2">
@@ -237,7 +237,7 @@ interface DropdownOption {
         </p-card>
 
         <!-- Identification Card -->
-        <p-card class="mb-4">
+        <p-card header="Identification" class="mb-4">
           <div class="grid">
             <div class="col-12">
               <label class="block text-900 font-medium mb-2">
@@ -253,7 +253,7 @@ interface DropdownOption {
         </p-card>
 
         <!-- Employment Information Card -->
-        <p-card class="mb-4">
+        <p-card header="Employment Information" class="mb-4">
           <div class="grid">
             <div class="col-12 md:col-6">
               <label for="employmentStatus" class="block text-900 font-medium mb-2">
@@ -326,7 +326,7 @@ interface DropdownOption {
         </p-card>
 
         <!-- Disclosure Questions Card -->
-        <p-card class="mb-4">
+        <p-card header="Disclosure Questions" class="mb-4">
           <div class="grid">
             <div class="col-12">
               <div class="field-checkbox">
@@ -356,7 +356,7 @@ interface DropdownOption {
         </p-card>
 
         <!-- Trusted Contact Information Card -->
-        <p-card class="mb-4">
+        <p-card header="Trusted Contact Information" class="mb-4">
           <div class="grid">
             <div class="col-12 md:col-6">
               <label for="trustedName" class="block text-900 font-medium mb-2">
