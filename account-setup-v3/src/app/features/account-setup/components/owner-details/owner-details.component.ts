@@ -632,6 +632,17 @@ interface DropdownOption {
       box-sizing: border-box;
     }
     
+    /* Ensure card headers are visible */
+    :host :deep(.p-card .p-card-header) {
+      display: block !important;
+      visibility: visible !important;
+      background: #f8f9fa !important;
+      border-bottom: 1px solid #e9ecef !important;
+      padding: 1rem !important;
+      font-weight: 600 !important;
+      color: #495057 !important;
+    }
+
     /* Review mode styling - clean, flattened display */
     .review-mode-container {
       width: 100%;

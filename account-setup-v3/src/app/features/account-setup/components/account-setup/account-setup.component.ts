@@ -640,6 +640,17 @@ interface DropdownOption {
     .missing-field-warning i {
       font-size: 0.875rem;
     }
+
+    /* Ensure card headers are visible */
+    :host :deep(.p-card .p-card-header) {
+      display: block !important;
+      visibility: visible !important;
+      background: #f8f9fa !important;
+      border-bottom: 1px solid #e9ecef !important;
+      padding: 1rem !important;
+      font-weight: 600 !important;
+      color: #495057 !important;
+    }
   `]
 })
 export class AccountSetupComponent implements OnInit, OnChanges {
