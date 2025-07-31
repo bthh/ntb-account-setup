@@ -43,7 +43,6 @@ interface DropdownOption {
     DividerModule
   ],
   template: `
-    <div class="owner-details-section">
       <!-- Edit Mode - Form -->
       <form *ngIf="!isReviewMode" [formGroup]="ownerForm" (ngSubmit)="onSubmit()">
         
@@ -612,30 +611,23 @@ interface DropdownOption {
           </div>
         </div>
       </div>
-    </div>
   `,
   styles: [`
-    .owner-details-section {
-      padding: 0;
-      width: 100%;
-      box-sizing: border-box;
-    }
-    
     /* Remove all constraints that cause overflow */
-    .owner-details-section :deep(.p-card) {
+    :host :deep(.p-card) {
       width: 100%;
       margin-bottom: 1rem;
       box-sizing: border-box;
       overflow: visible;
     }
     
-    .owner-details-section :deep(.p-card-content) {
+    :host :deep(.p-card-content) {
       width: 100%;
       box-sizing: border-box;
       overflow: visible;
     }
     
-    .owner-details-section :deep(.grid) {
+    :host :deep(.grid) {
       width: 100%;
       box-sizing: border-box;
     }
