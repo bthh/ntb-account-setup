@@ -33,7 +33,9 @@
       "Bash(npx ng build:*)",
       "Bash(mv:*)",
       "Bash(git rm:*)",
-      "Bash(git reset:*)"
+      "Bash(git reset:*)",
+      "Bash(git push:*)",
+      "Bash(find:*)"
     ],
     "deny": []
   }

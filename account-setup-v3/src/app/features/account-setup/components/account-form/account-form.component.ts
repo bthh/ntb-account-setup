@@ -86,39 +86,32 @@ import { FundingComponent } from '../funding/funding.component';
       height: 100%;
       overflow-y: auto;
       padding-bottom: 2rem;
-      max-width: 100%;
+      width: 100%;
       box-sizing: border-box;
     }
     
     .account-form .p-2 {
       padding: 0.5rem;
-      max-width: 100%;
+      width: 100%;
       box-sizing: border-box;
     }
     
-    /* Ensure child components don't overflow parent container */
+    /* Allow natural flow of components */
     .account-form > div {
-      max-width: 100%;
-      overflow: hidden;
+      width: 100%;
       box-sizing: border-box;
     }
     
-    /* Prevent child cards from overflowing */
-    .account-form :deep(p-card) {
-      max-width: 100%;
-      box-sizing: border-box;
-    }
-    
+    /* Let cards flow naturally */
     .account-form :deep(.p-card) {
-      max-width: 100%;
+      width: 100%;
       box-sizing: border-box;
       margin-bottom: 1rem;
     }
     
     .account-form :deep(.p-card-content) {
-      max-width: 100%;
+      width: 100%;
       box-sizing: border-box;
-      overflow: hidden;
     }
   `]
 })

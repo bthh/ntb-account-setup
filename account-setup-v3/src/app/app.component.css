@@ -65,8 +65,8 @@
 
 .main-content-area {
   margin-left: 200px;
-  margin-top: 170px;
-  height: calc(100vh - 170px);
+  margin-top: 180px;
+  height: calc(100vh - 180px);
   overflow-y: auto;
   overflow-x: hidden;
   scroll-behavior: smooth;
@@ -217,9 +217,9 @@
   overflow-y: auto;
   overflow-x: hidden;
   position: fixed;
-  top: 180px; /* Increased spacing from header */
+  top: 200px; /* Further increased spacing from header */
   left: 200px;
-  height: calc(100vh - 192px); /* Adjusted to match new top position */
+  height: calc(100vh - 212px); /* Adjusted to match new top position */
   z-index: 998;
   scroll-behavior: smooth;
   scrollbar-width: thin;
