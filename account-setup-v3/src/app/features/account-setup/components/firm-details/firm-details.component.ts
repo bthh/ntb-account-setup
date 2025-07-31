@@ -38,7 +38,7 @@ interface DropdownOption {
         <div *ngIf="isMemberEntity">
           
           <!-- Net Worth Assessment Card -->
-          <p-card header="Net Worth Assessment" class="mb-4">
+          <p-card class="mb-4">
             <div class="grid">
               <div class="col-12 md:col-6">
                 <label for="totalNetWorth" class="block text-900 font-medium mb-2">
@@ -115,7 +115,7 @@ interface DropdownOption {
           </p-card>
 
           <!-- Investment Experience Card -->
-          <p-card header="Investment Experience" class="mb-4">
+          <p-card class="mb-4">
             <div class="grid">
               <div class="col-12 md:col-6">
                 <label for="investmentExperience" class="block text-900 font-medium mb-2">
@@ -192,7 +192,7 @@ interface DropdownOption {
           </p-card>
 
           <!-- Liquidity Needs Card -->
-          <p-card header="Liquidity Needs" class="mb-4">
+          <p-card class="mb-4">
             <div class="grid">
               <div class="col-12">
                 <label for="liquidityNeeds" class="block text-900 font-medium mb-2">
@@ -248,7 +248,7 @@ interface DropdownOption {
           </p-card>
 
           <!-- Market Conditions Card -->
-          <p-card header="Market Conditions" class="mb-4">
+          <p-card class="mb-4">
             <div class="grid">
               <div class="col-12">
                 <label class="block text-900 font-medium mb-3">
@@ -319,7 +319,7 @@ interface DropdownOption {
         <div *ngIf="!isMemberEntity">
           
           <!-- Account Firm Details Card -->
-          <p-card header="Account Firm Details" class="mb-4">
+          <p-card class="mb-4">
             <div class="grid">
               <div class="col-12">
                 <label for="investmentObjectives" class="block text-900 font-medium mb-2">

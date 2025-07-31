@@ -49,7 +49,7 @@ interface DropdownOption {
       <form [formGroup]="accountForm" (ngSubmit)="onSubmit()">
         
         <!-- Account Setup Card (Always First) -->
-        <p-card header="Account Setup" class="mb-4">
+        <p-card class="mb-4">
           <div class="grid">
             <div class="col-12 md:col-6">
               <label for="accountType" class="block text-900 font-medium mb-2">
@@ -128,7 +128,7 @@ interface DropdownOption {
         </p-card>
 
         <!-- Trust Information Card (Only for Trust Accounts) -->
-        <p-card header="Trust Information" class="mb-4" *ngIf="isTrustAccount">
+        <p-card class="mb-4" *ngIf="isTrustAccount">
           <div class="grid">
             <div class="col-12">
               <label for="trustName" class="block text-900 font-medium mb-2">
@@ -150,7 +150,7 @@ interface DropdownOption {
         </p-card>
 
         <!-- Trustees Card (Only for Trust Accounts) -->
-        <p-card header="Trustees" class="mb-4" *ngIf="isTrustAccount">
+        <p-card class="mb-4" *ngIf="isTrustAccount">
           <div class="funding-dashboard">
             
             <!-- Add Trustee Button -->
@@ -166,7 +166,7 @@ interface DropdownOption {
 
             <!-- Trustee Form -->
             <div *ngIf="showTrusteeForm" class="mt-4">
-              <p-card header="{{editingTrusteeIndex >= 0 ? 'Edit Trustee' : 'New Trustee'}}" class="mb-4">
+              <p-card class="mb-4">
                 <form [formGroup]="trusteeForm">
                   <div class="grid">
                     <div class="col-12 md:col-6">
@@ -308,7 +308,7 @@ interface DropdownOption {
         </p-card>
 
         <!-- Beneficiaries Card (Only for IRA Accounts) -->
-        <p-card header="Beneficiaries" class="mb-4" *ngIf="isIraAccount">
+        <p-card class="mb-4" *ngIf="isIraAccount">
           <div class="funding-dashboard">
             
             <!-- Add Beneficiary Button -->
@@ -324,7 +324,7 @@ interface DropdownOption {
 
             <!-- Beneficiary Form -->
             <div *ngIf="showBeneficiaryForm" class="mt-4">
-              <p-card header="{{editingBeneficiaryIndex >= 0 ? 'Edit Beneficiary' : 'New Beneficiary'}}" class="mb-4">
+              <p-card class="mb-4">
                 <form [formGroup]="beneficiaryForm">
                   <div class="grid">
                     <div class="col-12 md:col-6">
