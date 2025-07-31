@@ -65,8 +65,8 @@
 
 .main-content-area {
   margin-left: 200px;
-  margin-top: 180px;
-  height: calc(100vh - 180px);
+  margin-top: 200px; /* Increased to avoid header overlap */
+  height: calc(100vh - 200px);
   overflow-y: auto;
   overflow-x: hidden;
   scroll-behavior: smooth;
@@ -84,10 +84,10 @@
 .flex-1 {
   margin-left: 332px !important; /* 320px sidebar + 12px margin total */
   width: calc(100% - 332px) !important;
-  margin-top: -70px !important; /* Reduce white space at top of main content */
+  margin-top: -90px !important; /* Adjusted for new header spacing */
   overflow-y: auto;
   overflow-x: hidden;
-  max-height: calc(100vh - 180px);
+  max-height: calc(100vh - 200px);
   scroll-behavior: smooth;
 }
 
