@@ -499,27 +499,28 @@ export class AppComponent {
 
     this.isInitialLoad = false;
 
-    // Scroll to top of main content area
+    // Scroll to top of main content area when navigating sections
     setTimeout(() => {
-      // Try multiple scroll targets to ensure it works
-      const mainContentArea = document.querySelector('.main-content-area');
-      const cardBody = document.querySelector('.p-card .p-card-body');
+      // Try multiple scroll targets to ensure reliable scrolling
       const flexContent = document.querySelector('.flex-1');
+      const mainContentArea = document.querySelector('.main-content-area');
+      const accountForm = document.querySelector('app-account-form');
       
-      if (mainContentArea) {
+      // Priority order: flex-1 content, main area, account form, then window
+      if (flexContent) {
+        flexContent.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        });
+      } else if (mainContentArea) {
         mainContentArea.scrollTo({
           top: 0,
           behavior: 'smooth'
         });
-      } else if (cardBody) {
-        cardBody.scrollTo({
-          top: 0,
-          behavior: 'smooth'
-        });
-      } else if (flexContent) {
-        flexContent.scrollTo({
-          top: 0,
-          behavior: 'smooth'
+      } else if (accountForm) {
+        accountForm.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
         });
       } else {
         window.scrollTo({
@@ -527,7 +528,7 @@ export class AppComponent {
           behavior: 'smooth'
         });
       }
-    }, 100);
+    }, 150);
   }
 
   handleMobileSectionChange(section: Section, memberId: string, accountId: string) {

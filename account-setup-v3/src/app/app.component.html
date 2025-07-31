@@ -305,46 +305,44 @@
 
       <!-- Main Content -->
       <div class="flex-1 p-3">
-        <p-card styleClass="h-full">
           
-          <!-- Review Summary Mode -->
-          <div *ngIf="showReviewSummaryMode">
-            <div class="flex justify-content-between align-items-center mb-3">
-              <h2 class="text-2xl font-semibold m-0">Review Summary</h2>
-              <p-button 
-                label="Back to Forms" 
-                icon="pi pi-arrow-left"
-                severity="secondary"
-                (onClick)="hideReviewSummary()">
-              </p-button>
-            </div>
-            
-            <app-review-summary
-              [formData]="formData"
-              [completionStatus]="completionStatus"
-              (editAccount)="onEditAccount($event)"
-              (submitForESign)="onSubmitForESign($event)"
-              (submitAllReady)="onSubmitAllReady($event)">
-            </app-review-summary>
+        <!-- Review Summary Mode -->
+        <div *ngIf="showReviewSummaryMode">
+          <div class="flex justify-content-between align-items-center mb-3">
+            <h2 class="text-2xl font-semibold m-0">Review Summary</h2>
+            <p-button 
+              label="Back to Forms" 
+              icon="pi pi-arrow-left"
+              severity="secondary"
+              (onClick)="hideReviewSummary()">
+            </p-button>
           </div>
-
-          <!-- Regular Form Mode -->
-          <app-account-form *ngIf="!showReviewSummaryMode"
-            [section]="currentSection"
-            [memberId]="currentMember"
-            [accountId]="currentAccount"
-            [isReviewMode]="isReviewMode"
+          
+          <app-review-summary
             [formData]="formData"
             [completionStatus]="completionStatus"
-            (formDataChange)="onFormDataChange($event)"
-            (completionStatusChange)="onCompletionStatusChange($event)"
-            (previous)="handlePreviousSection()"
-            (next)="handleNextSection()"
-            [canGoPrevious]="canGoPrevious()"
-            [canGoNext]="canGoNext()">
-          </app-account-form>
+            (editAccount)="onEditAccount($event)"
+            (submitForESign)="onSubmitForESign($event)"
+            (submitAllReady)="onSubmitAllReady($event)">
+          </app-review-summary>
+        </div>
+
+        <!-- Regular Form Mode -->
+        <app-account-form *ngIf="!showReviewSummaryMode"
+          [section]="currentSection"
+          [memberId]="currentMember"
+          [accountId]="currentAccount"
+          [isReviewMode]="isReviewMode"
+          [formData]="formData"
+          [completionStatus]="completionStatus"
+          (formDataChange)="onFormDataChange($event)"
+          (completionStatusChange)="onCompletionStatusChange($event)"
+          (previous)="handlePreviousSection()"
+          (next)="handleNextSection()"
+          [canGoPrevious]="canGoPrevious()"
+          [canGoNext]="canGoNext()">
+        </app-account-form>
           
-        </p-card>
       </div>
     </div>
   </div>
