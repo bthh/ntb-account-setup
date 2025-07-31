@@ -47,7 +47,7 @@ interface DropdownOption {
       <form *ngIf="!isReviewMode" [formGroup]="ownerForm" (ngSubmit)="onSubmit()">
         
         <!-- Personal Information Card -->
-        <p-card header="Personal Information" class="mb-4">
+        <p-card class="mb-4">
           <div class="grid">
             <div class="col-12 md:col-4">
               <label for="firstName" class="block text-900 font-medium mb-2">
@@ -184,7 +184,7 @@ interface DropdownOption {
         </p-card>
 
         <!-- Address Information Card -->
-        <p-card header="Address Information" class="mb-4">
+        <p-card class="mb-4">
           <div class="grid">
             <div class="col-12">
               <label for="homeAddress" class="block text-900 font-medium mb-2">
@@ -237,7 +237,7 @@ interface DropdownOption {
         </p-card>
 
         <!-- Identification Card -->
-        <p-card header="Identification" class="mb-4">
+        <p-card class="mb-4">
           <div class="grid">
             <div class="col-12">
               <label class="block text-900 font-medium mb-2">
@@ -253,7 +253,7 @@ interface DropdownOption {
         </p-card>
 
         <!-- Employment Information Card -->
-        <p-card header="Employment Information" class="mb-4">
+        <p-card class="mb-4">
           <div class="grid">
             <div class="col-12 md:col-6">
               <label for="employmentStatus" class="block text-900 font-medium mb-2">
@@ -326,7 +326,7 @@ interface DropdownOption {
         </p-card>
 
         <!-- Disclosure Questions Card -->
-        <p-card header="Disclosure Questions" class="mb-4">
+        <p-card class="mb-4">
           <div class="grid">
             <div class="col-12">
               <div class="field-checkbox">
@@ -356,7 +356,7 @@ interface DropdownOption {
         </p-card>
 
         <!-- Trusted Contact Information Card -->
-        <p-card header="Trusted Contact Information" class="mb-4">
+        <p-card class="mb-4">
           <div class="grid">
             <div class="col-12 md:col-6">
               <label for="trustedName" class="block text-900 font-medium mb-2">
@@ -632,18 +632,67 @@ interface DropdownOption {
       box-sizing: border-box;
     }
     
-    /* Review mode styling - no constraints */
+    /* Review mode styling - clean, flattened display */
     .review-mode-container {
       width: 100%;
+      padding: 1rem;
+      background: #f8f9fa;
     }
     
     .review-mode-section {
       width: 100%;
-      margin-bottom: 1.5rem;
+      margin-bottom: 2rem;
+      background: white;
+      padding: 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+    
+    .review-mode-section-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #1f2937;
+      margin-bottom: 1rem;
+      border-bottom: 2px solid #e5e7eb;
+      padding-bottom: 0.5rem;
     }
     
     .review-mode-grid {
       width: 100%;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1rem;
+    }
+    
+    .review-field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+    
+    .review-field-label {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: #6b7280;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    
+    .review-field-value {
+      font-size: 1rem;
+      color: #111827;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid #f3f4f6;
+    }
+    
+    .review-field-value.missing {
+      color: #dc2626;
+      font-style: italic;
+    }
+    
+    .review-field-value.empty {
+      color: #9ca3af;
+      font-style: italic;
     }
   `]
 })

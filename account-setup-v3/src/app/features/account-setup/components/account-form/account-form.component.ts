@@ -83,11 +83,10 @@ import { FundingComponent } from '../funding/funding.component';
   `,
   styles: [`
     .account-form {
-      height: 100%;
-      overflow-y: auto;
-      padding-bottom: 2rem;
       width: 100%;
       box-sizing: border-box;
+      padding-bottom: 2rem;
+      min-height: 100%;
     }
     
     .account-form .p-2 {
@@ -96,22 +95,30 @@ import { FundingComponent } from '../funding/funding.component';
       box-sizing: border-box;
     }
     
-    /* Allow natural flow of components */
+    /* Allow natural flow of components with full scrollable content */
     .account-form > div {
       width: 100%;
       box-sizing: border-box;
     }
     
-    /* Let cards flow naturally */
+    /* Let cards flow naturally in scrollable container */
     .account-form :deep(.p-card) {
       width: 100%;
       box-sizing: border-box;
       margin-bottom: 1rem;
+      overflow: visible;
     }
     
     .account-form :deep(.p-card-content) {
       width: 100%;
       box-sizing: border-box;
+      overflow: visible;
+    }
+    
+    /* Ensure all form sections can be scrolled through */
+    .account-form :deep(.grid) {
+      width: 100%;
+      overflow: visible;
     }
   `]
 })

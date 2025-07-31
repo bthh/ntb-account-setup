@@ -72,6 +72,7 @@
   scroll-behavior: smooth;
   scrollbar-width: thin;
   scrollbar-color: #cbd5e1 transparent;
+  position: relative;
 }
 
 /* Account form area - adjust for fixed secondary sidebar */
@@ -79,11 +80,15 @@
   padding-left: 0;
 }
 
-/* Form content area positioning */
+/* Form content area positioning - scrollable content */
 .flex-1 {
   margin-left: 332px !important; /* 320px sidebar + 12px margin total */
   width: calc(100% - 332px) !important;
   margin-top: -70px !important; /* Reduce white space at top of main content */
+  overflow-y: auto;
+  overflow-x: hidden;
+  max-height: calc(100vh - 180px);
+  scroll-behavior: smooth;
 }
 
 .main-content-area::-webkit-scrollbar {
@@ -217,9 +222,9 @@
   overflow-y: auto;
   overflow-x: hidden;
   position: fixed;
-  top: 200px; /* Further increased spacing from header */
+  top: 160px; /* Reduced spacing from header by 50% (200px -> 160px) */  
   left: 200px;
-  height: calc(100vh - 212px); /* Adjusted to match new top position */
+  height: calc(100vh - 172px); /* Adjusted to match new top position */
   z-index: 998;
   scroll-behavior: smooth;
   scrollbar-width: thin;

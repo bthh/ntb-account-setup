@@ -81,10 +81,9 @@
             styleClass="lg:hidden">
           </p-button>
           <div class="header-title-section">
-            <h1 class="enterprise-title" style="color: red;">New Account Setup - TEST</h1>
+            <h1 class="enterprise-title">New Account Setup</h1>
             <div class="enterprise-subtitle">Smith Family Portfolio</div>
           </div>
-          <p-badge value="Demo" severity="info" styleClass="demo-badge"></p-badge>
         </div>
         
         <!-- Progress Indicator -->
@@ -98,22 +97,6 @@
         </div>
 
         <div class="header-actions">
-          <p-button 
-            label="Previous" 
-            icon="pi pi-chevron-left"
-            severity="secondary"
-            (onClick)="handlePreviousSection()"
-            [disabled]="!canGoPrevious()"
-            styleClass="nav-button">
-          </p-button>
-          <p-button 
-            label="Next" 
-            icon="pi pi-chevron-right"
-            iconPos="right"
-            (onClick)="handleNextSection()"
-            [disabled]="!canGoNext()"
-            styleClass="nav-button nav-button-primary">
-          </p-button>
           
           <p-button 
             label="Review Summary" 
@@ -150,8 +133,8 @@
               Members
             </div>
             <p-accordion 
-              [multiple]="true" 
-              [activeIndex]="expandedMemberTabs"
+              [multiple]="false" 
+              [activeIndex]="expandedMemberTabs[0]"
               (onTabChange)="onMemberTabChange($event)">
               <p-accordionTab 
                 *ngFor="let member of memberData">
@@ -188,8 +171,8 @@
               Accounts
             </div>
             <p-accordion 
-              [multiple]="true" 
-              [activeIndex]="expandedAccountTabs"
+              [multiple]="false" 
+              [activeIndex]="expandedAccountTabs[0]"
               (onTabChange)="onAccountTabChange($event)">
               <p-accordionTab 
                 *ngFor="let account of accountData">
@@ -249,8 +232,8 @@
               Smith Household Members
             </div>
             <p-accordion 
-              [multiple]="true" 
-              [activeIndex]="expandedMemberTabs"
+              [multiple]="false" 
+              [activeIndex]="expandedMemberTabs[0]"
               (onTabChange)="onMemberTabChange($event)">
               <p-accordionTab 
                 *ngFor="let member of memberData">
@@ -287,8 +270,8 @@
               Accounts
             </div>
             <p-accordion 
-              [multiple]="true" 
-              [activeIndex]="expandedAccountTabs"
+              [multiple]="false" 
+              [activeIndex]="expandedAccountTabs[0]"
               (onTabChange)="onAccountTabChange($event)">
               <p-accordionTab 
                 *ngFor="let account of accountData">

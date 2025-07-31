@@ -473,13 +473,12 @@ export class AppComponent {
       this.currentMember = memberId;
       this.currentAccount = '';
       
-      // Auto-expand the accordion for the current member
+      // Auto-expand the accordion for the current member (only one at a time)
       const memberIds = ['john-smith', 'mary-smith', 'smith-trust'];
       const memberIndex = memberIds.indexOf(memberId);
       if (memberIndex !== -1) {
-        if (!this.expandedMemberTabs.includes(memberIndex)) {
-          this.expandedMemberTabs = [...this.expandedMemberTabs, memberIndex];
-        }
+        this.expandedMemberTabs = [memberIndex];
+        this.expandedAccountTabs = []; // Close account tabs
       }
     }
     
@@ -487,33 +486,38 @@ export class AppComponent {
       this.currentAccount = accountId;
       this.currentMember = '';
       
-      // Auto-expand the accordion for the current account
+      // Auto-expand the accordion for the current account (only one at a time)
       const accountIds = ['joint-account', 'roth-ira-account', 'trust-account'];
       const accountIndex = accountIds.indexOf(accountId);
       if (accountIndex !== -1) {
-        if (!this.expandedAccountTabs.includes(accountIndex)) {
-          this.expandedAccountTabs = [...this.expandedAccountTabs, accountIndex];
-        }
+        this.expandedAccountTabs = [accountIndex];
+        this.expandedMemberTabs = []; // Close member tabs
       }
     }
 
-    // Show auto-save notification
-    if (!this.isInitialLoad) {
-      this.messageService.add({
-        severity: 'success',
-        summary: 'Auto-saved',
-        detail: 'Progress saved',
-        life: 2000
-      });
-    }
+    // Auto-save notification removed per user request
 
     this.isInitialLoad = false;
 
-    // Scroll to top
+    // Scroll to top of main content area
     setTimeout(() => {
+      // Try multiple scroll targets to ensure it works
+      const mainContentArea = document.querySelector('.main-content-area');
       const cardBody = document.querySelector('.p-card .p-card-body');
-      if (cardBody) {
+      const flexContent = document.querySelector('.flex-1');
+      
+      if (mainContentArea) {
+        mainContentArea.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        });
+      } else if (cardBody) {
         cardBody.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        });
+      } else if (flexContent) {
+        flexContent.scrollTo({
           top: 0,
           behavior: 'smooth'
         });
@@ -523,7 +527,7 @@ export class AppComponent {
           behavior: 'smooth'
         });
       }
-    }, 50);
+    }, 100);
   }
 
   handleMobileSectionChange(section: Section, memberId: string, accountId: string) {
@@ -550,13 +554,19 @@ export class AppComponent {
     return entityStatus ? !!entityStatus[sectionId] : false;
   }
 
-  // Accordion event handlers
+  // Accordion event handlers - only allow one section expanded at a time
   onMemberTabChange(event: any) {
-    this.expandedMemberTabs = event.index;
+    // Close all account tabs when opening member tabs
+    this.expandedAccountTabs = [];
+    // Only allow one member tab open at a time
+    this.expandedMemberTabs = Array.isArray(event.index) ? [event.index[event.index.length - 1]] : [event.index];
   }
 
   onAccountTabChange(event: any) {
-    this.expandedAccountTabs = event.index;
+    // Close all member tabs when opening account tabs
+    this.expandedMemberTabs = [];
+    // Only allow one account tab open at a time
+    this.expandedAccountTabs = Array.isArray(event.index) ? [event.index[event.index.length - 1]] : [event.index];
   }
 
   // Form data change handlers
@@ -610,34 +620,44 @@ export class AppComponent {
     return sectionId as Section;
   }
 
-  // Calculate overall progress percentage
+  // Calculate overall progress percentage based on filled required fields
   getOverallProgress(): number {
-    let totalSections = 0;
-    let completedSections = 0;
+    let totalRequiredFields = 0;
+    let filledRequiredFields = 0;
 
-    // Count member sections
+    // Define required fields for each entity type
+    const memberRequiredFields = [
+      'firstName', 'lastName', 'dateOfBirth', 'ssn', 'phoneHome', 'email', 
+      'homeAddress', 'citizenship', 'employmentStatus', 'annualIncome', 'netWorth', 'fundsSource'
+    ];
+    
+    const accountRequiredFields = [
+      'accountType', 'investmentObjective', 'riskTolerance'
+    ];
+
+    // Count member fields
     Object.keys(this.completionStatus.members).forEach(memberId => {
-      const memberStatus = this.completionStatus.members[memberId];
-      Object.keys(memberStatus).forEach(sectionId => {
-        totalSections++;
-        if (memberStatus[sectionId]) {
-          completedSections++;
+      const memberData = this.formData[memberId];
+      memberRequiredFields.forEach(field => {
+        totalRequiredFields++;
+        if (memberData && memberData[field] && memberData[field].toString().trim()) {
+          filledRequiredFields++;
         }
       });
     });
 
-    // Count account sections
+    // Count account fields
     Object.keys(this.completionStatus.accounts).forEach(accountId => {
-      const accountStatus = this.completionStatus.accounts[accountId];
-      Object.keys(accountStatus).forEach(sectionId => {
-        totalSections++;
-        if (accountStatus[sectionId]) {
-          completedSections++;
+      const accountData = this.formData[accountId];
+      accountRequiredFields.forEach(field => {
+        totalRequiredFields++;
+        if (accountData && accountData[field] && accountData[field].toString().trim()) {
+          filledRequiredFields++;
         }
       });
     });
 
-    return totalSections > 0 ? Math.round((completedSections / totalSections) * 100) : 0;
+    return totalRequiredFields > 0 ? Math.round((filledRequiredFields / totalRequiredFields) * 100) : 0;
   }
 
   // Review Summary methods
