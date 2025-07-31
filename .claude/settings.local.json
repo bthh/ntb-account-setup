@@ -22,14 +22,18 @@
       "Bash(git add:*)",
       "Bash(git commit:*)",
       "Bash(git config:*)",
-      "Bash(netlify:*)",
+      "Bash(cp:*)",
+      "Bash(npm run serve:*)",
+      "Bash(npm run dev:*)",
+      "Bash(npm run:*)",
+      "WebFetch(domain:app.netlify.com)",
+      "WebFetch(domain:cfdemo2.netlify.app)",
+      "Bash(unzip:*)",
       "Bash(ls:*)",
-      "Bash(git push:*)",
-      "Bash(find:*)",
-      "Bash(npx @angular/cli:*)",
-      "Bash(timeout 30s npm start)",
-      "Bash(timeout 10s npm start)",
-      "Bash(npm start:*)"
+      "Bash(npx ng build:*)",
+      "Bash(mv:*)",
+      "Bash(git rm:*)",
+      "Bash(git reset:*)"
     ],
     "deny": []
   }

@@ -41,9 +41,7 @@ import { FundingComponent } from '../funding/funding.component';
   ],
   template: `
     <div class="account-form">
-      <div class="p-4">
-        <h2>{{getSectionTitle()}}</h2>
-        
+      <div class="p-2">
         <!-- Owner Details Section -->
         <app-owner-details
           *ngIf="section === 'owner-details'"
@@ -88,6 +86,39 @@ import { FundingComponent } from '../funding/funding.component';
       height: 100%;
       overflow-y: auto;
       padding-bottom: 2rem;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+    
+    .account-form .p-2 {
+      padding: 0.5rem;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+    
+    /* Ensure child components don't overflow parent container */
+    .account-form > div {
+      max-width: 100%;
+      overflow: hidden;
+      box-sizing: border-box;
+    }
+    
+    /* Prevent child cards from overflowing */
+    .account-form :deep(p-card) {
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+    
+    .account-form :deep(.p-card) {
+      max-width: 100%;
+      box-sizing: border-box;
+      margin-bottom: 1rem;
+    }
+    
+    .account-form :deep(.p-card-content) {
+      max-width: 100%;
+      box-sizing: border-box;
+      overflow: hidden;
     }
   `]
 })

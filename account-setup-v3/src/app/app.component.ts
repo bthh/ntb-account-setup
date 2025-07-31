@@ -656,7 +656,6 @@ export class AppComponent {
   }
 
   onSubmitForESign(accountId: string) {
-    console.log('Submit for e-signature:', accountId);
     // Implementation for e-signature would go here
     this.messageService.add({
       severity: 'success',
@@ -667,7 +666,6 @@ export class AppComponent {
   }
 
   onSubmitAllReady(accountIds: string[]) {
-    console.log('Submit all ready accounts:', accountIds);
     // Implementation for bulk e-signature would go here
     this.messageService.add({
       severity: 'success',

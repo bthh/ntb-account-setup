@@ -710,7 +710,6 @@ export class AccountSetupComponent implements OnInit {
   constructor(private fb: FormBuilder, private messageService: MessageService) {}
 
   ngOnInit() {
-    console.log('AccountSetup ngOnInit - entityId:', this.entityId);
     this.initializeForm();
     this.loadFormData();
     this.setupFormSubscriptions();
@@ -756,16 +755,11 @@ export class AccountSetupComponent implements OnInit {
       this.isTrustAccount = entityData.accountType === 'trust';
       this.isIraAccount = entityData.accountType === 'roth-ira' || entityData.accountType === 'ira';
       
-      console.log('Account Type:', entityData.accountType);
-      console.log('Is Trust Account:', this.isTrustAccount);
-      console.log('Is IRA Account:', this.isIraAccount);
       
       // Load trustees and beneficiaries
       this.trustees = entityData['trustees'] || [];
       this.beneficiaries = entityData['beneficiaries'] || [];
       
-      console.log('Trustees:', this.trustees);
-      console.log('Beneficiaries:', this.beneficiaries);
     }
   }
 
@@ -779,9 +773,6 @@ export class AccountSetupComponent implements OnInit {
     this.isTrustAccount = event.value === 'trust';
     this.isIraAccount = event.value === 'roth-ira' || event.value === 'ira';
     
-    console.log('Account Type Changed:', event.value);
-    console.log('Is Trust Account:', this.isTrustAccount);
-    console.log('Is IRA Account:', this.isIraAccount);
   }
 
   handleAddTrustee() {

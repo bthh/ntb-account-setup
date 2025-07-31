@@ -44,7 +44,8 @@ interface DropdownOption {
   ],
   template: `
     <div class="owner-details-section">
-      <form [formGroup]="ownerForm" (ngSubmit)="onSubmit()">
+      <!-- Edit Mode - Form -->
+      <form *ngIf="!isReviewMode" [formGroup]="ownerForm" (ngSubmit)="onSubmit()">
         
         <!-- Personal Information Card -->
         <p-card header="Personal Information" class="mb-4">
@@ -59,7 +60,6 @@ interface DropdownOption {
                 formControlName="firstName"
                 placeholder="First name"
                 class="w-full"
-                [disabled]="isReviewMode"
                 [class.ng-invalid]="ownerForm.get('firstName')?.invalid && ownerForm.get('firstName')?.touched" />
               <small class="p-error" *ngIf="ownerForm.get('firstName')?.invalid && ownerForm.get('firstName')?.touched">
                 First name is required (minimum 2 characters)
@@ -75,8 +75,7 @@ interface DropdownOption {
                 id="middleInitial"
                 formControlName="middleInitial"
                 placeholder="Middle initial"
-                class="w-full"
-                [disabled]="isReviewMode" />
+                class="w-full" />
             </div>
             
             <div class="col-12 md:col-4">
@@ -89,7 +88,6 @@ interface DropdownOption {
                 formControlName="lastName"
                 placeholder="Last name"
                 class="w-full"
-                [disabled]="isReviewMode"
                 [class.ng-invalid]="ownerForm.get('lastName')?.invalid && ownerForm.get('lastName')?.touched" />
               <small class="p-error" *ngIf="ownerForm.get('lastName')?.invalid && ownerForm.get('lastName')?.touched">
                 Last name is required (minimum 2 characters)
@@ -107,7 +105,6 @@ interface DropdownOption {
                 dateFormat="mm/dd/yy"
                 placeholder="mm/dd/yyyy"
                 styleClass="w-full"
-                [disabled]="isReviewMode"
                 [maxDate]="maxDate"
                 [class.ng-invalid]="ownerForm.get('dateOfBirth')?.invalid && ownerForm.get('dateOfBirth')?.touched">
               </p-calendar>
@@ -128,7 +125,6 @@ interface DropdownOption {
                 mask="999-99-9999"
                 placeholder="***-**-****"
                 styleClass="w-full"
-                [disabled]="isReviewMode"
                 [class.ng-invalid]="ownerForm.get('ssn')?.invalid && ownerForm.get('ssn')?.touched">
               </p-inputMask>
               <small class="p-error" *ngIf="ownerForm.get('ssn')?.invalid && ownerForm.get('ssn')?.touched">
@@ -146,7 +142,6 @@ interface DropdownOption {
                 mask="(999) 999-9999"
                 placeholder="(XXX) XXX-XXXX"
                 styleClass="w-full"
-                [disabled]="isReviewMode"
                 [class.ng-invalid]="ownerForm.get('phoneHome')?.invalid && ownerForm.get('phoneHome')?.touched">
               </p-inputMask>
               <small class="p-error" *ngIf="ownerForm.get('phoneHome')?.invalid && ownerForm.get('phoneHome')?.touched">
@@ -163,8 +158,7 @@ interface DropdownOption {
                 formControlName="phoneMobile"
                 mask="(999) 999-9999"
                 placeholder="(XXX) XXX-XXXX"
-                styleClass="w-full"
-                [disabled]="isReviewMode">
+                styleClass="w-full">
               </p-inputMask>
               <small class="text-orange-500 text-xs">
                 Recommended for account notifications
@@ -182,7 +176,6 @@ interface DropdownOption {
                 formControlName="email"
                 placeholder="Email address"
                 class="w-full"
-                [disabled]="isReviewMode"
                 [class.ng-invalid]="ownerForm.get('email')?.invalid && ownerForm.get('email')?.touched" />
               <small class="p-error" *ngIf="ownerForm.get('email')?.invalid && ownerForm.get('email')?.touched">
                 Please enter a valid email address
@@ -204,7 +197,6 @@ interface DropdownOption {
                 formControlName="homeAddress"
                 placeholder="Full home address"
                 class="w-full"
-                [disabled]="isReviewMode"
                 [class.ng-invalid]="ownerForm.get('homeAddress')?.invalid && ownerForm.get('homeAddress')?.touched" />
               <small class="p-error" *ngIf="ownerForm.get('homeAddress')?.invalid && ownerForm.get('homeAddress')?.touched">
                 Home address is required (minimum 10 characters)
@@ -220,8 +212,7 @@ interface DropdownOption {
                 id="mailingAddress"
                 formControlName="mailingAddress"
                 placeholder="Full mailing address"
-                class="w-full"
-                [disabled]="isReviewMode" />
+                class="w-full" />
               <small class="text-orange-500 text-xs">
                 Consider specifying if different from home address
               </small>
@@ -237,7 +228,6 @@ interface DropdownOption {
                 [options]="citizenshipOptions"
                 placeholder="Select citizenship type"
                 styleClass="w-full"
-                [disabled]="isReviewMode"
                 [class.ng-invalid]="ownerForm.get('citizenship')?.invalid && ownerForm.get('citizenship')?.touched">
               </p-dropdown>
               <small class="p-error" *ngIf="ownerForm.get('citizenship')?.invalid && ownerForm.get('citizenship')?.touched">
@@ -257,7 +247,6 @@ interface DropdownOption {
               <p-fileUpload
                 mode="basic"
                 accept="image/*,.pdf"
-                [disabled]="isReviewMode"
                 chooseLabel="Choose Document">
               </p-fileUpload>
             </div>
@@ -277,7 +266,6 @@ interface DropdownOption {
                 [options]="employmentOptions"
                 placeholder="Select employment status"
                 styleClass="w-full"
-                [disabled]="isReviewMode"
                 [class.ng-invalid]="ownerForm.get('employmentStatus')?.invalid && ownerForm.get('employmentStatus')?.touched">
               </p-dropdown>
               <small class="p-error" *ngIf="ownerForm.get('employmentStatus')?.invalid && ownerForm.get('employmentStatus')?.touched">
@@ -295,7 +283,6 @@ interface DropdownOption {
                 [options]="incomeOptions"
                 placeholder="Select income range"
                 styleClass="w-full"
-                [disabled]="isReviewMode"
                 [class.ng-invalid]="ownerForm.get('annualIncome')?.invalid && ownerForm.get('annualIncome')?.touched">
               </p-dropdown>
               <small class="p-error" *ngIf="ownerForm.get('annualIncome')?.invalid && ownerForm.get('annualIncome')?.touched">
@@ -313,7 +300,6 @@ interface DropdownOption {
                 [options]="netWorthOptions"
                 placeholder="Select net worth range"
                 styleClass="w-full"
-                [disabled]="isReviewMode"
                 [class.ng-invalid]="ownerForm.get('netWorth')?.invalid && ownerForm.get('netWorth')?.touched">
               </p-dropdown>
               <small class="p-error" *ngIf="ownerForm.get('netWorth')?.invalid && ownerForm.get('netWorth')?.touched">
@@ -331,9 +317,7 @@ interface DropdownOption {
                 formControlName="fundsSource"
                 rows="3"
                 placeholder="Please describe the source of funds for this account..."
-                class="w-full"
-                [disabled]="isReviewMode"
-                [class.ng-invalid]="ownerForm.get('fundsSource')?.invalid && ownerForm.get('fundsSource')?.touched">
+                class="w-full">
               </textarea>
               <small class="p-error" *ngIf="ownerForm.get('fundsSource')?.invalid && ownerForm.get('fundsSource')?.touched">
                 Source of funds is required
@@ -350,22 +334,19 @@ interface DropdownOption {
                 <p-checkbox
                   inputId="affiliatedFirm"
                   formControlName="affiliatedFirm"
-                  [binary]="true"
-                  [disabled]="isReviewMode">
+                  [binary]="true">
                 </p-checkbox>
                 <label for="affiliatedFirm" class="ml-2">
                   I am affiliated with a financial services firm
                 </label>
               </div>
             </div>
-            
             <div class="col-12">
               <div class="field-checkbox">
                 <p-checkbox
                   inputId="professionalAdvisor"
                   formControlName="professionalAdvisor"
-                  [binary]="true"
-                  [disabled]="isReviewMode">
+                  [binary]="true">
                 </p-checkbox>
                 <label for="professionalAdvisor" class="ml-2">
                   I am a professional financial advisor
@@ -387,8 +368,7 @@ interface DropdownOption {
                 id="trustedName"
                 formControlName="trustedName"
                 placeholder="Full name"
-                class="w-full"
-                [disabled]="isReviewMode" />
+                class="w-full" />
             </div>
             
             <div class="col-12 md:col-6">
@@ -400,8 +380,7 @@ interface DropdownOption {
                 formControlName="trustedPhone"
                 mask="(999) 999-9999"
                 placeholder="Phone number"
-                styleClass="w-full"
-                [disabled]="isReviewMode">
+                styleClass="w-full">
               </p-inputMask>
             </div>
             
@@ -415,8 +394,7 @@ interface DropdownOption {
                 type="email"
                 formControlName="trustedEmail"
                 placeholder="Email address"
-                class="w-full"
-                [disabled]="isReviewMode" />
+                class="w-full" />
             </div>
             
             <div class="col-12 md:col-6">
@@ -428,59 +406,255 @@ interface DropdownOption {
                 formControlName="trustedRelationship"
                 [options]="relationshipOptions"
                 placeholder="Select relationship"
-                styleClass="w-full"
-                [disabled]="isReviewMode">
+                styleClass="w-full">
               </p-dropdown>
             </div>
           </div>
         </p-card>
-
       </form>
+
+      <!-- Review Mode - Flattened Data -->
+      <div *ngIf="isReviewMode" class="review-mode-container">
+        
+        <!-- Personal Information Section -->
+        <div class="review-mode-section">
+          <div class="review-mode-section-title">Personal Information</div>
+          <div class="review-mode-grid">
+            <div class="review-field-group">
+              <div class="review-field-label">First Name</div>
+              <div class="review-field-value" 
+                   [ngClass]="{'missing': !ownerForm.get('firstName')?.value}">
+                {{ownerForm.get('firstName')?.value || 'Required field missing'}}
+              </div>
+            </div>
+            
+            <div class="review-field-group">
+              <div class="review-field-label">Middle Initial</div>
+              <div class="review-field-value"
+                   [ngClass]="{'empty': !ownerForm.get('middleInitial')?.value}">
+                {{ownerForm.get('middleInitial')?.value || 'Not provided'}}
+              </div>
+            </div>
+            
+            <div class="review-field-group">
+              <div class="review-field-label">Last Name</div>
+              <div class="review-field-value"
+                   [ngClass]="{'missing': !ownerForm.get('lastName')?.value}">
+                {{ownerForm.get('lastName')?.value || 'Required field missing'}}
+              </div>
+            </div>
+            
+            <div class="review-field-group">
+              <div class="review-field-label">Date of Birth</div>
+              <div class="review-field-value"
+                   [ngClass]="{'missing': !ownerForm.get('dateOfBirth')?.value}">
+                {{formatDate(ownerForm.get('dateOfBirth')?.value) || 'Required field missing'}}
+              </div>
+            </div>
+            
+            <div class="review-field-group">
+              <div class="review-field-label">Social Security Number</div>
+              <div class="review-field-value"
+                   [ngClass]="{'missing': !ownerForm.get('ssn')?.value}">
+                {{ownerForm.get('ssn')?.value || 'Required field missing'}}
+              </div>
+            </div>
+            
+            <div class="review-field-group">
+              <div class="review-field-label">Home Phone</div>
+              <div class="review-field-value"
+                   [ngClass]="{'missing': !ownerForm.get('phoneHome')?.value}">
+                {{ownerForm.get('phoneHome')?.value || 'Required field missing'}}
+              </div>
+            </div>
+            
+            <div class="review-field-group">
+              <div class="review-field-label">Mobile Phone</div>
+              <div class="review-field-value"
+                   [ngClass]="{'empty': !ownerForm.get('phoneMobile')?.value}">
+                {{ownerForm.get('phoneMobile')?.value || 'Not provided'}}
+              </div>
+            </div>
+            
+            <div class="review-field-group">
+              <div class="review-field-label">Email Address</div>
+              <div class="review-field-value"
+                   [ngClass]="{'missing': !ownerForm.get('email')?.value}">
+                {{ownerForm.get('email')?.value || 'Required field missing'}}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Address Information Section -->
+        <div class="review-mode-section">
+          <div class="review-mode-section-title">Address Information</div>
+          <div class="review-mode-grid">
+            <div class="review-field-group">
+              <div class="review-field-label">Home Address</div>
+              <div class="review-field-value"
+                   [ngClass]="{'missing': !ownerForm.get('homeAddress')?.value}">
+                {{ownerForm.get('homeAddress')?.value || 'Required field missing'}}
+              </div>
+            </div>
+            
+            <div class="review-field-group">
+              <div class="review-field-label">Mailing Address</div>
+              <div class="review-field-value"
+                   [ngClass]="{'empty': !ownerForm.get('mailingAddress')?.value}">
+                {{ownerForm.get('mailingAddress')?.value || 'Not provided'}}
+              </div>
+            </div>
+            
+            <div class="review-field-group">
+              <div class="review-field-label">Citizenship Type</div>
+              <div class="review-field-value"
+                   [ngClass]="{'missing': !ownerForm.get('citizenship')?.value}">
+                {{getFieldDisplayValue('citizenship', citizenshipOptions) || 'Required field missing'}}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Employment Information Section -->
+        <div class="review-mode-section">
+          <div class="review-mode-section-title">Employment Information</div>
+          <div class="review-mode-grid">
+            <div class="review-field-group">
+              <div class="review-field-label">Employment Status</div>
+              <div class="review-field-value"
+                   [ngClass]="{'missing': !ownerForm.get('employmentStatus')?.value}">
+                {{getFieldDisplayValue('employmentStatus', employmentOptions) || 'Required field missing'}}
+              </div>
+            </div>
+            
+            <div class="review-field-group">
+              <div class="review-field-label">Annual Income</div>
+              <div class="review-field-value"
+                   [ngClass]="{'missing': !ownerForm.get('annualIncome')?.value}">
+                {{getFieldDisplayValue('annualIncome', incomeOptions) || 'Required field missing'}}
+              </div>
+            </div>
+            
+            <div class="review-field-group">
+              <div class="review-field-label">Net Worth</div>
+              <div class="review-field-value"
+                   [ngClass]="{'missing': !ownerForm.get('netWorth')?.value}">
+                {{getFieldDisplayValue('netWorth', netWorthOptions) || 'Required field missing'}}
+              </div>
+            </div>
+            
+            <div class="review-field-group">
+              <div class="review-field-label">Source of Funds</div>
+              <div class="review-field-value"
+                   [ngClass]="{'missing': !ownerForm.get('fundsSource')?.value}">
+                {{ownerForm.get('fundsSource')?.value || 'Required field missing'}}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Disclosure Questions Section -->
+        <div class="review-mode-section">
+          <div class="review-mode-section-title">Disclosure Questions</div>
+          <div class="review-mode-grid">
+            <div class="review-field-group">
+              <div class="review-field-label">Affiliated with Financial Services Firm</div>
+              <div class="review-field-value">
+                {{ownerForm.get('affiliatedFirm')?.value ? 'Yes' : 'No'}}
+              </div>
+            </div>
+            
+            <div class="review-field-group">
+              <div class="review-field-label">Professional Financial Advisor</div>
+              <div class="review-field-value">
+                {{ownerForm.get('professionalAdvisor')?.value ? 'Yes' : 'No'}}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Trusted Contact Section -->
+        <div class="review-mode-section">
+          <div class="review-mode-section-title">Trusted Contact Information</div>
+          <div class="review-mode-grid">
+            <div class="review-field-group">
+              <div class="review-field-label">Contact Name</div>
+              <div class="review-field-value"
+                   [ngClass]="{'empty': !ownerForm.get('trustedName')?.value}">
+                {{ownerForm.get('trustedName')?.value || 'Not provided'}}
+              </div>
+            </div>
+            
+            <div class="review-field-group">
+              <div class="review-field-label">Contact Phone</div>
+              <div class="review-field-value"
+                   [ngClass]="{'empty': !ownerForm.get('trustedPhone')?.value}">
+                {{ownerForm.get('trustedPhone')?.value || 'Not provided'}}
+              </div>
+            </div>
+            
+            <div class="review-field-group">
+              <div class="review-field-label">Contact Email</div>
+              <div class="review-field-value"
+                   [ngClass]="{'empty': !ownerForm.get('trustedEmail')?.value}">
+                {{ownerForm.get('trustedEmail')?.value || 'Not provided'}}
+              </div>
+            </div>
+            
+            <div class="review-field-group">
+              <div class="review-field-label">Relationship</div>
+              <div class="review-field-value"
+                   [ngClass]="{'empty': !ownerForm.get('trustedRelationship')?.value}">
+                {{getFieldDisplayValue('trustedRelationship', relationshipOptions) || 'Not provided'}}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   `,
   styles: [`
     .owner-details-section {
       padding: 0;
+      max-width: 100%;
+      box-sizing: border-box;
+      overflow: hidden;
     }
-
-    .p-card {
-      margin-bottom: 1.5rem;
+    
+    /* Ensure all child elements stay within bounds */
+    .owner-details-section * {
+      box-sizing: border-box;
     }
-
-    .p-card .p-card-header {
-      background: #f8fafc;
-      border-bottom: 1px solid #e5e7eb;
-      font-weight: 600;
-      color: #374151;
-    }
-
-    .field-checkbox {
-      display: flex;
-      align-items: center;
+    
+    /* Prevent form elements from overflowing */
+    .owner-details-section :deep(.p-card) {
+      max-width: 100%;
       margin-bottom: 1rem;
     }
-
-    .p-error {
-      color: #ef4444;
-      font-size: 0.875rem;
-      margin-top: 0.25rem;
-      display: block;
+    
+    .owner-details-section :deep(.p-card-content) {
+      max-width: 100%;
+      overflow: hidden;
     }
-
-    .ng-invalid.ng-touched {
-      border-color: #ef4444 !important;
+    
+    .owner-details-section :deep(.grid) {
+      max-width: 100%;
     }
-
-    .text-red-500 {
-      color: #ef4444;
+    
+    /* Review mode container constraints */
+    .review-mode-container {
+      max-width: 100%;
+      overflow: hidden;
     }
-
-    .text-orange-500 {
-      color: #f97316;
+    
+    .review-mode-section {
+      max-width: 100%;
+      margin-bottom: 1.5rem;
     }
-
-    .text-xs {
-      font-size: 0.75rem;
+    
+    .review-mode-grid {
+      max-width: 100%;
     }
   `]
 })
@@ -491,9 +665,8 @@ export class OwnerDetailsComponent implements OnInit, OnChanges {
   @Output() formDataChange = new EventEmitter<FormData>();
 
   ownerForm!: FormGroup;
-  maxDate: Date = new Date();
+  maxDate = new Date();
 
-  // Dropdown options exactly matching V2
   citizenshipOptions: DropdownOption[] = [
     { label: 'US Citizen', value: 'us-citizen' },
     { label: 'Permanent Resident', value: 'permanent-resident' },
@@ -541,14 +714,12 @@ export class OwnerDetailsComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes['formData'] || changes['entityId']) {
-      if (this.ownerForm) {
-        this.loadFormData();
-      }
+    if ((changes['formData'] || changes['entityId']) && this.ownerForm) {
+      this.loadFormData();
     }
   }
 
-  private initializeForm() {
+  initializeForm() {
     this.ownerForm = this.fb.group({
       firstName: ['', [Validators.required, Validators.minLength(2)]],
       middleInitial: [''],
@@ -574,61 +745,76 @@ export class OwnerDetailsComponent implements OnInit, OnChanges {
     });
   }
 
-  private loadFormData() {
+  loadFormData() {
     if (this.formData && this.formData[this.entityId]) {
-      const entityData = this.formData[this.entityId];
-      this.ownerForm.patchValue(entityData);
+      const data = this.formData[this.entityId];
+      this.ownerForm.patchValue(data);
     }
   }
 
-  private setupFormSubscriptions() {
+  setupFormSubscriptions() {
     this.ownerForm.valueChanges.subscribe(() => {
       this.updateFormData();
     });
   }
 
-  private updateFormData() {
+  updateFormData() {
     const updatedFormData = { ...this.formData };
     if (!updatedFormData[this.entityId]) {
       updatedFormData[this.entityId] = {};
     }
-    
     Object.assign(updatedFormData[this.entityId], this.ownerForm.value);
     this.formDataChange.emit(updatedFormData);
   }
 
-  // Custom validators matching V2 exactly
-  private futureDateValidator(control: any) {
-    if (!control.value) return null;
-    const selectedDate = new Date(control.value);
-    const today = new Date();
-    return selectedDate > today ? { futureDate: true } : null;
+  getFieldDisplayValue(fieldName: string, options: DropdownOption[]): string {
+    const value = this.ownerForm.get(fieldName)?.value;
+    if (!value) return '';
+    const option = options.find(opt => opt.value === value);
+    return option ? option.label : value;
   }
 
-  private minimumAgeValidator(control: any) {
+  formatDate(date: any): string {
+    if (!date) return '';
+    try {
+      const d = new Date(date);
+      return d.toLocaleDateString('en-US');
+    } catch {
+      return '';
+    }
+  }
+
+  // Validators
+  futureDateValidator(control: any) {
+    if (control.value && new Date(control.value) > new Date()) {
+      return { futureDate: true };
+    }
+    return null;
+  }
+
+  minimumAgeValidator(control: any) {
     if (!control.value) return null;
-    const selectedDate = new Date(control.value);
-    const today = new Date();
-    const age = today.getFullYear() - selectedDate.getFullYear();
-    const monthDiff = today.getMonth() - selectedDate.getMonth();
     
-    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < selectedDate.getDate())) {
-      return age < 18 ? { minimumAge: true } : null;
+    const birthDate = new Date(control.value);
+    const today = new Date();
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+    
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
     }
     
     return age < 18 ? { minimumAge: true } : null;
   }
 
-  private ssnValidator(control: any) {
+  ssnValidator(control: any) {
     if (!control.value) return null;
-    const ssnRegex = /^\d{3}-\d{2}-\d{4}$/;
-    return ssnRegex.test(control.value) ? null : { invalidSsn: true };
+    return /^\d{3}-\d{2}-\d{4}$/.test(control.value) ? null : { invalidSsn: true };
   }
 
-  private phoneValidator(control: any) {
+  phoneValidator(control: any) {
     if (!control.value) return null;
-    const phoneRegex = /^\(\d{3}\)\s\d{3}-\d{4}$/;
-    return phoneRegex.test(control.value) ? null : { invalidPhone: true };
+    return /^\(\d{3}\)\s\d{3}-\d{4}$/.test(control.value) ? null : { invalidPhone: true };
   }
 
   onSubmit() {
