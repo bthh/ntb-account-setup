@@ -13,7 +13,7 @@ import { InputMaskModule } from 'primeng/inputmask';
 import { ButtonModule } from 'primeng/button';
 import { ToastModule } from 'primeng/toast';
 import { TooltipModule } from 'primeng/tooltip';
-import { MessageService } from 'primeng/api';
+import { MessageService, SharedModule } from 'primeng/api';
 
 // Local Imports
 import { FormData } from '../../../../shared/models/types';
@@ -39,7 +39,8 @@ interface DropdownOption {
     InputMaskModule,
     ButtonModule,
     ToastModule,
-    TooltipModule
+    TooltipModule,
+    SharedModule
   ],
   providers: [MessageService],
   template: `
@@ -49,7 +50,10 @@ interface DropdownOption {
       <form [formGroup]="accountForm" (ngSubmit)="onSubmit()">
         
         <!-- Account Setup Card (Always First) -->
-        <p-card header="Account Setup" class="mb-4">
+        <p-card class="mb-4">
+          <ng-template pTemplate="header">
+            <div class="card-header-custom">Account Setup</div>
+          </ng-template>
           <div class="grid">
             <div class="col-12 md:col-6">
               <label for="accountType" class="block text-900 font-medium mb-2">
@@ -639,6 +643,25 @@ interface DropdownOption {
 
     .missing-field-warning i {
       font-size: 0.875rem;
+    }
+
+    /* Custom card header styling */
+    .card-header-custom {
+      background: #f8f9fa !important;
+      border-bottom: 1px solid #e9ecef !important;
+      padding: 1rem !important;
+      font-weight: 600 !important;
+      color: #495057 !important;
+      font-size: 1.1rem !important;
+      display: block !important;
+      width: 100% !important;
+      margin: 0 !important;
+    }
+    
+    /* Force template header to display */
+    :host :deep(.p-card .p-card-header .card-header-custom) {
+      display: block !important;
+      visibility: visible !important;
     }
 
     /* Ensure card headers are visible */

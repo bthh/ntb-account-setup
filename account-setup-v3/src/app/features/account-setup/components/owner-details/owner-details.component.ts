@@ -14,6 +14,7 @@ import { InputMaskModule } from 'primeng/inputmask';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { ButtonModule } from 'primeng/button';
 import { DividerModule } from 'primeng/divider';
+import { SharedModule } from 'primeng/api';
 
 // Local Imports
 import { FormData } from '../../../../shared/models/types';
@@ -40,14 +41,18 @@ interface DropdownOption {
     InputMaskModule,
     RadioButtonModule,
     ButtonModule,
-    DividerModule
+    DividerModule,
+    SharedModule
   ],
   template: `
       <!-- Edit Mode - Form -->
       <form *ngIf="!isReviewMode" [formGroup]="ownerForm" (ngSubmit)="onSubmit()">
         
         <!-- Personal Information Card -->
-        <p-card header="Personal Information" class="mb-4">
+        <p-card class="mb-4">
+          <ng-template pTemplate="header">
+            <div class="card-header-custom">Personal Information</div>
+          </ng-template>
           <div class="grid">
             <div class="col-12 md:col-4">
               <label for="firstName" class="block text-900 font-medium mb-2">
@@ -632,6 +637,25 @@ interface DropdownOption {
       box-sizing: border-box;
     }
     
+    /* Custom card header styling */
+    .card-header-custom {
+      background: #f8f9fa !important;
+      border-bottom: 1px solid #e9ecef !important;
+      padding: 1rem !important;
+      font-weight: 600 !important;
+      color: #495057 !important;
+      font-size: 1.1rem !important;
+      display: block !important;
+      width: 100% !important;
+      margin: 0 !important;
+    }
+    
+    /* Force template header to display */
+    :host :deep(.p-card .p-card-header .card-header-custom) {
+      display: block !important;
+      visibility: visible !important;
+    }
+
     /* Ensure card headers are visible */
     :host :deep(.p-card .p-card-header) {
       display: block !important;

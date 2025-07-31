@@ -8,6 +8,7 @@ import { DropdownModule } from 'primeng/dropdown';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { CardModule } from 'primeng/card';
+import { SharedModule } from 'primeng/api';
 
 // Local Imports
 import { FormData } from '../../../../shared/models/types';
@@ -28,7 +29,8 @@ interface DropdownOption {
     DropdownModule,
     InputTextareaModule,
     RadioButtonModule,
-    CardModule
+    CardModule,
+    SharedModule
   ],
   template: `
     <div class="firm-details-section">
@@ -38,7 +40,10 @@ interface DropdownOption {
         <div *ngIf="isMemberEntity">
           
           <!-- Net Worth Assessment Card -->
-          <p-card header="Net Worth Assessment" class="mb-4">
+          <p-card class="mb-4">
+            <ng-template pTemplate="header">
+              <div class="card-header-custom">Net Worth Assessment</div>
+            </ng-template>
             <div class="grid">
               <div class="col-12 md:col-6">
                 <label for="totalNetWorth" class="block text-900 font-medium mb-2">
@@ -419,6 +424,25 @@ interface DropdownOption {
 
     .text-red-500 {
       color: #ef4444;
+    }
+
+    /* Custom card header styling */
+    .card-header-custom {
+      background: #f8f9fa !important;
+      border-bottom: 1px solid #e9ecef !important;
+      padding: 1rem !important;
+      font-weight: 600 !important;
+      color: #495057 !important;
+      font-size: 1.1rem !important;
+      display: block !important;
+      width: 100% !important;
+      margin: 0 !important;
+    }
+    
+    /* Force template header to display */
+    :host :deep(.p-card .p-card-header .card-header-custom) {
+      display: block !important;
+      visibility: visible !important;
     }
 
     /* Ensure card headers are visible */
