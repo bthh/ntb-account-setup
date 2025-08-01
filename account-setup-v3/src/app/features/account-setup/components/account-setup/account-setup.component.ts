@@ -47,9 +47,10 @@ interface DropdownOption {
     <div class="account-setup-section">
       <p-toast></p-toast>
       
-      <form [formGroup]="accountForm" (ngSubmit)="onSubmit()">
+      <!-- Edit Mode - Form -->
+      <form *ngIf="!isReviewMode" [formGroup]="accountForm" (ngSubmit)="onSubmit()">
         
-        <!-- Account Setup Card (Always First) -->
+        <!-- Account Setup Card -->
         <p-card class="mb-4">
           <ng-template pTemplate="header">
             <div class="card-header-custom">Account Setup</div>
@@ -59,10 +60,7 @@ interface DropdownOption {
               <label for="accountType" class="block text-900 font-medium mb-2">
                 Account Type <span class="text-red-500">*</span>
               </label>
-              <div *ngIf="isReviewMode" [class.missing-required]="!accountForm.get('accountType')?.value" class="review-field">
-                {{getFieldDisplayValue('accountType', accountTypeOptions) || 'Not provided'}}
-              </div>
-              <p-dropdown *ngIf="!isReviewMode"
+              <p-dropdown
                 inputId="accountType"
                 formControlName="accountType"
                 [options]="accountTypeOptions"
@@ -74,27 +72,68 @@ interface DropdownOption {
               <small class="p-error" *ngIf="accountForm.get('accountType')?.invalid && accountForm.get('accountType')?.touched">
                 Account type is required
               </small>
-              <small class="missing-field-warning" *ngIf="isReviewMode && !accountForm.get('accountType')?.value">
-                <i class="pi pi-exclamation-triangle"></i> Required field missing
-              </small>
+            </div>
+            
+            <div class="col-12 md:col-6">
+              <label for="accountProfile" class="block text-900 font-medium mb-2">
+                Account Profile
+              </label>
+              <p-dropdown
+                inputId="accountProfile"
+                formControlName="accountProfile"
+                [options]="accountProfileOptions"
+                placeholder="Select account profile"
+                styleClass="w-full">
+              </p-dropdown>
             </div>
             
             <div class="col-12 md:col-6">
               <label for="investmentObjective" class="block text-900 font-medium mb-2">
-                Investment Objective <span class="text-red-500">*</span>
+                Primary Investment Objective for This Account <span class="text-red-500">*</span>
               </label>
               <p-dropdown
                 inputId="investmentObjective"
                 formControlName="investmentObjective"
                 [options]="investmentObjectiveOptions"
-                placeholder="Select investment objective"
+                placeholder="Please select one"
                 styleClass="w-full"
-                [disabled]="isReviewMode"
                 [class.ng-invalid]="accountForm.get('investmentObjective')?.invalid && accountForm.get('investmentObjective')?.touched">
               </p-dropdown>
               <small class="p-error" *ngIf="accountForm.get('investmentObjective')?.invalid && accountForm.get('investmentObjective')?.touched">
                 Investment objective is required
               </small>
+            </div>
+            
+            <div class="col-12 md:col-6">
+              <label for="liquidityTiming" class="block text-900 font-medium mb-2">
+                Liquidity Needs for This Account
+              </label>
+              <div class="grid">
+                <div class="col-12">
+                  <label for="liquidityTiming" class="block text-700 font-medium mb-2">
+                    When do you anticipate first needing to withdraw funds from this account?
+                  </label>
+                  <input
+                    pInputText
+                    id="liquidityTiming"
+                    formControlName="liquidityTiming"
+                    placeholder="Enter timing"
+                    class="w-full" />
+                </div>
+              </div>
+            </div>
+            
+            <div class="col-12 md:col-6">
+              <label for="timeHorizon" class="block text-900 font-medium mb-2">
+                Time Horizon for This Account
+              </label>
+              <p-dropdown
+                inputId="timeHorizon"
+                formControlName="timeHorizon"
+                [options]="timeHorizonOptions"
+                placeholder="Please select one"
+                styleClass="w-full">
+              </p-dropdown>
             </div>
             
             <div class="col-12 md:col-6">
@@ -105,9 +144,8 @@ interface DropdownOption {
                 inputId="riskTolerance"
                 formControlName="riskTolerance"
                 [options]="riskToleranceOptions"
-                placeholder="Select risk tolerance"
+                placeholder="Risk Tolerance for This Account"
                 styleClass="w-full"
-                [disabled]="isReviewMode"
                 [class.ng-invalid]="accountForm.get('riskTolerance')?.invalid && accountForm.get('riskTolerance')?.touched">
               </p-dropdown>
               <small class="p-error" *ngIf="accountForm.get('riskTolerance')?.invalid && accountForm.get('riskTolerance')?.touched">
@@ -115,18 +153,78 @@ interface DropdownOption {
               </small>
             </div>
             
-            <div class="col-12 md:col-6">
-              <label for="timeHorizon" class="block text-900 font-medium mb-2">
-                Time Horizon
+            <div class="col-12">
+              <label for="primaryGoals" class="block text-900 font-medium mb-2">
+                Primary Goals (confirm should not show for IC UMA) / not on form but is on sheet
               </label>
-              <p-dropdown
-                inputId="timeHorizon"
-                formControlName="timeHorizon"
-                [options]="timeHorizonOptions"
-                placeholder="Select time horizon"
-                styleClass="w-full"
-                [disabled]="isReviewMode">
-              </p-dropdown>
+              <textarea
+                pInputTextarea
+                id="primaryGoals"
+                formControlName="primaryGoals"
+                placeholder="Enter primary goals"
+                rows="3"
+                class="w-full">
+              </textarea>
+            </div>
+          </div>
+        </p-card>
+
+        <!-- Source of Funds Card -->
+        <p-card class="mb-4">
+          <ng-template pTemplate="header">
+            <div class="card-header-custom">Source of Funds</div>
+          </ng-template>
+          <div class="grid">
+            <div class="col-12 md:col-6">
+              <label for="initialSourceOfFunds" class="block text-900 font-medium mb-2">
+                Initial Source of Funds <span class="text-red-500">*</span>
+              </label>
+              <input
+                pInputText
+                id="initialSourceOfFunds"
+                formControlName="initialSourceOfFunds"
+                placeholder="Enter initial source of funds"
+                class="w-full"
+                [class.ng-invalid]="accountForm.get('initialSourceOfFunds')?.invalid && accountForm.get('initialSourceOfFunds')?.touched" />
+              <small class="p-error" *ngIf="accountForm.get('initialSourceOfFunds')?.invalid && accountForm.get('initialSourceOfFunds')?.touched">
+                Initial source of funds is required
+              </small>
+            </div>
+            
+            <div class="col-12 md:col-6">
+              <label for="investmentAmount" class="block text-900 font-medium mb-2">
+                Investment Amount <span class="text-red-500">*</span>
+              </label>
+              <input
+                pInputText
+                id="investmentAmount"
+                formControlName="investmentAmount"
+                placeholder="Enter investment amount"
+                class="w-full"
+                [class.ng-invalid]="accountForm.get('investmentAmount')?.invalid && accountForm.get('investmentAmount')?.touched" />
+              <small class="p-error" *ngIf="accountForm.get('investmentAmount')?.invalid && accountForm.get('investmentAmount')?.touched">
+                Investment amount is required
+              </small>
+            </div>
+          </div>
+        </p-card>
+
+        <!-- Additional Source of Funds for IC UMA Card -->
+        <p-card class="mb-4">
+          <ng-template pTemplate="header">
+            <div class="card-header-custom">Additional Source of Funds for IC UMA</div>
+          </ng-template>
+          <div class="grid">
+            <div class="col-12">
+              <label for="additionalSourceFunds" class="block text-900 font-medium mb-2">
+                Are you transferring stock issued by your Qualified Retirement Plan's sponsor in connection with the plan ("Corporate Stock")?
+              </label>
+              <input
+                pInputText
+                id="additionalSourceFunds"
+                formControlName="additionalSourceFunds"
+                placeholder="Enter details"
+                class="w-full" />
             </div>
           </div>
         </p-card>
@@ -144,7 +242,6 @@ interface DropdownOption {
                 formControlName="trustName"
                 placeholder="Enter full legal trust name"
                 class="w-full"
-                [disabled]="isReviewMode"
                 [class.ng-invalid]="accountForm.get('trustName')?.invalid && accountForm.get('trustName')?.touched" />
               <small class="p-error" *ngIf="accountForm.get('trustName')?.invalid && accountForm.get('trustName')?.touched">
                 Trust name is required
@@ -158,7 +255,7 @@ interface DropdownOption {
           <div class="funding-dashboard">
             
             <!-- Add Trustee Button -->
-            <div class="funding-buttons-container" *ngIf="!isReviewMode">
+            <div class="funding-buttons-container">
               <div class="funding-button-wrapper">
                 <div 
                   class="funding-type-button"
@@ -248,7 +345,7 @@ interface DropdownOption {
                   <div class="col-2">Role</div>
                   <div class="col-3">Phone</div>
                   <div class="col-2">Email</div>
-                  <div class="col-2" *ngIf="!isReviewMode">Actions</div>
+                  <div class="col-2">Actions</div>
                 </div>
                 <div 
                   *ngFor="let trustee of trustees; let i = index"
@@ -265,7 +362,7 @@ interface DropdownOption {
                   <div class="col-2">
                     <span class="text-sm">{{trustee.email || 'N/A'}}</span>
                   </div>
-                  <div class="col-2" *ngIf="!isReviewMode">
+                  <div class="col-2">
                     <div class="flex gap-1">
                       <button 
                         class="action-button edit-button"
@@ -316,7 +413,7 @@ interface DropdownOption {
           <div class="funding-dashboard">
             
             <!-- Add Beneficiary Button -->
-            <div class="funding-buttons-container" *ngIf="!isReviewMode">
+            <div class="funding-buttons-container">
               <div class="funding-button-wrapper">
                 <div 
                   class="funding-type-button"
@@ -369,7 +466,7 @@ interface DropdownOption {
                         formControlName="dateOfBirth"
                         dateFormat="mm/dd/yy"
                         [showIcon]="true"
-[maxDate]="maxDate"
+                        [maxDate]="maxDate"
                         placeholder="Select date"
                         styleClass="w-full">
                       </p-calendar>
@@ -422,7 +519,7 @@ interface DropdownOption {
                       <div class="col-3">Relationship</div>
                       <div class="col-2">Percentage</div>
                       <div class="col-2">Date of Birth</div>
-                      <div class="col-2" *ngIf="!isReviewMode">Actions</div>
+                      <div class="col-2">Actions</div>
                     </div>
                     <div 
                       *ngFor="let beneficiary of beneficiaries; let i = index"
@@ -439,7 +536,7 @@ interface DropdownOption {
                       <div class="col-2">
                         <span class="text-sm">{{(beneficiary.dateOfBirth | date:'shortDate') || 'Not provided'}}</span>
                       </div>
-                      <div class="col-2" *ngIf="!isReviewMode">
+                      <div class="col-2">
                         <div class="flex gap-1">
                           <button 
                             class="action-button edit-button"
@@ -473,7 +570,7 @@ interface DropdownOption {
                 <p class="empty-state-description">
                   Add beneficiaries for this IRA account
                 </p>
-                <div class="empty-state-actions" *ngIf="!isReviewMode">
+                <div class="empty-state-actions">
                   <p-button 
                     label="Add Beneficiary" 
                     icon="pi pi-plus-circle"
@@ -488,6 +585,173 @@ interface DropdownOption {
         </p-card>
 
       </form>
+
+      <!-- Review Mode - Comprehensive Display -->
+      <div *ngIf="isReviewMode" class="review-mode-container">
+        
+        <!-- Account Setup Section -->
+        <div class="review-mode-section">
+          <div class="review-mode-section-title">Account Setup</div>
+          <div class="review-mode-grid">
+            <div class="review-field-group">
+              <div class="review-field-label">Account Type</div>
+              <div class="review-field-value"
+                   [ngClass]="{'missing': !accountForm.get('accountType')?.value}">
+                {{getFieldDisplayValue('accountType', accountTypeOptions) || 'Required field missing'}}
+              </div>
+            </div>
+            
+            <div class="review-field-group">
+              <div class="review-field-label">Account Profile</div>
+              <div class="review-field-value"
+                   [ngClass]="{'empty': !accountForm.get('accountProfile')?.value}">
+                {{getFieldDisplayValue('accountProfile', accountProfileOptions) || 'Not provided'}}
+              </div>
+            </div>
+            
+            <div class="review-field-group">
+              <div class="review-field-label">Primary Investment Objective</div>
+              <div class="review-field-value"
+                   [ngClass]="{'missing': !accountForm.get('investmentObjective')?.value}">
+                {{getFieldDisplayValue('investmentObjective', investmentObjectiveOptions) || 'Required field missing'}}
+              </div>
+            </div>
+            
+            <div class="review-field-group">
+              <div class="review-field-label">Liquidity Needs - Timing</div>
+              <div class="review-field-value"
+                   [ngClass]="{'empty': !accountForm.get('liquidityTiming')?.value}">
+                {{accountForm.get('liquidityTiming')?.value || 'Not provided'}}
+              </div>
+            </div>
+            
+            <div class="review-field-group">
+              <div class="review-field-label">Time Horizon</div>
+              <div class="review-field-value"
+                   [ngClass]="{'empty': !accountForm.get('timeHorizon')?.value}">
+                {{getFieldDisplayValue('timeHorizon', timeHorizonOptions) || 'Not provided'}}
+              </div>
+            </div>
+            
+            <div class="review-field-group">
+              <div class="review-field-label">Risk Tolerance</div>
+              <div class="review-field-value"
+                   [ngClass]="{'missing': !accountForm.get('riskTolerance')?.value}">
+                {{getFieldDisplayValue('riskTolerance', riskToleranceOptions) || 'Required field missing'}}
+              </div>
+            </div>
+            
+            <div class="review-field-group">
+              <div class="review-field-label">Primary Goals</div>
+              <div class="review-field-value"
+                   [ngClass]="{'empty': !accountForm.get('primaryGoals')?.value}">
+                {{accountForm.get('primaryGoals')?.value || 'Not provided'}}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Source of Funds Section -->
+        <div class="review-mode-section">
+          <div class="review-mode-section-title">Source of Funds</div>
+          <div class="review-mode-grid">
+            <div class="review-field-group">
+              <div class="review-field-label">Initial Source of Funds</div>
+              <div class="review-field-value"
+                   [ngClass]="{'missing': !accountForm.get('initialSourceOfFunds')?.value}">
+                {{accountForm.get('initialSourceOfFunds')?.value || 'Required field missing'}}
+              </div>
+            </div>
+            
+            <div class="review-field-group">
+              <div class="review-field-label">Investment Amount</div>
+              <div class="review-field-value"
+                   [ngClass]="{'missing': !accountForm.get('investmentAmount')?.value}">
+                {{accountForm.get('investmentAmount')?.value || 'Required field missing'}}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Additional Source of Funds Section -->
+        <div class="review-mode-section">
+          <div class="review-mode-section-title">Additional Source of Funds for IC UMA</div>
+          <div class="review-mode-grid">
+            <div class="review-field-group">
+              <div class="review-field-label">Corporate Stock Transfer</div>
+              <div class="review-field-value"
+                   [ngClass]="{'empty': !accountForm.get('additionalSourceFunds')?.value}">
+                {{accountForm.get('additionalSourceFunds')?.value || 'Not provided'}}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Trust Information Section -->
+        <div *ngIf="isTrustAccount" class="review-mode-section">
+          <div class="review-mode-section-title">Trust Information</div>
+          <div class="review-mode-grid">
+            <div class="review-field-group">
+              <div class="review-field-label">Trust Name</div>
+              <div class="review-field-value"
+                   [ngClass]="{'missing': !accountForm.get('trustName')?.value}">
+                {{accountForm.get('trustName')?.value || 'Required field missing'}}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Trustees Section -->
+        <div *ngIf="isTrustAccount" class="review-mode-section">
+          <div class="review-mode-section-title">Trustees</div>
+          <div *ngIf="trustees.length > 0" class="review-mode-grid">
+            <div *ngFor="let trustee of trustees; let i = index" class="review-field-group">
+              <div class="review-field-label">Trustee {{i + 1}}</div>
+              <div class="review-field-value">
+                <strong>{{trustee.name}}</strong><br>
+                Role: {{trustee.role}}<br>
+                Phone: {{trustee.phone}}<br>
+                <span *ngIf="trustee.email">Email: {{trustee.email}}<br></span>
+                Address: {{trustee.address}}
+              </div>
+            </div>
+          </div>
+          <div *ngIf="trustees.length === 0" class="review-mode-grid">
+            <div class="review-field-group">
+              <div class="review-field-label">Trustees</div>
+              <div class="review-field-value empty">
+                No trustees added
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Beneficiaries Section -->
+        <div *ngIf="isIraAccount" class="review-mode-section">
+          <div class="review-mode-section-title">Beneficiaries</div>
+          <div *ngIf="beneficiaries.length > 0" class="review-mode-grid">
+            <div *ngFor="let beneficiary of beneficiaries; let i = index" class="review-field-group">
+              <div class="review-field-label">Beneficiary {{i + 1}}</div>
+              <div class="review-field-value">
+                <strong>{{beneficiary.name}}</strong><br>
+                Relationship: {{beneficiary.relationship}}<br>
+                Percentage: {{beneficiary.percentage}}%<br>
+                DOB: {{beneficiary.dateOfBirth | date:'shortDate'}}<br>
+                SSN: {{beneficiary.ssn}}<br>
+                <span *ngIf="beneficiary.address">Address: {{beneficiary.address}}</span>
+              </div>
+            </div>
+          </div>
+          <div *ngIf="beneficiaries.length === 0" class="review-mode-grid">
+            <div class="review-field-group">
+              <div class="review-field-label">Beneficiaries</div>
+              <div class="review-field-value empty">
+                No beneficiaries added
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   `,
   styles: [`
@@ -674,6 +938,69 @@ interface DropdownOption {
       font-weight: 600 !important;
       color: #495057 !important;
     }
+
+    /* Review mode styling - clean, flattened display */
+    .review-mode-container {
+      width: 100%;
+      padding: 1rem;
+      background: #f8f9fa;
+    }
+    
+    .review-mode-section {
+      width: 100%;
+      margin-bottom: 2rem;
+      background: white;
+      padding: 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+    
+    .review-mode-section-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #1f2937;
+      margin-bottom: 1rem;
+      border-bottom: 2px solid #e5e7eb;
+      padding-bottom: 0.5rem;
+    }
+    
+    .review-mode-grid {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1rem;
+    }
+    
+    .review-field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+    
+    .review-field-label {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: #6b7280;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    
+    .review-field-value {
+      font-size: 1rem;
+      color: #111827;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid #f3f4f6;
+    }
+    
+    .review-field-value.missing {
+      color: #dc2626;
+      font-style: italic;
+    }
+    
+    .review-field-value.empty {
+      color: #9ca3af;
+      font-style: italic;
+    }
   `]
 })
 export class AccountSetupComponent implements OnInit, OnChanges {
@@ -727,6 +1054,14 @@ export class AccountSetupComponent implements OnInit, OnChanges {
     { label: 'More than 10 years', value: 'more-10' }
   ];
 
+  accountProfileOptions: DropdownOption[] = [
+    { label: 'Conservative', value: 'conservative' },
+    { label: 'Moderate Conservative', value: 'moderate-conservative' },
+    { label: 'Moderate', value: 'moderate' },
+    { label: 'Moderate Aggressive', value: 'moderate-aggressive' },
+    { label: 'Aggressive', value: 'aggressive' }
+  ];
+
   trusteeRoleOptions: DropdownOption[] = [
     { label: 'Trustee', value: 'trustee' },
     { label: 'Co-Trustee', value: 'co-trustee' },
@@ -758,10 +1093,21 @@ export class AccountSetupComponent implements OnInit, OnChanges {
 
   private initializeForm() {
     this.accountForm = this.fb.group({
+      // Account Setup
       accountType: ['', Validators.required],
+      accountProfile: [''],
       investmentObjective: ['', Validators.required],
-      riskTolerance: ['', Validators.required],
+      liquidityTiming: [''],
       timeHorizon: [''],
+      riskTolerance: ['', Validators.required],
+      primaryGoals: [''],
+      
+      // Source of Funds
+      initialSourceOfFunds: ['', Validators.required],
+      investmentAmount: ['', Validators.required],
+      
+      // Additional Source of Funds
+      additionalSourceFunds: [''],
       
       // Trust-specific fields
       trustName: ['']

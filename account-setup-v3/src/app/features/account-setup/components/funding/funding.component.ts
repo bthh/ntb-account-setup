@@ -48,14 +48,15 @@ interface FundingInstances {
     <div class="funding-section">
       <p-toast></p-toast>
       
-      <p-card header="Funding" class="mb-4">
+      <!-- Edit Mode - Form -->
+      <p-card *ngIf="!isReviewMode" header="Funding" class="mb-4">
         <div class="funding-dashboard">
           <div class="flex justify-content-between align-items-center mb-4">
             <h3 class="text-xl font-semibold m-0">Funding Types</h3>
           </div>
           
           <!-- Funding Type Buttons -->
-          <div class="funding-buttons-container" *ngIf="!isReviewMode">
+          <div class="funding-buttons-container">
             <div class="funding-button-wrapper">
               <div 
                 class="funding-type-button"
@@ -450,6 +451,105 @@ interface FundingInstances {
           </div>
         </div>
       </p-card>
+
+      <!-- Review Mode - Comprehensive Display -->
+      <div *ngIf="isReviewMode" class="review-mode-container">
+        
+        <!-- Funding Section -->
+        <div class="review-mode-section">
+          <div class="review-mode-section-title">Funding</div>
+          
+          <!-- ACAT Transfers -->
+          <div *ngIf="fundingInstances.acat.length > 0" class="review-subsection">
+            <div class="review-subsection-title">ACAT Transfers</div>
+            <div class="review-mode-grid">
+              <div *ngFor="let acat of fundingInstances.acat; let i = index" class="review-field-group">
+                <div class="review-field-label">ACAT Transfer {{i + 1}}</div>
+                <div class="review-field-value">
+                  <strong>{{acat.name}}</strong><br>
+                  Amount: {{formatStoredAmount(acat.amount)}}<br>
+                  From Firm: {{acat.fromFirm}}<br>
+                  Transfer Type: {{acat.transferType}}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ACH Transfers -->
+          <div *ngIf="fundingInstances.ach.length > 0" class="review-subsection">
+            <div class="review-subsection-title">ACH Transfers</div>
+            <div class="review-mode-grid">
+              <div *ngFor="let ach of fundingInstances.ach; let i = index" class="review-field-group">
+                <div class="review-field-label">ACH Transfer {{i + 1}}</div>
+                <div class="review-field-value">
+                  <strong>{{ach.name}}</strong><br>
+                  Amount: {{formatStoredAmount(ach.amount)}}<br>
+                  Bank: {{ach.bankName}}<br>
+                  <span *ngIf="ach.frequency">Frequency: {{ach.frequency}}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Initial ACH Transfers -->
+          <div *ngIf="fundingInstances['initial-ach'].length > 0" class="review-subsection">
+            <div class="review-subsection-title">Initial ACH Transfers</div>
+            <div class="review-mode-grid">
+              <div *ngFor="let initialAch of fundingInstances['initial-ach']; let i = index" class="review-field-group">
+                <div class="review-field-label">Initial ACH {{i + 1}}</div>
+                <div class="review-field-value">
+                  <strong>{{initialAch.name}}</strong><br>
+                  Amount: {{formatStoredAmount(initialAch.amount)}}<br>
+                  Bank: {{initialAch.bankName}}<br>
+                  <span *ngIf="initialAch.transferDate">Transfer Date: {{initialAch.transferDate | date:'shortDate'}}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Withdrawals -->
+          <div *ngIf="fundingInstances.withdrawal.length > 0" class="review-subsection">
+            <div class="review-subsection-title">Systematic Withdrawals</div>
+            <div class="review-mode-grid">
+              <div *ngFor="let withdrawal of fundingInstances.withdrawal; let i = index" class="review-field-group">
+                <div class="review-field-label">Withdrawal {{i + 1}}</div>
+                <div class="review-field-value">
+                  <strong>{{withdrawal.name}}</strong><br>
+                  Amount: {{formatStoredAmount(withdrawal.amount)}}<br>
+                  Frequency: {{withdrawal.frequency}}<br>
+                  <span *ngIf="withdrawal.startDate">Start Date: {{withdrawal.startDate | date:'shortDate'}}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Contributions -->
+          <div *ngIf="fundingInstances.contribution.length > 0" class="review-subsection">
+            <div class="review-subsection-title">Systematic Contributions</div>
+            <div class="review-mode-grid">
+              <div *ngFor="let contribution of fundingInstances.contribution; let i = index" class="review-field-group">
+                <div class="review-field-label">Contribution {{i + 1}}</div>
+                <div class="review-field-value">
+                  <strong>{{contribution.name}}</strong><br>
+                  Amount: {{formatStoredAmount(contribution.amount)}}<br>
+                  Bank: {{contribution.bankName}}<br>
+                  Frequency: {{contribution.frequency}}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Empty State -->
+          <div *ngIf="getAllFundingInstances().length === 0" class="review-mode-grid">
+            <div class="review-field-group">
+              <div class="review-field-label">Funding Sources</div>
+              <div class="review-field-value empty">
+                No funding sources added
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   `,
   styles: [`
@@ -578,6 +678,86 @@ interface FundingInstances {
 
     .ng-invalid.ng-touched {
       border-color: #ef4444 !important;
+    }
+
+    /* Review mode styling - clean, flattened display */
+    .review-mode-container {
+      width: 100%;
+      padding: 1rem;
+      background: #f8f9fa;
+    }
+    
+    .review-mode-section {
+      width: 100%;
+      margin-bottom: 2rem;
+      background: white;
+      padding: 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+    
+    .review-mode-section-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #1f2937;
+      margin-bottom: 1rem;
+      border-bottom: 2px solid #e5e7eb;
+      padding-bottom: 0.5rem;
+    }
+    
+    .review-subsection {
+      margin-bottom: 1.5rem;
+    }
+    
+    .review-subsection:last-child {
+      margin-bottom: 0;
+    }
+    
+    .review-subsection-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #374151;
+      margin-bottom: 0.75rem;
+      border-bottom: 1px solid #e5e7eb;
+      padding-bottom: 0.25rem;
+    }
+    
+    .review-mode-grid {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1rem;
+    }
+    
+    .review-field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+    
+    .review-field-label {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: #6b7280;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    
+    .review-field-value {
+      font-size: 1rem;
+      color: #111827;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid #f3f4f6;
+    }
+    
+    .review-field-value.missing {
+      color: #dc2626;
+      font-style: italic;
+    }
+    
+    .review-field-value.empty {
+      color: #9ca3af;
+      font-style: italic;
     }
   `]
 })

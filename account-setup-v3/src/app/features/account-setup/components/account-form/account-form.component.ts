@@ -41,7 +41,8 @@ import { FundingComponent } from '../funding/funding.component';
   ],
   template: `
     <div class="account-form">
-      <div class="p-2">
+      <div class="page-content-wrapper">
+        <div class="p-2">
         <!-- Owner Details Section -->
         <app-owner-details
           *ngIf="section === 'owner-details'"
@@ -78,6 +79,7 @@ import { FundingComponent } from '../funding/funding.component';
           [isReviewMode]="isReviewMode"
           (formDataChange)="onFormDataUpdate($event)">
         </app-funding>
+        </div>
       </div>
     </div>
   `,

@@ -8,7 +8,12 @@ import { DropdownModule } from 'primeng/dropdown';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { CardModule } from 'primeng/card';
-import { SharedModule } from 'primeng/api';
+import { CalendarModule } from 'primeng/calendar';
+import { CheckboxModule } from 'primeng/checkbox';
+import { ButtonModule } from 'primeng/button';
+import { ToastModule } from 'primeng/toast';
+import { TooltipModule } from 'primeng/tooltip';
+import { MessageService, SharedModule } from 'primeng/api';
 
 // Local Imports
 import { FormData } from '../../../../shared/models/types';
@@ -30,19 +35,395 @@ interface DropdownOption {
     InputTextareaModule,
     RadioButtonModule,
     CardModule,
+    CalendarModule,
+    CheckboxModule,
+    ButtonModule,
+    ToastModule,
+    TooltipModule,
     SharedModule
   ],
+  providers: [MessageService],
   template: `
     <div class="firm-details-section">
-      <form [formGroup]="firmForm" (ngSubmit)="onSubmit()">
+      
+      <!-- Edit Mode - Form -->
+      <form *ngIf="!isReviewMode" [formGroup]="firmForm" (ngSubmit)="onSubmit()">
         
+        <!-- Existing Product Information Card -->
+        <p-card class="mb-4">
+          <ng-template pTemplate="header">
+            <div class="card-header-custom">Existing Product Information</div>
+          </ng-template>
+          <div class="grid">
+            <div class="col-12 md:col-6">
+              <label for="investmentName" class="block text-900 font-medium mb-2">
+                Investment Name
+              </label>
+              <input
+                pInputText
+                id="investmentName"
+                formControlName="investmentName"
+                placeholder="N/A"
+                class="w-full" />
+            </div>
+            
+            <div class="col-12 md:col-6">
+              <label for="productType" class="block text-900 font-medium mb-2">
+                Product Type
+              </label>
+              <input
+                pInputText
+                id="productType"
+                formControlName="productType"
+                placeholder="N/A"
+                class="w-full" />
+            </div>
+            
+            <div class="col-12 md:col-6">
+              <label for="accountPolicyNumber" class="block text-900 font-medium mb-2">
+                Account/Policy Number
+              </label>
+              <input
+                pInputText
+                id="accountPolicyNumber"
+                formControlName="accountPolicyNumber"
+                placeholder="N/A"
+                class="w-full" />
+            </div>
+            
+            <div class="col-12 md:col-6">
+              <label for="initialDateOfPurchase" class="block text-900 font-medium mb-2">
+                Initial Date of Purchase
+              </label>
+              <p-calendar
+                inputId="initialDateOfPurchase"
+                formControlName="initialDateOfPurchase"
+                dateFormat="mm/dd/yy"
+                [showIcon]="true"
+                placeholder="N/A"
+                styleClass="w-full">
+              </p-calendar>
+            </div>
+            
+            <div class="col-12 md:col-6">
+              <label for="initialPremiumInvestment" class="block text-900 font-medium mb-2">
+                Initial Premium/Investment Amount
+              </label>
+              <input
+                pInputText
+                id="initialPremiumInvestment"
+                formControlName="initialPremiumInvestment"
+                placeholder="N/A"
+                class="w-full" />
+            </div>
+            
+            <div class="col-12 md:col-6">
+              <label for="currentAccountValue" class="block text-900 font-medium mb-2">
+                Current Account Value
+              </label>
+              <input
+                pInputText
+                id="currentAccountValue"
+                formControlName="currentAccountValue"
+                placeholder="N/A"
+                class="w-full" />
+            </div>
+            
+            <div class="col-12 md:col-6">
+              <label for="approximateAnnualCost" class="block text-900 font-medium mb-2">
+                Approximate Annual Cost
+              </label>
+              <input
+                pInputText
+                id="approximateAnnualCost"
+                formControlName="approximateAnnualCost"
+                placeholder="N/A"
+                class="w-full" />
+            </div>
+            
+            <div class="col-12 md:col-6">
+              <label for="currentSurrenderValue" class="block text-900 font-medium mb-2">
+                Current Surrender Value
+              </label>
+              <input
+                pInputText
+                id="currentSurrenderValue"
+                formControlName="currentSurrenderValue"
+                placeholder="N/A"
+                class="w-full" />
+            </div>
+            
+            <div class="col-12 md:col-6">
+              <label for="surrenderSalesPenaltyCharges" class="block text-900 font-medium mb-2">
+                Surrender, Sales or Penalty Charge(s) (Dollar amount OR Percentage)
+              </label>
+              <input
+                pInputText
+                id="surrenderSalesPenaltyCharges"
+                formControlName="surrenderSalesPenaltyCharges"
+                placeholder="N/A"
+                class="w-full" />
+            </div>
+            
+            <div class="col-12 md:col-6">
+              <label for="deathBenefitRiderValue" class="block text-900 font-medium mb-2">
+                Death Benefit Rider Value (For Annuities)
+              </label>
+              <input
+                pInputText
+                id="deathBenefitRiderValue"
+                formControlName="deathBenefitRiderValue"
+                placeholder="N/A"
+                class="w-full" />
+            </div>
+            
+            <div class="col-12 md:col-6">
+              <label for="livingBenefitRiderValue" class="block text-900 font-medium mb-2">
+                Living Benefit Rider Value (For Annuities)
+              </label>
+              <input
+                pInputText
+                id="livingBenefitRiderValue"
+                formControlName="livingBenefitRiderValue"
+                placeholder="N/A"
+                class="w-full" />
+            </div>
+            
+            <div class="col-12 md:col-6">
+              <label for="outstandingLoanAmount" class="block text-900 font-medium mb-2">
+                Outstanding Loan Amount
+              </label>
+              <input
+                pInputText
+                id="outstandingLoanAmount"
+                formControlName="outstandingLoanAmount"
+                placeholder="N/A"
+                class="w-full" />
+            </div>
+            
+            <div class="col-12">
+              <label for="wasExistingProductRecommended" class="block text-900 font-medium mb-2">
+                Was existing product recommended by the same Advisor?
+              </label>
+              <input
+                pInputText
+                id="wasExistingProductRecommended"
+                formControlName="wasExistingProductRecommended"
+                placeholder="N/A"
+                class="w-full" />
+            </div>
+          </div>
+        </p-card>
+
+        <!-- Employer Sponsored Retirement Plans Card -->
+        <p-card class="mb-4">
+          <ng-template pTemplate="header">
+            <div class="card-header-custom">For Employer Sponsored Retirement Plans and IRAs: (Only show this section for all IRAs and Employer Sponsored Reg types?)</div>
+          </ng-template>
+          <div class="grid">
+            <div class="col-12">
+              <label for="recommendationIncludeRetainFunds" class="block text-900 font-medium mb-2">
+                Did the recommendation include the decision to retain funds in the existing or source account?
+              </label>
+              <input
+                pInputText
+                id="recommendationIncludeRetainFunds"
+                formControlName="recommendationIncludeRetainFunds"
+                placeholder="N/A"
+                class="w-full" />
+            </div>
+          </div>
+        </p-card>
+
+        <!-- Investment Policy Statement Card -->
+        <p-card class="mb-4">
+          <ng-template pTemplate="header">
+            <div class="card-header-custom">Investment Policy Statement (only for UMAs)</div>
+          </ng-template>
+          <div class="grid">
+            <div class="col-12">
+              <label class="block text-900 font-medium mb-3">
+                Generally the equity to fixed income ratio in Client's Account is expected to be in the following range:
+              </label>
+              
+              <div class="field-radiobutton mb-3">
+                <p-radioButton
+                  inputId="equity_preservation"
+                  name="equityRatio"
+                  value="preservation"
+                  formControlName="equityRatio">
+                </p-radioButton>
+                <label for="equity_preservation" class="ml-2">
+                  Preservation
+                </label>
+              </div>
+              
+              <div class="field-radiobutton mb-3">
+                <p-radioButton
+                  inputId="equity_income"
+                  name="equityRatio"
+                  value="income"
+                  formControlName="equityRatio">
+                </p-radioButton>
+                <label for="equity_income" class="ml-2">
+                  Income
+                </label>
+              </div>
+              
+              <div class="field-radiobutton mb-3">
+                <p-radioButton
+                  inputId="equity_growth_income"
+                  name="equityRatio"
+                  value="growth-income"
+                  formControlName="equityRatio">
+                </p-radioButton>
+                <label for="equity_growth_income" class="ml-2">
+                  Growth and Income
+                </label>
+              </div>
+              
+              <div class="field-radiobutton mb-3">
+                <p-radioButton
+                  inputId="equity_growth"
+                  name="equityRatio"
+                  value="growth"
+                  formControlName="equityRatio">
+                </p-radioButton>
+                <label for="equity_growth" class="ml-2">
+                  Growth
+                </label>
+              </div>
+              
+              <div class="field-radiobutton mb-3">
+                <p-radioButton
+                  inputId="equity_aggressive_growth"
+                  name="equityRatio"
+                  value="aggressive-growth"
+                  formControlName="equityRatio">
+                </p-radioButton>
+                <label for="equity_aggressive_growth" class="ml-2">
+                  Aggressive Growth
+                </label>
+              </div>
+              
+              <div class="field-radiobutton mb-3">
+                <p-radioButton
+                  inputId="equity_other"
+                  name="equityRatio"
+                  value="other"
+                  formControlName="equityRatio">
+                </p-radioButton>
+                <label for="equity_other" class="ml-2">
+                  Other - Please fill in allocation model
+                </label>
+                <input
+                  *ngIf="firmForm.get('equityRatio')?.value === 'other'"
+                  pInputText
+                  id="equityRatioOther"
+                  formControlName="equityRatioOther"
+                  placeholder="e.g. 60/40"
+                  class="mt-2 ml-7"
+                  style="width: 80px; max-width: 80px;" />
+              </div>
+            </div>
+            
+            <div class="col-12">
+              <label for="allocationModelExplanation" class="block text-900 font-medium mb-2">
+                If the allocation model selected does not match the Client's Risk Tolerance Questionnaire, please explain why:
+              </label>
+              <input
+                pInputText
+                id="allocationModelExplanation"
+                formControlName="allocationModelExplanation"
+                placeholder="N/A"
+                class="w-full" />
+            </div>
+            
+            <div class="col-12">
+              <label for="nonQualifiedAssetConsiderations" class="block text-900 font-medium mb-2">
+                If the assets to be managed are non-qualified, are the additional tax considerations that should be noted (for example: carry over losses, AMT liability or gains from other sources)
+              </label>
+              <input
+                pInputText
+                id="nonQualifiedAssetConsiderations"
+                formControlName="nonQualifiedAssetConsiderations"
+                placeholder="N/A"
+                class="w-full" />
+            </div>
+            
+            <div class="col-12">
+              <label for="additionalInvestmentInstructions" class="block text-900 font-medium mb-2">
+                Are there any additional instructions or restrictions regarding investment selection? If so, please describe:
+              </label>
+              <input
+                pInputText
+                id="additionalInvestmentInstructions"
+                formControlName="additionalInvestmentInstructions"
+                placeholder="N/A"
+                class="w-full" />
+            </div>
+          </div>
+        </p-card>
+
+        <!-- Additional Account Information Card -->
+        <p-card class="mb-4">
+          <ng-template pTemplate="header">
+            <div class="card-header-custom">Additional Account Information</div>
+          </ng-template>
+          <div class="grid">
+            <div class="col-12 md:col-3">
+              <label for="patriotActForeignFinancial" class="block text-900 font-medium mb-2">
+                Patriot Act Foreign Financial Institution
+              </label>
+              <p-checkbox
+                inputId="patriotActForeignFinancial"
+                formControlName="patriotActForeignFinancial"
+                [binary]="true">
+              </p-checkbox>
+            </div>
+            
+            <div class="col-12 md:col-3">
+              <label for="patriotActPrivateBanking" class="block text-900 font-medium mb-2">
+                Patriot Act Private Banking Account
+              </label>
+              <p-checkbox
+                inputId="patriotActPrivateBanking"
+                formControlName="patriotActPrivateBanking"
+                [binary]="true">
+              </p-checkbox>
+            </div>
+            
+            <div class="col-12 md:col-3">
+              <label for="patriotActOffshoreBank" class="block text-900 font-medium mb-2">
+                Patriot Act Offshore Bank
+              </label>
+              <p-checkbox
+                inputId="patriotActOffshoreBank"
+                formControlName="patriotActOffshoreBank"
+                [binary]="true">
+              </p-checkbox>
+            </div>
+            
+            <div class="col-12 md:col-3">
+              <label for="patriotActGovernmentOfficial" class="block text-900 font-medium mb-2">
+                Patriot Act Government Official
+              </label>
+              <p-checkbox
+                inputId="patriotActGovernmentOfficial"
+                formControlName="patriotActGovernmentOfficial"
+                [binary]="true">
+              </p-checkbox>
+            </div>
+          </div>
+        </p-card>
+
         <!-- Member Firm Details -->
         <div *ngIf="isMemberEntity">
           
           <!-- Net Worth Assessment Card -->
           <p-card class="mb-4">
             <ng-template pTemplate="header">
-              <div class="card-header-custom">Net Worth Assessment</div>
+              <div class="card-header-custom">Networth</div>
             </ng-template>
             <div class="grid">
               <div class="col-12 md:col-6">
@@ -55,7 +436,6 @@ interface DropdownOption {
                   [options]="totalNetWorthOptions"
                   placeholder="Select total net worth"
                   styleClass="w-full"
-                  [disabled]="isReviewMode"
                   [class.ng-invalid]="firmForm.get('totalNetWorth')?.invalid && firmForm.get('totalNetWorth')?.touched">
                 </p-dropdown>
                 <small class="p-error" *ngIf="firmForm.get('totalNetWorth')?.invalid && firmForm.get('totalNetWorth')?.touched">
@@ -73,7 +453,6 @@ interface DropdownOption {
                   [options]="liquidNetWorthOptions"
                   placeholder="Select liquid net worth"
                   styleClass="w-full"
-                  [disabled]="isReviewMode"
                   [class.ng-invalid]="firmForm.get('liquidNetWorth')?.invalid && firmForm.get('liquidNetWorth')?.touched">
                 </p-dropdown>
                 <small class="p-error" *ngIf="firmForm.get('liquidNetWorth')?.invalid && firmForm.get('liquidNetWorth')?.touched">
@@ -91,7 +470,6 @@ interface DropdownOption {
                   [options]="averageIncomeOptions"
                   placeholder="Select average annual income"
                   styleClass="w-full"
-                  [disabled]="isReviewMode"
                   [class.ng-invalid]="firmForm.get('averageAnnualIncome')?.invalid && firmForm.get('averageAnnualIncome')?.touched">
                 </p-dropdown>
                 <small class="p-error" *ngIf="firmForm.get('averageAnnualIncome')?.invalid && firmForm.get('averageAnnualIncome')?.touched">
@@ -109,7 +487,6 @@ interface DropdownOption {
                   [options]="incomeSourceOptions"
                   placeholder="Select primary income source"
                   styleClass="w-full"
-                  [disabled]="isReviewMode"
                   [class.ng-invalid]="firmForm.get('incomeSource')?.invalid && firmForm.get('incomeSource')?.touched">
                 </p-dropdown>
                 <small class="p-error" *ngIf="firmForm.get('incomeSource')?.invalid && firmForm.get('incomeSource')?.touched">
@@ -132,7 +509,6 @@ interface DropdownOption {
                   [options]="investmentExperienceOptions"
                   placeholder="Select investment experience"
                   styleClass="w-full"
-                  [disabled]="isReviewMode"
                   [class.ng-invalid]="firmForm.get('investmentExperience')?.invalid && firmForm.get('investmentExperience')?.touched">
                 </p-dropdown>
                 <small class="p-error" *ngIf="firmForm.get('investmentExperience')?.invalid && firmForm.get('investmentExperience')?.touched">
@@ -150,7 +526,6 @@ interface DropdownOption {
                   [options]="experienceOptions"
                   placeholder="Select stocks experience"
                   styleClass="w-full"
-                  [disabled]="isReviewMode"
                   [class.ng-invalid]="firmForm.get('stocksExperience')?.invalid && firmForm.get('stocksExperience')?.touched">
                 </p-dropdown>
                 <small class="p-error" *ngIf="firmForm.get('stocksExperience')?.invalid && firmForm.get('stocksExperience')?.touched">
@@ -168,7 +543,6 @@ interface DropdownOption {
                   [options]="experienceOptions"
                   placeholder="Select bonds experience"
                   styleClass="w-full"
-                  [disabled]="isReviewMode"
                   [class.ng-invalid]="firmForm.get('bondsExperience')?.invalid && firmForm.get('bondsExperience')?.touched">
                 </p-dropdown>
                 <small class="p-error" *ngIf="firmForm.get('bondsExperience')?.invalid && firmForm.get('bondsExperience')?.touched">
@@ -186,7 +560,6 @@ interface DropdownOption {
                   [options]="experienceOptions"
                   placeholder="Select options experience"
                   styleClass="w-full"
-                  [disabled]="isReviewMode"
                   [class.ng-invalid]="firmForm.get('optionsExperience')?.invalid && firmForm.get('optionsExperience')?.touched">
                 </p-dropdown>
                 <small class="p-error" *ngIf="firmForm.get('optionsExperience')?.invalid && firmForm.get('optionsExperience')?.touched">
@@ -209,7 +582,6 @@ interface DropdownOption {
                   [options]="liquidityNeedsOptions"
                   placeholder="Select liquidity needs"
                   styleClass="w-full"
-                  [disabled]="isReviewMode"
                   [class.ng-invalid]="firmForm.get('liquidityNeeds')?.invalid && firmForm.get('liquidityNeeds')?.touched">
                 </p-dropdown>
                 <small class="p-error" *ngIf="firmForm.get('liquidityNeeds')?.invalid && firmForm.get('liquidityNeeds')?.touched">
@@ -227,7 +599,6 @@ interface DropdownOption {
                   [options]="emergencyFundOptions"
                   placeholder="Select emergency fund status"
                   styleClass="w-full"
-                  [disabled]="isReviewMode"
                   [class.ng-invalid]="firmForm.get('emergencyFund')?.invalid && firmForm.get('emergencyFund')?.touched">
                 </p-dropdown>
                 <small class="p-error" *ngIf="firmForm.get('emergencyFund')?.invalid && firmForm.get('emergencyFund')?.touched">
@@ -245,8 +616,7 @@ interface DropdownOption {
                   formControlName="liquidityPurpose"
                   rows="2"
                   placeholder="e.g., home purchase, education, medical expenses, etc."
-                  class="w-full"
-                  [disabled]="isReviewMode">
+                  class="w-full">
                 </textarea>
               </div>
             </div>
@@ -265,8 +635,7 @@ interface DropdownOption {
                     inputId="scenario1_sell-all"
                     name="scenario1"
                     value="sell-all"
-                    formControlName="scenario1"
-                    [disabled]="isReviewMode">
+                    formControlName="scenario1">
                   </p-radioButton>
                   <label for="scenario1_sell-all" class="ml-2">
                     Sell all investments immediately
@@ -278,8 +647,7 @@ interface DropdownOption {
                     inputId="scenario1_sell-some"
                     name="scenario1"
                     value="sell-some"
-                    formControlName="scenario1"
-                    [disabled]="isReviewMode">
+                    formControlName="scenario1">
                   </p-radioButton>
                   <label for="scenario1_sell-some" class="ml-2">
                     Sell some investments to reduce risk
@@ -291,8 +659,7 @@ interface DropdownOption {
                     inputId="scenario1_hold"
                     name="scenario1"
                     value="hold"
-                    formControlName="scenario1"
-                    [disabled]="isReviewMode">
+                    formControlName="scenario1">
                   </p-radioButton>
                   <label for="scenario1_hold" class="ml-2">
                     Hold your investments and wait for recovery
@@ -304,8 +671,7 @@ interface DropdownOption {
                     inputId="scenario1_buy-more"
                     name="scenario1"
                     value="buy-more"
-                    formControlName="scenario1"
-                    [disabled]="isReviewMode">
+                    formControlName="scenario1">
                   </p-radioButton>
                   <label for="scenario1_buy-more" class="ml-2">
                     Buy more investments at lower prices
@@ -324,7 +690,7 @@ interface DropdownOption {
         <div *ngIf="!isMemberEntity">
           
           <!-- Account Firm Details Card -->
-          <p-card header="Account Firm Details" class="mb-4">
+          <p-card header="Firm Details" class="mb-4">
             <div class="grid">
               <div class="col-12">
                 <label for="investmentObjectives" class="block text-900 font-medium mb-2">
@@ -337,7 +703,6 @@ interface DropdownOption {
                   rows="4"
                   placeholder="Describe the investment objectives for this account..."
                   class="w-full"
-                  [disabled]="isReviewMode"
                   [class.ng-invalid]="firmForm.get('investmentObjectives')?.invalid && firmForm.get('investmentObjectives')?.touched">
                 </textarea>
                 <small class="p-error" *ngIf="firmForm.get('investmentObjectives')?.invalid && firmForm.get('investmentObjectives')?.touched">
@@ -356,7 +721,6 @@ interface DropdownOption {
                   rows="4"
                   placeholder="Provide investment recommendations for this account..."
                   class="w-full"
-                  [disabled]="isReviewMode"
                   [class.ng-invalid]="firmForm.get('recommendations')?.invalid && firmForm.get('recommendations')?.touched">
                 </textarea>
                 <small class="p-error" *ngIf="firmForm.get('recommendations')?.invalid && firmForm.get('recommendations')?.touched">
@@ -375,7 +739,6 @@ interface DropdownOption {
                   rows="4"
                   placeholder="Suggest alternative investment options for this account..."
                   class="w-full"
-                  [disabled]="isReviewMode"
                   [class.ng-invalid]="firmForm.get('alternativeSuggestions')?.invalid && firmForm.get('alternativeSuggestions')?.touched">
                 </textarea>
                 <small class="p-error" *ngIf="firmForm.get('alternativeSuggestions')?.invalid && firmForm.get('alternativeSuggestions')?.touched">
@@ -387,6 +750,372 @@ interface DropdownOption {
         </div>
 
       </form>
+
+      <!-- Review Mode - Comprehensive Display -->
+      <div *ngIf="isReviewMode" class="review-mode-container">
+        
+        <!-- Existing Product Information Section -->
+        <div class="review-mode-section">
+          <div class="review-mode-section-title">Existing Product Information</div>
+          <div class="review-mode-grid">
+            <div class="review-field-group">
+              <div class="review-field-label">Investment Name</div>
+              <div class="review-field-value"
+                   [ngClass]="{'empty': !firmForm.get('investmentName')?.value}">
+                {{firmForm.get('investmentName')?.value || 'N/A'}}
+              </div>
+            </div>
+            
+            <div class="review-field-group">
+              <div class="review-field-label">Product Type</div>
+              <div class="review-field-value"
+                   [ngClass]="{'empty': !firmForm.get('productType')?.value}">
+                {{firmForm.get('productType')?.value || 'N/A'}}
+              </div>
+            </div>
+            
+            <div class="review-field-group">
+              <div class="review-field-label">Account/Policy Number</div>
+              <div class="review-field-value"
+                   [ngClass]="{'empty': !firmForm.get('accountPolicyNumber')?.value}">
+                {{firmForm.get('accountPolicyNumber')?.value || 'N/A'}}
+              </div>
+            </div>
+            
+            <div class="review-field-group">
+              <div class="review-field-label">Initial Date of Purchase</div>
+              <div class="review-field-value"
+                   [ngClass]="{'empty': !firmForm.get('initialDateOfPurchase')?.value}">
+                {{(firmForm.get('initialDateOfPurchase')?.value | date:'shortDate') || 'N/A'}}
+              </div>
+            </div>
+            
+            <div class="review-field-group">
+              <div class="review-field-label">Initial Premium/Investment Amount</div>
+              <div class="review-field-value"
+                   [ngClass]="{'empty': !firmForm.get('initialPremiumInvestment')?.value}">
+                {{firmForm.get('initialPremiumInvestment')?.value || 'N/A'}}
+              </div>
+            </div>
+            
+            <div class="review-field-group">
+              <div class="review-field-label">Current Account Value</div>
+              <div class="review-field-value"
+                   [ngClass]="{'empty': !firmForm.get('currentAccountValue')?.value}">
+                {{firmForm.get('currentAccountValue')?.value || 'N/A'}}
+              </div>
+            </div>
+            
+            <div class="review-field-group">
+              <div class="review-field-label">Approximate Annual Cost</div>
+              <div class="review-field-value"
+                   [ngClass]="{'empty': !firmForm.get('approximateAnnualCost')?.value}">
+                {{firmForm.get('approximateAnnualCost')?.value || 'N/A'}}
+              </div>
+            </div>
+            
+            <div class="review-field-group">
+              <div class="review-field-label">Current Surrender Value</div>
+              <div class="review-field-value"
+                   [ngClass]="{'empty': !firmForm.get('currentSurrenderValue')?.value}">
+                {{firmForm.get('currentSurrenderValue')?.value || 'N/A'}}
+              </div>
+            </div>
+            
+            <div class="review-field-group">
+              <div class="review-field-label">Surrender/Sales/Penalty Charges</div>
+              <div class="review-field-value"
+                   [ngClass]="{'empty': !firmForm.get('surrenderSalesPenaltyCharges')?.value}">
+                {{firmForm.get('surrenderSalesPenaltyCharges')?.value || 'N/A'}}
+              </div>
+            </div>
+            
+            <div class="review-field-group">
+              <div class="review-field-label">Death Benefit Rider Value</div>
+              <div class="review-field-value"
+                   [ngClass]="{'empty': !firmForm.get('deathBenefitRiderValue')?.value}">
+                {{firmForm.get('deathBenefitRiderValue')?.value || 'N/A'}}
+              </div>
+            </div>
+            
+            <div class="review-field-group">
+              <div class="review-field-label">Living Benefit Rider Value</div>
+              <div class="review-field-value"
+                   [ngClass]="{'empty': !firmForm.get('livingBenefitRiderValue')?.value}">
+                {{firmForm.get('livingBenefitRiderValue')?.value || 'N/A'}}
+              </div>
+            </div>
+            
+            <div class="review-field-group">
+              <div class="review-field-label">Outstanding Loan Amount</div>
+              <div class="review-field-value"
+                   [ngClass]="{'empty': !firmForm.get('outstandingLoanAmount')?.value}">
+                {{firmForm.get('outstandingLoanAmount')?.value || 'N/A'}}
+              </div>
+            </div>
+            
+            <div class="review-field-group">
+              <div class="review-field-label">Was Product Recommended by Same Advisor</div>
+              <div class="review-field-value"
+                   [ngClass]="{'empty': !firmForm.get('wasExistingProductRecommended')?.value}">
+                {{firmForm.get('wasExistingProductRecommended')?.value || 'N/A'}}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Employer Sponsored Retirement Plans Section -->
+        <div class="review-mode-section">
+          <div class="review-mode-section-title">Employer Sponsored Retirement Plans and IRAs</div>
+          <div class="review-mode-grid">
+            <div class="review-field-group">
+              <div class="review-field-label">Recommendation Include Retain Funds</div>
+              <div class="review-field-value"
+                   [ngClass]="{'empty': !firmForm.get('recommendationIncludeRetainFunds')?.value}">
+                {{firmForm.get('recommendationIncludeRetainFunds')?.value || 'N/A'}}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Investment Policy Statement Section -->
+        <div class="review-mode-section">
+          <div class="review-mode-section-title">Investment Policy Statement (UMAs)</div>
+          <div class="review-mode-grid">
+            <div class="review-field-group">
+              <div class="review-field-label">Equity to Fixed Income Ratio</div>
+              <div class="review-field-value"
+                   [ngClass]="{'empty': !firmForm.get('equityRatio')?.value}">
+                {{getEquityRatioDisplayValue() || 'Not provided'}}
+              </div>
+            </div>
+            
+            <div class="review-field-group" *ngIf="firmForm.get('equityRatio')?.value === 'other'">
+              <div class="review-field-label">Other Allocation Model</div>
+              <div class="review-field-value"
+                   [ngClass]="{'empty': !firmForm.get('equityRatioOther')?.value}">
+                {{firmForm.get('equityRatioOther')?.value || 'N/A'}}
+              </div>
+            </div>
+            
+            <div class="review-field-group">
+              <div class="review-field-label">Allocation Model Explanation</div>
+              <div class="review-field-value"
+                   [ngClass]="{'empty': !firmForm.get('allocationModelExplanation')?.value}">
+                {{firmForm.get('allocationModelExplanation')?.value || 'N/A'}}
+              </div>
+            </div>
+            
+            <div class="review-field-group">
+              <div class="review-field-label">Non-Qualified Asset Considerations</div>
+              <div class="review-field-value"
+                   [ngClass]="{'empty': !firmForm.get('nonQualifiedAssetConsiderations')?.value}">
+                {{firmForm.get('nonQualifiedAssetConsiderations')?.value || 'N/A'}}
+              </div>
+            </div>
+            
+            <div class="review-field-group">
+              <div class="review-field-label">Additional Investment Instructions</div>
+              <div class="review-field-value"
+                   [ngClass]="{'empty': !firmForm.get('additionalInvestmentInstructions')?.value}">
+                {{firmForm.get('additionalInvestmentInstructions')?.value || 'N/A'}}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Additional Account Information Section -->
+        <div class="review-mode-section">
+          <div class="review-mode-section-title">Additional Account Information - Patriot Act</div>
+          <div class="review-mode-grid">
+            <div class="review-field-group">
+              <div class="review-field-label">Foreign Financial Institution</div>
+              <div class="review-field-value">
+                {{firmForm.get('patriotActForeignFinancial')?.value ? 'Yes' : 'No'}}
+              </div>
+            </div>
+            
+            <div class="review-field-group">
+              <div class="review-field-label">Private Banking Account</div>
+              <div class="review-field-value">
+                {{firmForm.get('patriotActPrivateBanking')?.value ? 'Yes' : 'No'}}
+              </div>
+            </div>
+            
+            <div class="review-field-group">
+              <div class="review-field-label">Offshore Bank</div>
+              <div class="review-field-value">
+                {{firmForm.get('patriotActOffshoreBank')?.value ? 'Yes' : 'No'}}
+              </div>
+            </div>
+            
+            <div class="review-field-group">
+              <div class="review-field-label">Government Official</div>
+              <div class="review-field-value">
+                {{firmForm.get('patriotActGovernmentOfficial')?.value ? 'Yes' : 'No'}}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Member Firm Details Review -->
+        <div *ngIf="isMemberEntity">
+          
+          <!-- Net Worth Assessment Section -->
+          <div class="review-mode-section">
+            <div class="review-mode-section-title">Net Worth Assessment</div>
+            <div class="review-mode-grid">
+              <div class="review-field-group">
+                <div class="review-field-label">Total Net Worth</div>
+                <div class="review-field-value"
+                     [ngClass]="{'missing': !firmForm.get('totalNetWorth')?.value}">
+                  {{getFieldDisplayValue('totalNetWorth', totalNetWorthOptions) || 'Required field missing'}}
+                </div>
+              </div>
+              
+              <div class="review-field-group">
+                <div class="review-field-label">Liquid Net Worth</div>
+                <div class="review-field-value"
+                     [ngClass]="{'missing': !firmForm.get('liquidNetWorth')?.value}">
+                  {{getFieldDisplayValue('liquidNetWorth', liquidNetWorthOptions) || 'Required field missing'}}
+                </div>
+              </div>
+              
+              <div class="review-field-group">
+                <div class="review-field-label">Average Annual Income</div>
+                <div class="review-field-value"
+                     [ngClass]="{'missing': !firmForm.get('averageAnnualIncome')?.value}">
+                  {{getFieldDisplayValue('averageAnnualIncome', averageIncomeOptions) || 'Required field missing'}}
+                </div>
+              </div>
+              
+              <div class="review-field-group">
+                <div class="review-field-label">Primary Income Source</div>
+                <div class="review-field-value"
+                     [ngClass]="{'missing': !firmForm.get('incomeSource')?.value}">
+                  {{getFieldDisplayValue('incomeSource', incomeSourceOptions) || 'Required field missing'}}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Investment Experience Section -->
+          <div class="review-mode-section">
+            <div class="review-mode-section-title">Investment Experience</div>
+            <div class="review-mode-grid">
+              <div class="review-field-group">
+                <div class="review-field-label">Overall Investment Experience</div>
+                <div class="review-field-value"
+                     [ngClass]="{'missing': !firmForm.get('investmentExperience')?.value}">
+                  {{getFieldDisplayValue('investmentExperience', investmentExperienceOptions) || 'Required field missing'}}
+                </div>
+              </div>
+              
+              <div class="review-field-group">
+                <div class="review-field-label">Stocks Experience</div>
+                <div class="review-field-value"
+                     [ngClass]="{'missing': !firmForm.get('stocksExperience')?.value}">
+                  {{getFieldDisplayValue('stocksExperience', experienceOptions) || 'Required field missing'}}
+                </div>
+              </div>
+              
+              <div class="review-field-group">
+                <div class="review-field-label">Bonds Experience</div>
+                <div class="review-field-value"
+                     [ngClass]="{'missing': !firmForm.get('bondsExperience')?.value}">
+                  {{getFieldDisplayValue('bondsExperience', experienceOptions) || 'Required field missing'}}
+                </div>
+              </div>
+              
+              <div class="review-field-group">
+                <div class="review-field-label">Options/Derivatives Experience</div>
+                <div class="review-field-value"
+                     [ngClass]="{'missing': !firmForm.get('optionsExperience')?.value}">
+                  {{getFieldDisplayValue('optionsExperience', experienceOptions) || 'Required field missing'}}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Liquidity Needs Section -->
+          <div class="review-mode-section">
+            <div class="review-mode-section-title">Liquidity Needs</div>
+            <div class="review-mode-grid">
+              <div class="review-field-group">
+                <div class="review-field-label">Portfolio Liquidity Needs (2 years)</div>
+                <div class="review-field-value"
+                     [ngClass]="{'missing': !firmForm.get('liquidityNeeds')?.value}">
+                  {{getFieldDisplayValue('liquidityNeeds', liquidityNeedsOptions) || 'Required field missing'}}
+                </div>
+              </div>
+              
+              <div class="review-field-group">
+                <div class="review-field-label">Emergency Fund Outside Account</div>
+                <div class="review-field-value"
+                     [ngClass]="{'missing': !firmForm.get('emergencyFund')?.value}">
+                  {{getFieldDisplayValue('emergencyFund', emergencyFundOptions) || 'Required field missing'}}
+                </div>
+              </div>
+              
+              <div class="review-field-group">
+                <div class="review-field-label">Liquidity Purpose</div>
+                <div class="review-field-value"
+                     [ngClass]="{'empty': !firmForm.get('liquidityPurpose')?.value}">
+                  {{firmForm.get('liquidityPurpose')?.value || 'Not provided'}}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Market Conditions Section -->
+          <div class="review-mode-section">
+            <div class="review-mode-section-title">Market Conditions Response</div>
+            <div class="review-mode-grid">
+              <div class="review-field-group">
+                <div class="review-field-label">10% Portfolio Decline Response</div>
+                <div class="review-field-value"
+                     [ngClass]="{'missing': !firmForm.get('scenario1')?.value}">
+                  {{getScenario1DisplayValue() || 'Required field missing'}}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Account Firm Details Review -->
+        <div *ngIf="!isMemberEntity">
+          
+          <!-- Firm Details Section -->
+          <div class="review-mode-section">
+            <div class="review-mode-section-title">Firm Details</div>
+            <div class="review-mode-grid">
+              <div class="review-field-group">
+                <div class="review-field-label">Investment Objectives</div>
+                <div class="review-field-value"
+                     [ngClass]="{'missing': !firmForm.get('investmentObjectives')?.value}">
+                  {{firmForm.get('investmentObjectives')?.value || 'Required field missing'}}
+                </div>
+              </div>
+              
+              <div class="review-field-group">
+                <div class="review-field-label">Recommendations</div>
+                <div class="review-field-value"
+                     [ngClass]="{'missing': !firmForm.get('recommendations')?.value}">
+                  {{firmForm.get('recommendations')?.value || 'Required field missing'}}
+                </div>
+              </div>
+              
+              <div class="review-field-group">
+                <div class="review-field-label">Alternative Suggestions</div>
+                <div class="review-field-value"
+                     [ngClass]="{'missing': !firmForm.get('alternativeSuggestions')?.value}">
+                  {{firmForm.get('alternativeSuggestions')?.value || 'Required field missing'}}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   `,
   styles: [`
@@ -455,6 +1184,69 @@ interface DropdownOption {
       font-weight: 600 !important;
       color: #495057 !important;
     }
+
+    /* Review mode styling - clean, flattened display */
+    .review-mode-container {
+      width: 100%;
+      padding: 1rem;
+      background: #f8f9fa;
+    }
+    
+    .review-mode-section {
+      width: 100%;
+      margin-bottom: 2rem;
+      background: white;
+      padding: 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+    
+    .review-mode-section-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #1f2937;
+      margin-bottom: 1rem;
+      border-bottom: 2px solid #e5e7eb;
+      padding-bottom: 0.5rem;
+    }
+    
+    .review-mode-grid {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1rem;
+    }
+    
+    .review-field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+    
+    .review-field-label {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: #6b7280;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    
+    .review-field-value {
+      font-size: 1rem;
+      color: #111827;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid #f3f4f6;
+    }
+    
+    .review-field-value.missing {
+      color: #dc2626;
+      font-style: italic;
+    }
+    
+    .review-field-value.empty {
+      color: #9ca3af;
+      font-style: italic;
+    }
   `]
 })
 export class FirmDetailsComponent implements OnInit, OnChanges {
@@ -502,15 +1294,14 @@ export class FirmDetailsComponent implements OnInit, OnChanges {
   investmentExperienceOptions: DropdownOption[] = [
     { label: 'No Experience', value: 'none' },
     { label: 'Limited (1-3 years)', value: 'limited' },
-    { label: 'Moderate (3-10 years)', value: 'moderate' },
-    { label: 'Extensive (10+ years)', value: 'extensive' },
-    { label: 'Professional', value: 'professional' }
+    { label: 'Good (3-10 years)', value: 'good' },
+    { label: 'Extensive (10+ years)', value: 'extensive' }
   ];
 
   experienceOptions: DropdownOption[] = [
     { label: 'None', value: 'none' },
     { label: 'Limited', value: 'limited' },
-    { label: 'Moderate', value: 'moderate' },
+    { label: 'Good', value: 'good' },
     { label: 'Extensive', value: 'extensive' }
   ];
 
@@ -529,7 +1320,7 @@ export class FirmDetailsComponent implements OnInit, OnChanges {
     { label: 'No emergency fund', value: 'no' }
   ];
 
-  constructor(private fb: FormBuilder) {}
+  constructor(private fb: FormBuilder, private messageService: MessageService) {}
 
   ngOnInit() {
     this.initializeForm();
@@ -544,9 +1335,44 @@ export class FirmDetailsComponent implements OnInit, OnChanges {
   }
 
   private initializeForm() {
+    // Base form fields (common to all entities)
+    const baseFormConfig = {
+      // Existing Product Information
+      investmentName: [''],
+      productType: [''],
+      accountPolicyNumber: [''],
+      initialDateOfPurchase: [''],
+      initialPremiumInvestment: [''],
+      currentAccountValue: [''],
+      approximateAnnualCost: [''],
+      currentSurrenderValue: [''],
+      surrenderSalesPenaltyCharges: [''],
+      deathBenefitRiderValue: [''],
+      livingBenefitRiderValue: [''],
+      outstandingLoanAmount: [''],
+      wasExistingProductRecommended: [''],
+      
+      // Employer Sponsored Retirement Plans
+      recommendationIncludeRetainFunds: [''],
+      
+      // Investment Policy Statement
+      equityRatio: [''],
+      equityRatioOther: [''],
+      allocationModelExplanation: [''],
+      nonQualifiedAssetConsiderations: [''],
+      additionalInvestmentInstructions: [''],
+      
+      // Additional Account Information
+      patriotActForeignFinancial: [false],
+      patriotActPrivateBanking: [false],
+      patriotActOffshoreBank: [false],
+      patriotActGovernmentOfficial: [false]
+    };
+    
     if (this.isMemberEntity) {
       // Member firm details form
       this.firmForm = this.fb.group({
+        ...baseFormConfig,
         totalNetWorth: ['', Validators.required],
         liquidNetWorth: ['', Validators.required],
         averageAnnualIncome: ['', Validators.required],
@@ -563,6 +1389,7 @@ export class FirmDetailsComponent implements OnInit, OnChanges {
     } else {
       // Account firm details form
       this.firmForm = this.fb.group({
+        ...baseFormConfig,
         investmentObjectives: ['', Validators.required],
         recommendations: ['', Validators.required],
         alternativeSuggestions: ['', Validators.required]
@@ -578,6 +1405,13 @@ export class FirmDetailsComponent implements OnInit, OnChanges {
   }
 
   private setupFormSubscriptions() {
+    // Clear the 'other' text field when a different equity ratio is selected
+    this.firmForm.get('equityRatio')?.valueChanges.subscribe(value => {
+      if (value !== 'other') {
+        this.firmForm.get('equityRatioOther')?.setValue('');
+      }
+    });
+    
     this.firmForm.valueChanges.subscribe(() => {
       this.updateFormData();
     });
@@ -597,5 +1431,42 @@ export class FirmDetailsComponent implements OnInit, OnChanges {
     if (this.firmForm.valid) {
       this.updateFormData();
     }
+  }
+
+  getFieldDisplayValue(fieldName: string, options: DropdownOption[]): string {
+    const value = this.firmForm.get(fieldName)?.value;
+    if (!value) return '';
+    const option = options.find(opt => opt.value === value);
+    return option ? option.label : value;
+  }
+
+  getScenario1DisplayValue(): string {
+    const value = this.firmForm.get('scenario1')?.value;
+    if (!value) return '';
+    
+    const scenarioMap: { [key: string]: string } = {
+      'sell-all': 'Sell all investments immediately',
+      'sell-some': 'Sell some investments to reduce risk',
+      'hold': 'Hold your investments and wait for recovery',
+      'buy-more': 'Buy more investments at lower prices'
+    };
+    
+    return scenarioMap[value] || value;
+  }
+
+  getEquityRatioDisplayValue(): string {
+    const value = this.firmForm.get('equityRatio')?.value;
+    if (!value) return '';
+    
+    const equityRatioMap: { [key: string]: string } = {
+      'preservation': 'Preservation',
+      'income': 'Income',
+      'growth-income': 'Growth and Income',
+      'growth': 'Growth',
+      'aggressive-growth': 'Aggressive Growth',
+      'other': 'Other - See allocation model'
+    };
+    
+    return equityRatioMap[value] || value;
   }
 }

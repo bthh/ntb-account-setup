@@ -59,7 +59,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 0 1.5rem;
-  z-index: 998;
+  z-index: 1000;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
@@ -82,13 +82,32 @@
 
 /* Form content area positioning - scrollable content */
 .flex-1 {
-  margin-left: 332px !important; /* 320px sidebar + 12px margin total */
-  width: calc(100% - 332px) !important;
-  margin-top: -90px !important; /* Adjusted for new header spacing */
+  margin-left: 326px !important; /* 320px sidebar + 6px margin total */
+  width: calc(100% - 326px) !important;
+  margin-top: 0 !important; /* Reset to avoid content cutoff */
+  padding-top: 1rem !important; /* Add padding instead of negative margin */
   overflow-y: auto;
   overflow-x: hidden;
   max-height: calc(100vh - 200px);
   scroll-behavior: smooth;
+}
+
+/* Remove top padding from account form to close gap with header */
+.account-form .p-2 {
+  padding-top: 0 !important;
+}
+
+/* Remove top margin from first card to eliminate internal gap */
+.account-form .p-2 > :first-child {
+  margin-top: 0 !important;
+}
+
+/* Fix content card positioning to prevent visual cutoff */
+app-owner-details :host :deep(.p-card:first-child),
+app-firm-details :host :deep(.p-card:first-child),
+app-account-setup :host :deep(.p-card:first-child),
+app-funding :host :deep(.p-card:first-child) {
+  margin-top: 0 !important; /* Reset negative margin that was causing cutoff */
 }
 
 .main-content-area::-webkit-scrollbar {
@@ -182,6 +201,10 @@
   font-weight: 500;
 }
 
+.profile-dropdown-container {
+  position: relative;
+}
+
 .profile-icon {
   width: 32px;
   height: 32px;
@@ -192,6 +215,65 @@
   align-items: center;
   justify-content: center;
   font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.profile-icon:hover,
+.profile-icon.active {
+  background: #2563eb;
+  transform: scale(1.05);
+}
+
+.profile-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 0.5rem;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  z-index: 9999;
+  min-width: 200px;
+  animation: dropdownSlide 0.2s ease-out;
+}
+
+@keyframes dropdownSlide {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.profile-menu-item {
+  padding: 1rem;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.profile-menu-item:last-child {
+  border-bottom: none;
+}
+
+.scrollable-pages-toggle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.toggle-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+}
+
+.profile-toggle {
+  transform: scale(0.8);
 }
 
 /* Top-level household header */
@@ -222,9 +304,9 @@
   overflow-y: auto;
   overflow-x: hidden;
   position: fixed;
-  top: 160px; /* Reduced spacing from header by 50% (200px -> 160px) */  
+  top: 160px; /* Restored to match full header height */  
   left: 200px;
-  height: calc(100vh - 172px); /* Adjusted to match new top position */
+  height: calc(100vh - 172px); /* Adjusted to match restored top position */
   z-index: 998;
   scroll-behavior: smooth;
   scrollbar-width: thin;
@@ -361,7 +443,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--space-6) var(--space-8);
+  padding: var(--space-3) var(--space-8);
   gap: var(--space-6);
   flex-wrap: wrap;
 }

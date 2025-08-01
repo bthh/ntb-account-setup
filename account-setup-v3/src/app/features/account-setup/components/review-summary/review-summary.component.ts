@@ -9,7 +9,7 @@ import { BadgeModule } from 'primeng/badge';
 import { TooltipModule } from 'primeng/tooltip';
 
 // Local Imports  
-import { FormData, CompletionStatus } from '../../../../shared/models/types';
+import { FormData, CompletionStatus, Section } from '../../../../shared/models/types';
 
 interface AccountSummary {
   id: string;
@@ -22,6 +22,8 @@ interface AccountSummary {
   missingFields: string[];
   accountType: string;
   canSubmit: boolean;
+  hasMissingFields: boolean;
+  nextMissingSection: { entityId: string, sectionId: Section } | null;
 }
 
 @Component({
@@ -107,11 +109,11 @@ interface AccountSummary {
             <!-- Action Buttons -->
             <div class="account-actions">
               <p-button 
-                label="Review & Edit" 
+                [label]="account.hasMissingFields ? 'Edit' : 'Review & Edit'" 
                 icon="pi pi-pencil"
                 severity="secondary"
                 size="small"
-                styleClass="mr-2"
+                styleClass="mr-2 compact-button"
                 (onClick)="onEditAccount(account.id)">
               </p-button>
               
@@ -121,6 +123,7 @@ interface AccountSummary {
                 [severity]="account.canSubmit ? 'success' : 'danger'"
                 [disabled]="!account.canSubmit"
                 size="small"
+                styleClass="compact-button"
                 [pTooltip]="account.canSubmit ? 'Ready to submit for e-signature' : 'Complete all required fields first'"
                 tooltipPosition="top"
                 (onClick)="onSubmitForESign(account.id)">
@@ -161,14 +164,14 @@ interface AccountSummary {
 
     .accounts-grid {
       display: grid;
-      gap: 1.5rem;
-      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+      gap: 1rem;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     }
 
     .account-summary-card {
       border: 1px solid var(--surface-border);
       border-radius: 8px;
-      padding: 1.5rem;
+      padding: 1rem;
       background: white;
       transition: all 0.3s ease;
     }
@@ -299,12 +302,22 @@ interface AccountSummary {
     ::ng-deep .p-progressbar.complete .p-progressbar-value {
       background: var(--green-500) !important;
     }
+
+    ::ng-deep .compact-button .p-button {
+      padding: 0.375rem 0.75rem !important;
+      font-size: 0.75rem !important;
+    }
+
+    ::ng-deep .compact-button .p-button-label {
+      font-weight: 500 !important;
+    }
   `]
 })
 export class ReviewSummaryComponent {
   @Input() formData: FormData = {};
   @Input() completionStatus: CompletionStatus = { members: {}, accounts: {} };
   @Output() editAccount = new EventEmitter<string>();
+  @Output() editAccountWithSection = new EventEmitter<{accountId: string, entityId: string, sectionId: Section}>();
   @Output() submitForESign = new EventEmitter<string>();
   @Output() submitAllReady = new EventEmitter<string[]>();
 
@@ -341,10 +354,8 @@ export class ReviewSummaryComponent {
     ];
 
     this.accountSummaries = accountData.map(account => {
-      const accountStatus = this.completionStatus.accounts[account.id] || {};
-      const sections = Object.keys(accountStatus);
-      const completedSections = sections.filter(section => accountStatus[section]).length;
-      const totalSections = sections.length;
+      const relevantSections = this.getRelevantSectionsForAccount(account.id);
+      const { completedSections, totalSections, hasMissingFields, nextMissingSection } = this.calculateAccountCompletion(account.id, relevantSections);
       const completionPercentage = totalSections > 0 ? Math.round((completedSections / totalSections) * 100) : 0;
       
       const accountFormData = this.formData[account.id] || {};
@@ -357,9 +368,78 @@ export class ReviewSummaryComponent {
         totalSections,
         missingFields,
         accountType: this.getAccountTypeLabel(accountFormData?.accountType || ''),
-        canSubmit: completionPercentage === 100 && missingFields.length === 0
+        canSubmit: completionPercentage === 100 && missingFields.length === 0,
+        hasMissingFields,
+        nextMissingSection
       };
     });
+  }
+
+  private getRelevantSectionsForAccount(accountId: string): Array<{entityId: string, sectionId: Section}> {
+    const sections: Array<{entityId: string, sectionId: Section}> = [];
+    
+    // Determine which members are relevant for this account
+    if (accountId === 'joint-account') {
+      // John and Mary sections
+      sections.push(
+        { entityId: 'john-smith', sectionId: 'owner-details' },
+        { entityId: 'john-smith', sectionId: 'firm-details' },
+        { entityId: 'mary-smith', sectionId: 'owner-details' },
+        { entityId: 'mary-smith', sectionId: 'firm-details' }
+      );
+    } else if (accountId === 'roth-ira-account') {
+      // Mary sections only
+      sections.push(
+        { entityId: 'mary-smith', sectionId: 'owner-details' },
+        { entityId: 'mary-smith', sectionId: 'firm-details' }
+      );
+    } else if (accountId === 'trust-account') {
+      // Trust sections only
+      sections.push(
+        { entityId: 'smith-trust', sectionId: 'owner-details' },
+        { entityId: 'smith-trust', sectionId: 'firm-details' }
+      );
+    }
+    
+    // Add account-specific sections
+    sections.push(
+      { entityId: accountId, sectionId: 'account-setup' },
+      { entityId: accountId, sectionId: 'funding' },
+      { entityId: accountId, sectionId: 'firm-details' }
+    );
+    
+    return sections;
+  }
+
+  private calculateAccountCompletion(accountId: string, relevantSections: Array<{entityId: string, sectionId: Section}>) {
+    let completedSections = 0;
+    let totalSections = relevantSections.length;
+    let firstMissingSection: { entityId: string, sectionId: Section } | null = null;
+    
+    for (const section of relevantSections) {
+      const isComplete = this.isSectionComplete(section.entityId, section.sectionId);
+      if (isComplete) {
+        completedSections++;
+      } else if (!firstMissingSection) {
+        firstMissingSection = section;
+      }
+    }
+    
+    return {
+      completedSections,
+      totalSections,
+      hasMissingFields: completedSections < totalSections,
+      nextMissingSection: firstMissingSection
+    };
+  }
+
+  private isSectionComplete(entityId: string, sectionId: Section): boolean {
+    // Check if the section is complete based on completion status
+    if (entityId === 'john-smith' || entityId === 'mary-smith' || entityId === 'smith-trust') {
+      return this.completionStatus.members[entityId]?.[sectionId] || false;
+    } else {
+      return this.completionStatus.accounts[entityId]?.[sectionId] || false;
+    }
   }
 
   private getMissingRequiredFields(accountId: string, accountData: any): string[] {
@@ -392,9 +472,49 @@ export class ReviewSummaryComponent {
   }
 
   getOverallCompletionPercentage(): number {
-    if (this.accountSummaries.length === 0) return 0;
-    const totalPercentage = this.accountSummaries.reduce((sum, account) => sum + account.completionPercentage, 0);
-    return Math.round(totalPercentage / this.accountSummaries.length);
+    // Use the same calculation as the main app header for consistency
+    return this.getOverallProgress();
+  }
+
+  private getOverallProgress(): number {
+    let totalRequiredFields = 0;
+    let filledRequiredFields = 0;
+
+    // Define required fields for each entity type (matching main app)
+    const memberRequiredFields = [
+      'firstName', 'lastName', 'dateOfBirth', 'ssn', 'phoneHome', 'email', 
+      'homeAddress', 'citizenship', 'employmentStatus', 'annualIncome', 'netWorth', 'fundsSource'
+    ];
+    
+    const accountRequiredFields = [
+      'accountType', 'investmentObjective', 'riskTolerance'
+    ];
+
+    // Count member fields
+    const memberIds = ['john-smith', 'mary-smith', 'smith-trust'];
+    memberIds.forEach(memberId => {
+      const memberData = this.formData[memberId];
+      memberRequiredFields.forEach(field => {
+        totalRequiredFields++;
+        if (memberData && memberData[field] && memberData[field].toString().trim()) {
+          filledRequiredFields++;
+        }
+      });
+    });
+
+    // Count account fields
+    const accountIds = ['joint-account', 'roth-ira-account', 'trust-account'];
+    accountIds.forEach(accountId => {
+      const accountData = this.formData[accountId];
+      accountRequiredFields.forEach(field => {
+        totalRequiredFields++;
+        if (accountData && accountData[field] && accountData[field].toString().trim()) {
+          filledRequiredFields++;
+        }
+      });
+    });
+
+    return totalRequiredFields > 0 ? Math.round((filledRequiredFields / totalRequiredFields) * 100) : 0;
   }
 
   getCompletedAccountsCount(): number {
@@ -406,7 +526,18 @@ export class ReviewSummaryComponent {
   }
 
   onEditAccount(accountId: string) {
-    this.editAccount.emit(accountId);
+    const account = this.accountSummaries.find(a => a.id === accountId);
+    if (account && account.nextMissingSection) {
+      // Navigate to the next missing field
+      this.editAccountWithSection.emit({
+        accountId,
+        entityId: account.nextMissingSection.entityId,
+        sectionId: account.nextMissingSection.sectionId
+      });
+    } else {
+      // If no missing fields, just navigate to the account
+      this.editAccount.emit(accountId);
+    }
   }
 
   onSubmitForESign(accountId: string) {

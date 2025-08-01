@@ -49,10 +49,7 @@ interface DropdownOption {
       <form *ngIf="!isReviewMode" [formGroup]="ownerForm" (ngSubmit)="onSubmit()">
         
         <!-- Personal Information Card -->
-        <p-card class="mb-4">
-          <ng-template pTemplate="header">
-            <div class="card-header-custom">Personal Information</div>
-          </ng-template>
+        <p-card header="Personal Information" class="mb-4">
           <div class="grid">
             <div class="col-12 md:col-4">
               <label for="firstName" class="block text-900 font-medium mb-2">
@@ -624,6 +621,11 @@ interface DropdownOption {
       margin-bottom: 1rem;
       box-sizing: border-box;
       overflow: visible;
+    }
+    
+    /* Pull first card up to eliminate gap with header */
+    :host :deep(.p-card:first-child) {
+      margin-top: -60px !important;
     }
     
     :host :deep(.p-card-content) {

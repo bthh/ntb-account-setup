@@ -54,8 +54,21 @@
     </div>
     <div class="profile-section">
       <span>Valued Advisor</span>
-      <div class="profile-icon">
-        <i class="pi pi-user"></i>
+      <div class="profile-dropdown-container">
+        <div class="profile-icon" (click)="toggleProfileMenu($event)" [class.active]="showProfileMenu">
+          <i class="pi pi-user"></i>
+        </div>
+        <div class="profile-dropdown" *ngIf="showProfileMenu" (click)="$event.stopPropagation()">
+          <div class="profile-menu-item">
+            <div class="scrollable-pages-toggle">
+              <span class="toggle-label">Scrollable Pages</span>
+              <p-inputSwitch
+                [(ngModel)]="scrollablePagesMode"
+                styleClass="profile-toggle">
+              </p-inputSwitch>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -130,11 +143,11 @@
           <div class="mb-2">
             <div class="section-group-header">
               <i class="pi pi-users"></i>
-              Members
+              Owner Information
             </div>
             <p-accordion 
-              [multiple]="false" 
-              [activeIndex]="expandedMemberTabs[0]"
+              [multiple]="!scrollablePagesMode" 
+              [activeIndex]="expandedMemberTabs"
               (onTabChange)="onMemberTabChange($event)">
               <p-accordionTab 
                 *ngFor="let member of memberData">
@@ -153,7 +166,7 @@
                 <div
                   *ngFor="let section of member.sections"
                   [class]="'section-nav-item ' + (currentSection === section.id && currentMember === member.id ? 'active' : '')"
-                  (click)="handleSectionChange(castToSection(section.id), member.id, '')">
+                  (click)="handleSectionNavigation(castToSection(section.id), member.id, '')">
                   <div class="section-nav-content">
                     <i [class]="section.icon + ' section-nav-icon'"></i>
                     <span class="section-nav-text">{{section.name}}</span>
@@ -168,11 +181,11 @@
           <div>
             <div class="section-group-header">
               <i class="pi pi-briefcase"></i>
-              Accounts
+              Account Information
             </div>
             <p-accordion 
-              [multiple]="false" 
-              [activeIndex]="expandedAccountTabs[0]"
+              [multiple]="!scrollablePagesMode" 
+              [activeIndex]="expandedAccountTabs"
               (onTabChange)="onAccountTabChange($event)">
               <p-accordionTab 
                 *ngFor="let account of accountData">
@@ -191,7 +204,7 @@
                 <div
                   *ngFor="let section of account.sections"
                   [class]="'section-nav-item ' + (currentSection === section.id && currentAccount === account.id ? 'active' : '')"
-                  (click)="handleSectionChange(castToSection(section.id), '', account.id)">
+                  (click)="handleSectionNavigation(castToSection(section.id), '', account.id)">
                   <div class="section-nav-content">
                     <i [class]="section.icon + ' section-nav-icon'"></i>
                     <span class="section-nav-text">{{section.name}}</span>
@@ -229,11 +242,11 @@
           <div class="mb-2">
             <div class="section-group-header">
               <i class="pi pi-users"></i>
-              Smith Household Members
+              Smith Household Owner Information
             </div>
             <p-accordion 
-              [multiple]="false" 
-              [activeIndex]="expandedMemberTabs[0]"
+              [multiple]="!scrollablePagesMode" 
+              [activeIndex]="expandedMemberTabs"
               (onTabChange)="onMemberTabChange($event)">
               <p-accordionTab 
                 *ngFor="let member of memberData">
@@ -252,7 +265,7 @@
                 <div
                   *ngFor="let section of member.sections"
                   [class]="'section-nav-item ' + (currentSection === section.id && currentMember === member.id ? 'active' : '')"
-                  (click)="handleMobileSectionChange(castToSection(section.id), member.id, '')">
+                  (click)="handleMobileSectionNavigation(castToSection(section.id), member.id, '')">
                   <div class="section-nav-content">
                     <i [class]="section.icon + ' section-nav-icon'"></i>
                     <span class="section-nav-text">{{section.name}}</span>
@@ -267,11 +280,11 @@
           <div>
             <div class="section-group-header">
               <i class="pi pi-briefcase"></i>
-              Accounts
+              Account Information
             </div>
             <p-accordion 
-              [multiple]="false" 
-              [activeIndex]="expandedAccountTabs[0]"
+              [multiple]="!scrollablePagesMode" 
+              [activeIndex]="expandedAccountTabs"
               (onTabChange)="onAccountTabChange($event)">
               <p-accordionTab 
                 *ngFor="let account of accountData">
@@ -290,7 +303,7 @@
                 <div
                   *ngFor="let section of account.sections"
                   [class]="'section-nav-item ' + (currentSection === section.id && currentAccount === account.id ? 'active' : '')"
-                  (click)="handleMobileSectionChange(castToSection(section.id), '', account.id)">
+                  (click)="handleMobileSectionNavigation(castToSection(section.id), '', account.id)">
                   <div class="section-nav-content">
                     <i [class]="section.icon + ' section-nav-icon'"></i>
                     <span class="section-nav-text">{{section.name}}</span>
@@ -322,13 +335,25 @@
             [formData]="formData"
             [completionStatus]="completionStatus"
             (editAccount)="onEditAccount($event)"
+            (editAccountWithSection)="onEditAccountWithSection($event)"
             (submitForESign)="onSubmitForESign($event)"
             (submitAllReady)="onSubmitAllReady($event)">
           </app-review-summary>
         </div>
 
+        <!-- Scrollable View Mode -->
+        <app-scrollable-view *ngIf="!showReviewSummaryMode && scrollablePagesMode"
+          [formData]="formData"
+          [completionStatus]="completionStatus"
+          [currentMember]="currentMember"
+          [currentAccount]="currentAccount"
+          [isReviewMode]="isReviewMode"
+          (formDataChange)="onFormDataChange($event)"
+          (sectionChange)="onScrollableSectionChange($event)">
+        </app-scrollable-view>
+
         <!-- Regular Form Mode -->
-        <app-account-form *ngIf="!showReviewSummaryMode"
+        <app-account-form *ngIf="!showReviewSummaryMode && !scrollablePagesMode"
           [section]="currentSection"
           [memberId]="currentMember"
           [accountId]="currentAccount"
