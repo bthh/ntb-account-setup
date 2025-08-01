@@ -101,9 +101,11 @@ export class ExistingInstancesService {
           data: address,
           displayFields: {
             address: address.address,
+            address2: address.address2 || 'N/A',
             city: address.city || 'N/A',
             state: address.state || 'N/A',
-            zipCode: address.zipCode || 'N/A'
+            zipCode: address.zipCode || 'N/A',
+            country: address.country || 'N/A'
           }
         });
       });
@@ -149,16 +151,18 @@ export class ExistingInstancesService {
     }
   }
 
-  private extractAddresses(entityData: any): Array<{label: string, address: string, city?: string, state?: string, zipCode?: string}> {
+  private extractAddresses(entityData: any): Array<{label: string, address: string, address2?: string, city?: string, state?: string, zipCode?: string, country?: string}> {
     const addresses = [];
 
     if (entityData.homeAddress) {
       addresses.push({
         label: 'Home Address',
         address: entityData.homeAddress,
+        address2: entityData.homeAddress2,
         city: entityData.homeCity,
         state: entityData.homeState,
-        zipCode: entityData.homeZipCode
+        zipCode: entityData.homeZipCode,
+        country: entityData.homeCountry
       });
     }
 
@@ -166,9 +170,11 @@ export class ExistingInstancesService {
       addresses.push({
         label: 'Mailing Address',
         address: entityData.mailingAddress,
+        address2: entityData.mailingAddress2,
         city: entityData.mailingCity,
         state: entityData.mailingState,
-        zipCode: entityData.mailingZipCode
+        zipCode: entityData.mailingZipCode,
+        country: entityData.mailingCountry
       });
     }
 
@@ -176,9 +182,11 @@ export class ExistingInstancesService {
       addresses.push({
         label: 'Work Address',
         address: entityData.workAddress,
+        address2: entityData.workAddress2,
         city: entityData.workCity,
         state: entityData.workState,
-        zipCode: entityData.workZipCode
+        zipCode: entityData.workZipCode,
+        country: entityData.workCountry
       });
     }
 
@@ -244,25 +252,28 @@ export class ExistingInstancesService {
   }
 
   private applyAddressInstance(instanceData: any, targetFields: any): any {
-    // Build complete address string if we have components
-    let fullAddress = instanceData.address || '';
-    if (instanceData.city || instanceData.state || instanceData.zipCode) {
-      const components = [instanceData.city, instanceData.state, instanceData.zipCode].filter(Boolean);
-      if (components.length > 0 && fullAddress) {
-        fullAddress += ', ' + components.join(', ');
-      } else if (components.length > 0) {
-        fullAddress = components.join(', ');
-      }
-    }
-    
     return {
       ...targetFields,
-      address: fullAddress,
-      homeAddress: fullAddress, // Also populate homeAddress field
-      mailingAddress: fullAddress, // Also populate mailingAddress field
-      city: instanceData.city,
-      state: instanceData.state,
-      zipCode: instanceData.zipCode
+      // Individual address components
+      address: instanceData.address || '',
+      address2: instanceData.address2 || '',
+      city: instanceData.city || '',
+      state: instanceData.state || '',
+      zipCode: instanceData.zipCode || '',
+      country: instanceData.country || 'US',
+      // Also populate individual home/mailing fields for backwards compatibility
+      homeAddress: instanceData.address || '',
+      homeAddress2: instanceData.address2 || '',
+      homeCity: instanceData.city || '',
+      homeState: instanceData.state || '',
+      homeZipCode: instanceData.zipCode || '',
+      homeCountry: instanceData.country || 'US',
+      mailingAddress: instanceData.address || '',
+      mailingAddress2: instanceData.address2 || '',
+      mailingCity: instanceData.city || '',
+      mailingState: instanceData.state || '',
+      mailingZipCode: instanceData.zipCode || '',
+      mailingCountry: instanceData.country || 'US'
     };
   }
 }

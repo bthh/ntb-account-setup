@@ -192,46 +192,203 @@ interface DropdownOption {
         <!-- Address Information Card -->
         <p-card header="Address Information" class="mb-4">
           <div class="grid">
+            <!-- Home Address Section -->
             <div class="col-12">
+              <div class="flex justify-content-between align-items-center mb-3">
+                <h5 class="m-0 text-lg font-semibold">Home Address <span class="text-red-500">*</span></h5>
+                <p-button 
+                  label="Add Existing" 
+                  icon="pi pi-history"
+                  severity="primary"
+                  size="small"
+                  (onClick)="showExistingAddressModal('home')">
+                </p-button>
+              </div>
+            </div>
+            
+            <div class="col-12 md:col-8">
               <label for="homeAddress" class="block text-900 font-medium mb-2">
-                Home Address <span class="text-red-500">*</span>
+                Street Address <span class="text-red-500">*</span>
               </label>
               <input
                 pInputText
                 id="homeAddress"
                 formControlName="homeAddress"
-                placeholder="Full home address"
+                placeholder="123 Main Street"
                 class="w-full"
                 [class.ng-invalid]="ownerForm.get('homeAddress')?.invalid && ownerForm.get('homeAddress')?.touched" />
               <small class="p-error" *ngIf="ownerForm.get('homeAddress')?.invalid && ownerForm.get('homeAddress')?.touched">
-                Home address is required (minimum 10 characters)
+                Street address is required
               </small>
             </div>
             
-            <div class="col-12">
+            <div class="col-12 md:col-4">
+              <label for="homeAddress2" class="block text-900 font-medium mb-2">
+                Apt/Suite/Unit
+              </label>
+              <input
+                pInputText
+                id="homeAddress2"
+                formControlName="homeAddress2"
+                placeholder="Apt 123"
+                class="w-full" />
+            </div>
+            
+            <div class="col-12 md:col-5">
+              <label for="homeCity" class="block text-900 font-medium mb-2">
+                City <span class="text-red-500">*</span>
+              </label>
+              <input
+                pInputText
+                id="homeCity"
+                formControlName="homeCity"
+                placeholder="City"
+                class="w-full"
+                [class.ng-invalid]="ownerForm.get('homeCity')?.invalid && ownerForm.get('homeCity')?.touched" />
+              <small class="p-error" *ngIf="ownerForm.get('homeCity')?.invalid && ownerForm.get('homeCity')?.touched">
+                City is required
+              </small>
+            </div>
+            
+            <div class="col-12 md:col-2">
+              <label for="homeState" class="block text-900 font-medium mb-2">
+                State <span class="text-red-500">*</span>
+              </label>
+              <p-dropdown
+                inputId="homeState"
+                formControlName="homeState"
+                [options]="stateOptions"
+                placeholder="State"
+                styleClass="w-full"
+                [class.ng-invalid]="ownerForm.get('homeState')?.invalid && ownerForm.get('homeState')?.touched">
+              </p-dropdown>
+              <small class="p-error" *ngIf="ownerForm.get('homeState')?.invalid && ownerForm.get('homeState')?.touched">
+                State is required
+              </small>
+            </div>
+            
+            <div class="col-12 md:col-3">
+              <label for="homeZipCode" class="block text-900 font-medium mb-2">
+                ZIP Code <span class="text-red-500">*</span>
+              </label>
+              <input
+                pInputText
+                id="homeZipCode"
+                formControlName="homeZipCode"
+                placeholder="12345"
+                class="w-full"
+                [class.ng-invalid]="ownerForm.get('homeZipCode')?.invalid && ownerForm.get('homeZipCode')?.touched" />
+              <small class="p-error" *ngIf="ownerForm.get('homeZipCode')?.invalid && ownerForm.get('homeZipCode')?.touched">
+                ZIP code is required
+              </small>
+            </div>
+            
+            <div class="col-12 md:col-2">
+              <label for="homeCountry" class="block text-900 font-medium mb-2">
+                Country <span class="text-red-500">*</span>
+              </label>
+              <p-dropdown
+                inputId="homeCountry"
+                formControlName="homeCountry"
+                [options]="countryOptions"
+                placeholder="Country"
+                styleClass="w-full"
+                [class.ng-invalid]="ownerForm.get('homeCountry')?.invalid && ownerForm.get('homeCountry')?.touched">
+              </p-dropdown>
+              <small class="p-error" *ngIf="ownerForm.get('homeCountry')?.invalid && ownerForm.get('homeCountry')?.touched">
+                Country is required
+              </small>
+            </div>
+
+            <!-- Mailing Address Section -->
+            <div class="col-12 mt-4">
+              <div class="flex justify-content-between align-items-center mb-3">
+                <h5 class="m-0 text-lg font-semibold">Mailing Address</h5>
+                <p-button 
+                  label="Add Existing" 
+                  icon="pi pi-history"
+                  severity="primary"
+                  size="small"
+                  (onClick)="showExistingAddressModal('mailing')">
+                </p-button>
+              </div>
+              <small class="text-orange-500 text-xs block mb-3">
+                Leave blank if same as home address
+              </small>
+            </div>
+            
+            <div class="col-12 md:col-8">
               <label for="mailingAddress" class="block text-900 font-medium mb-2">
-                Mailing Address
+                Street Address
               </label>
               <input
                 pInputText
                 id="mailingAddress"
                 formControlName="mailingAddress"
-                placeholder="Full mailing address"
+                placeholder="123 Main Street"
                 class="w-full" />
-              <small class="text-orange-500 text-xs">
-                Consider specifying if different from home address
-              </small>
             </div>
             
-            <div class="col-12 mt-3">
-              <p-button 
-                label="Add Existing Address" 
-                icon="pi pi-history"
-                severity="secondary"
-                size="small"
-                styleClass="existing-address-button"
-                (onClick)="showExistingAddressModal()">
-              </p-button>
+            <div class="col-12 md:col-4">
+              <label for="mailingAddress2" class="block text-900 font-medium mb-2">
+                Apt/Suite/Unit
+              </label>
+              <input
+                pInputText
+                id="mailingAddress2"
+                formControlName="mailingAddress2"
+                placeholder="Apt 123"
+                class="w-full" />
+            </div>
+            
+            <div class="col-12 md:col-5">
+              <label for="mailingCity" class="block text-900 font-medium mb-2">
+                City
+              </label>
+              <input
+                pInputText
+                id="mailingCity"
+                formControlName="mailingCity"
+                placeholder="City"
+                class="w-full" />
+            </div>
+            
+            <div class="col-12 md:col-2">
+              <label for="mailingState" class="block text-900 font-medium mb-2">
+                State
+              </label>
+              <p-dropdown
+                inputId="mailingState"
+                formControlName="mailingState"
+                [options]="stateOptions"
+                placeholder="State"
+                styleClass="w-full">
+              </p-dropdown>
+            </div>
+            
+            <div class="col-12 md:col-3">
+              <label for="mailingZipCode" class="block text-900 font-medium mb-2">
+                ZIP Code
+              </label>
+              <input
+                pInputText
+                id="mailingZipCode"
+                formControlName="mailingZipCode"
+                placeholder="12345"
+                class="w-full" />
+            </div>
+            
+            <div class="col-12 md:col-2">
+              <label for="mailingCountry" class="block text-900 font-medium mb-2">
+                Country
+              </label>
+              <p-dropdown
+                inputId="mailingCountry"
+                formControlName="mailingCountry"
+                [options]="countryOptions"
+                placeholder="Country"
+                styleClass="w-full">
+              </p-dropdown>
             </div>
             
             <div class="col-12 md:col-6">
@@ -982,6 +1139,70 @@ export class OwnerDetailsComponent implements OnInit, OnChanges {
     { label: 'Other', value: 'other' }
   ];
 
+  stateOptions: DropdownOption[] = [
+    { label: 'Alabama', value: 'AL' },
+    { label: 'Alaska', value: 'AK' },
+    { label: 'Arizona', value: 'AZ' },
+    { label: 'Arkansas', value: 'AR' },
+    { label: 'California', value: 'CA' },
+    { label: 'Colorado', value: 'CO' },
+    { label: 'Connecticut', value: 'CT' },
+    { label: 'Delaware', value: 'DE' },
+    { label: 'Florida', value: 'FL' },
+    { label: 'Georgia', value: 'GA' },
+    { label: 'Hawaii', value: 'HI' },
+    { label: 'Idaho', value: 'ID' },
+    { label: 'Illinois', value: 'IL' },
+    { label: 'Indiana', value: 'IN' },
+    { label: 'Iowa', value: 'IA' },
+    { label: 'Kansas', value: 'KS' },
+    { label: 'Kentucky', value: 'KY' },
+    { label: 'Louisiana', value: 'LA' },
+    { label: 'Maine', value: 'ME' },
+    { label: 'Maryland', value: 'MD' },
+    { label: 'Massachusetts', value: 'MA' },
+    { label: 'Michigan', value: 'MI' },
+    { label: 'Minnesota', value: 'MN' },
+    { label: 'Mississippi', value: 'MS' },
+    { label: 'Missouri', value: 'MO' },
+    { label: 'Montana', value: 'MT' },
+    { label: 'Nebraska', value: 'NE' },
+    { label: 'Nevada', value: 'NV' },
+    { label: 'New Hampshire', value: 'NH' },
+    { label: 'New Jersey', value: 'NJ' },
+    { label: 'New Mexico', value: 'NM' },
+    { label: 'New York', value: 'NY' },
+    { label: 'North Carolina', value: 'NC' },
+    { label: 'North Dakota', value: 'ND' },
+    { label: 'Ohio', value: 'OH' },
+    { label: 'Oklahoma', value: 'OK' },
+    { label: 'Oregon', value: 'OR' },
+    { label: 'Pennsylvania', value: 'PA' },
+    { label: 'Rhode Island', value: 'RI' },
+    { label: 'South Carolina', value: 'SC' },
+    { label: 'South Dakota', value: 'SD' },
+    { label: 'Tennessee', value: 'TN' },
+    { label: 'Texas', value: 'TX' },
+    { label: 'Utah', value: 'UT' },
+    { label: 'Vermont', value: 'VT' },
+    { label: 'Virginia', value: 'VA' },
+    { label: 'Washington', value: 'WA' },
+    { label: 'West Virginia', value: 'WV' },
+    { label: 'Wisconsin', value: 'WI' },
+    { label: 'Wyoming', value: 'WY' }
+  ];
+
+  countryOptions: DropdownOption[] = [
+    { label: 'United States', value: 'US' },
+    { label: 'Canada', value: 'CA' },
+    { label: 'United Kingdom', value: 'GB' },
+    { label: 'Australia', value: 'AU' },
+    { label: 'Germany', value: 'DE' },
+    { label: 'France', value: 'FR' },
+    { label: 'Japan', value: 'JP' },
+    { label: 'Other', value: 'OTHER' }
+  ];
+
   constructor(
     private fb: FormBuilder,
     private existingInstancesService: ExistingInstancesService
@@ -1009,8 +1230,20 @@ export class OwnerDetailsComponent implements OnInit, OnChanges {
       phoneHome: ['', [Validators.required, this.phoneValidator]],
       phoneMobile: [''],
       email: ['', [Validators.required, Validators.email]],
-      homeAddress: ['', [Validators.required, Validators.minLength(10)]],
+      // Home Address Fields
+      homeAddress: ['', [Validators.required, Validators.minLength(5)]],
+      homeAddress2: [''],
+      homeCity: ['', Validators.required],
+      homeState: ['', Validators.required],
+      homeZipCode: ['', [Validators.required, Validators.pattern(/^\d{5}(-\d{4})?$/)]],
+      homeCountry: ['US', Validators.required],
+      // Mailing Address Fields
       mailingAddress: [''],
+      mailingAddress2: [''],
+      mailingCity: [''],
+      mailingState: [''],
+      mailingZipCode: ['', Validators.pattern(/^\d{5}(-\d{4})?$/)],
+      mailingCountry: [''],
       citizenship: ['', Validators.required],
       employmentStatus: ['', Validators.required],
       annualIncome: ['', Validators.required],
@@ -1065,8 +1298,12 @@ export class OwnerDetailsComponent implements OnInit, OnChanges {
     this.sectionEditMode[sectionName] = !this.sectionEditMode[sectionName];
   }
 
+  // Store which address type we're populating
+  private selectedAddressType: 'home' | 'mailing' = 'home';
+
   // Existing Address Modal Methods
-  showExistingAddressModal() {
+  showExistingAddressModal(addressType: 'home' | 'mailing') {
+    this.selectedAddressType = addressType;
     // Collect all existing instances from the form data
     this.existingInstances = this.existingInstancesService.collectExistingInstances(this.formData);
     this.showExistingModal = true;
@@ -1078,22 +1315,24 @@ export class OwnerDetailsComponent implements OnInit, OnChanges {
       const currentValues = this.ownerForm.value;
       const updatedValues = this.existingInstancesService.applyInstanceData('address', instance.data, currentValues);
       
-      // Check if home address is empty, use it first, otherwise use mailing
-      const currentHomeAddress = this.ownerForm.get('homeAddress')?.value;
-      const currentMailingAddress = this.ownerForm.get('mailingAddress')?.value;
-      
-      if (!currentHomeAddress) {
+      // Apply to the specific address type that was requested
+      if (this.selectedAddressType === 'home') {
         this.ownerForm.patchValue({
-          homeAddress: updatedValues.homeAddress
-        });
-      } else if (!currentMailingAddress) {
-        this.ownerForm.patchValue({
-          mailingAddress: updatedValues.mailingAddress
+          homeAddress: instance.data.address || '',
+          homeAddress2: instance.data.address2 || '',
+          homeCity: instance.data.city || '',
+          homeState: instance.data.state || '',
+          homeZipCode: instance.data.zipCode || '',
+          homeCountry: instance.data.country || 'US'
         });
       } else {
-        // Both fields have values, replace home address
         this.ownerForm.patchValue({
-          homeAddress: updatedValues.homeAddress
+          mailingAddress: instance.data.address || '',
+          mailingAddress2: instance.data.address2 || '',
+          mailingCity: instance.data.city || '',
+          mailingState: instance.data.state || '',
+          mailingZipCode: instance.data.zipCode || '',
+          mailingCountry: instance.data.country || 'US'
         });
       }
       

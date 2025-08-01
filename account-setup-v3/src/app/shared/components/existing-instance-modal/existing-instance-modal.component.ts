@@ -176,6 +176,15 @@ export interface ExistingInstance {
       padding: 1rem 2rem;
       justify-content: flex-end;
     }
+
+    /* Fix search input placeholder positioning */
+    .search-container .p-input-icon-left > input {
+      padding-left: 2.5rem;
+    }
+
+    .search-container .p-input-icon-left > i {
+      left: 0.75rem;
+    }
   `]
 })
 export class ExistingInstanceModalComponent implements OnInit {
