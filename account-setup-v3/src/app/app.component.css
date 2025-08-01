@@ -65,8 +65,8 @@
 
 .main-content-area {
   margin-left: 200px;
-  margin-top: 200px; /* Increased to avoid header overlap */
-  height: calc(100vh - 200px);
+  margin-top: 120px; /* Further reduced spacing - tighter gap between headers and content */
+  height: calc(100vh - 120px);
   overflow-y: auto;
   overflow-x: hidden;
   scroll-behavior: smooth;
@@ -88,7 +88,7 @@
   padding-top: 1rem !important; /* Add padding instead of negative margin */
   overflow-y: auto;
   overflow-x: hidden;
-  max-height: calc(100vh - 200px);
+  max-height: calc(100vh - 120px);
   scroll-behavior: smooth;
 }
 
@@ -236,6 +236,8 @@ app-funding :host :deep(.p-card:first-child) {
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
   z-index: 9999;
   min-width: 200px;
+  max-height: 400px;
+  overflow-y: auto;
   animation: dropdownSlide 0.2s ease-out;
 }
 
@@ -253,6 +255,9 @@ app-funding :host :deep(.p-card:first-child) {
 .profile-menu-item {
   padding: 1rem;
   border-bottom: 1px solid #f3f4f6;
+  background: white;
+  display: block !important;
+  visibility: visible !important;
 }
 
 .profile-menu-item:last-child {
@@ -637,4 +642,295 @@ app-funding :host :deep(.p-card:first-child) {
     padding: var(--space-2) var(--space-4) !important;
     font-size: var(--text-xs) !important;
   }
+}
+
+/* Registration Group View Styles */
+.registration-group-header {
+  background: linear-gradient(135deg, var(--enterprise-primary) 0%, var(--enterprise-primary-600) 100%);
+  color: white;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.registration-section {
+  margin-bottom: 1rem;
+  position: relative;
+  z-index: 1; /* Ensure proper layering */
+}
+
+.registration-subsection-header {
+  background: var(--surface-100);
+  color: var(--text-color);
+  padding: 0.5rem 0.75rem;
+  border-radius: 4px;
+  font-weight: 500;
+  font-size: 0.8rem;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-left: 3px solid var(--primary-color);
+}
+
+.registration-entity {
+  margin-bottom: 1rem;
+  border-left: 2px solid var(--surface-200);
+  padding-left: 0.5rem;
+  position: relative;
+  z-index: 2; /* Higher z-index to ensure visibility */
+}
+
+.registration-entity-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background: var(--surface-50);
+  border-radius: 4px;
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+  position: relative;
+  z-index: 3; /* Ensure header is above other elements */
+}
+
+.registration-entity-header .entity-name {
+  flex: 1;
+  font-size: 0.85rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 3px;
+  transition: background-color 0.2s ease;
+}
+
+/* In registration group mode, the entire header is clickable for navigation */
+.clickable .entity-name {
+  cursor: inherit;
+}
+
+.registration-entity-header .completion-icon {
+  font-size: 1rem; /* Increased size for better visibility */
+  margin-left: auto;
+  margin-right: 0.25rem;
+  flex-shrink: 0;
+  min-width: 20px; /* Increased min-width */
+  height: 20px; /* Added explicit height */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 4; /* Highest z-index to ensure icon visibility */
+}
+
+.registration-entity-header .toggle-icon {
+  margin-right: 0.5rem;
+  margin-left: 0;
+  flex-shrink: 0;
+  font-size: 0.875rem;
+  min-width: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 4; /* Ensure toggle icon is visible */
+}
+
+/* Registration Group Accordion Header Styles */
+.registration-group-header-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 0.5rem 0;
+  width: 100%;
+}
+
+.registration-group-title {
+  color: var(--text-color);
+  flex: 1;
+  text-align: center;
+  letter-spacing: 0.02em;
+}
+
+.registration-completion-icon {
+  font-size: 1rem;
+  margin-left: 0.5rem;
+  flex-shrink: 0;
+}
+
+/* Nested collapsible functionality styles */
+.clickable {
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.clickable:hover {
+  background: var(--surface-100);
+}
+
+.toggle-icon {
+  margin-left: auto;
+  font-size: 0.75rem;
+  color: var(--text-color-secondary);
+  transition: transform 0.2s ease;
+}
+
+.nested-sections {
+  margin-left: 1rem;
+  margin-top: 0.5rem;
+  border-left: 2px solid var(--surface-200);
+  padding-left: 0.75rem;
+  position: relative;
+  z-index: 2; /* Ensure nested sections are visible */
+}
+
+/* Enhanced completion icons for nested sections */
+.nested-sections .section-nav-item .completion-icon {
+  font-size: 1rem; /* Larger size for better visibility */
+  min-width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 5; /* Higher z-index than parent containers */
+}
+
+/* Ensure all completion icons are properly styled and visible */
+.completion-icon.text-success {
+  color: #22c55e !important; /* Green for completed */
+}
+
+.completion-icon.text-danger {
+  color: #ef4444 !important; /* Red for incomplete */
+}
+
+/* Fix any potential overlay issues in registration group mode */
+.registration-group-mode .registration-entity,
+.registration-group-mode .nested-sections,
+.registration-group-mode .section-nav-item {
+  position: relative;
+  z-index: auto; /* Let normal stacking order work */
+}
+
+.registration-group-mode .completion-icon {
+  position: relative;
+  z-index: 1;
+  visibility: visible !important;
+  display: flex !important;
+}
+
+.registration-subsection-header.clickable {
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+.registration-subsection-header.clickable:hover {
+  background: var(--surface-200);
+}
+
+.registration-subsection-header .toggle-icon {
+  margin-left: auto;
+  font-size: 0.75rem;
+  color: var(--text-color-secondary);
+}
+
+/* Override PrimeNG accordion styles for registration groups */
+::ng-deep .p-accordion .p-accordion-tab .p-accordion-header .p-accordion-header-link {
+  background: linear-gradient(135deg, var(--surface-50) 0%, var(--surface-100) 100%);
+  border: 1px solid var(--surface-200);
+  border-radius: 6px;
+  margin-bottom: 0.5rem;
+  padding: 1rem 1.25rem;
+  min-height: 3.5rem;
+}
+
+::ng-deep .p-accordion .p-accordion-tab .p-accordion-header .p-accordion-header-link:not(.p-disabled):hover {
+  background: linear-gradient(135deg, var(--surface-100) 0%, var(--surface-200) 100%);
+  border-color: var(--primary-color);
+}
+
+::ng-deep .p-accordion .p-accordion-tab .p-accordion-header.p-highlight .p-accordion-header-link {
+  background: linear-gradient(135deg, var(--primary-50) 0%, var(--primary-100) 100%);
+  border-color: var(--primary-color);
+}
+
+/* Section Navigation Item Styles */
+.section-nav-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  margin: 0.25rem 0;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+  background: transparent;
+}
+
+.section-nav-item:hover {
+  background: var(--surface-100);
+  border-color: var(--surface-300);
+  transform: translateX(2px);
+}
+
+.section-nav-item.active {
+  background: linear-gradient(135deg, var(--primary-50) 0%, var(--primary-100) 100%);
+  border-color: var(--primary-color);
+  color: var(--primary-700);
+  font-weight: 600;
+  box-shadow: 0 2px 4px rgba(59, 130, 246, 0.1);
+}
+
+.section-nav-item.active:hover {
+  background: linear-gradient(135deg, var(--primary-100) 0%, var(--primary-200) 100%);
+  transform: translateX(2px);
+}
+
+.section-nav-content {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex: 1;
+}
+
+.section-nav-icon {
+  font-size: 1rem;
+  color: var(--text-color-secondary);
+  width: 1.25rem;
+  text-align: center;
+}
+
+.section-nav-item.active .section-nav-icon {
+  color: var(--primary-600);
+}
+
+.section-nav-text {
+  font-size: 0.875rem;
+  color: var(--text-color);
+  font-weight: 500;
+}
+
+.section-nav-item.active .section-nav-text {
+  color: var(--primary-700);
+  font-weight: 600;
+}
+
+.completion-icon {
+  font-size: 1rem; /* Increased from 0.875rem for better visibility */
+  margin-left: 0.5rem;
+  flex-shrink: 0;
+  min-width: 20px; /* Increased from 16px */
+  height: 20px; /* Added explicit height */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 1; /* Ensure proper layering */
 }

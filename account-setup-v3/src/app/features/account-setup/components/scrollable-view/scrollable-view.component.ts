@@ -280,6 +280,17 @@ export class ScrollableViewComponent implements OnInit, OnChanges, OnDestroy {
         { id: 'funding', name: 'Funding', icon: 'pi pi-dollar' },
         { id: 'firm-details', name: 'Firm Details', icon: 'pi pi-building' }
       ]
+    },
+    {
+      id: 'traditional-ira-account',
+      name: 'Traditional IRA Account',
+      owners: 'John Smith',
+      icon: 'pi pi-university',
+      sections: [
+        { id: 'account-setup', name: 'Account Setup', icon: 'pi pi-cog' },
+        { id: 'funding', name: 'Funding', icon: 'pi pi-dollar' },
+        { id: 'firm-details', name: 'Firm Details', icon: 'pi pi-building' }
+      ]
     }
   ];
 

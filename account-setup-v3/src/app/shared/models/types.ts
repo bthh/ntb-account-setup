@@ -6,7 +6,7 @@ export type Section = 'owner-details' | 'firm-details' | 'account-setup' | 'fund
 export type EntityType = 'member' | 'account';
 
 export type MemberId = 'john-smith' | 'mary-smith' | 'smith-trust';
-export type AccountId = 'joint-account' | 'individual-account' | 'trust-account';
+export type AccountId = 'joint-account' | 'individual-account' | 'trust-account' | 'roth-ira-account' | 'traditional-ira-account';
 
 // Comprehensive form field types
 export interface PersonalDetails {
@@ -73,6 +73,7 @@ export interface FundingInstance {
   transferDate?: Date;
   startDate?: Date;
   originalIndex?: number;
+  contributionMethod?: string;
 }
 
 export interface FundingData {
@@ -95,7 +96,7 @@ export type IncomeSourceType = 'salary' | 'business' | 'investments' | 'retireme
 export type ExperienceLevel = 'none' | 'limited' | 'good' | 'extensive';
 export type LiquidityNeed = 'none' | 'low' | 'moderate' | 'high';
 export type ScenarioResponse = 'sell-all' | 'sell-some' | 'hold' | 'buy-more';
-export type AccountType = 'individual-taxable' | 'joint-taxable' | 'ira' | 'roth-ira' | 'trust';
+export type AccountType = 'individual-taxable' | 'joint-taxable' | 'ira' | 'roth-ira' | 'traditional-ira' | 'trust';
 export type InvestmentObjective = 'growth' | 'income' | 'balanced' | 'preservation';
 export type RiskTolerance = 'conservative' | 'moderate' | 'aggressive';
 export type TrustType = 'revocable-living' | 'irrevocable' | 'charitable-remainder' | 'charitable-lead' | 'grantor' | 'non-grantor' | 'testamentary';

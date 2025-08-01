@@ -59,6 +59,23 @@ export class AppComponent {
   showReviewSummaryMode = false;
   scrollablePagesMode = true;
   showProfileMenu = false;
+  registrationGroupMode = false;
+  expandedRegistrationGroups: number[] = [0]; // Start with first registration expanded only
+  currentRegistrationContext: string = ''; // Track which registration the user is currently focused on
+  
+  // Nested expansion state for registration groups (removed owners section as it's always expanded)
+  
+  expandedOwnerSections: { [ownerId: string]: boolean } = {
+    'john-smith': false,
+    'mary-smith': false,
+    'smith-trust': false
+  };
+  
+  expandedAccountSections: { [accountId: string]: boolean } = {
+    'joint-account': false,
+    'roth-ira-account': false,
+    'trust-account': false
+  };
 
   // Form data with same initial data as V2
   formData: FormData = {
@@ -195,20 +212,35 @@ export class AppComponent {
       patriotActGovernmentOfficial: false
     },
     'smith-trust': {
-      // Owner Details - Basic trust info only (incomplete for demo)
+      // Owner Details - Complete for demo
       firstName: 'Smith Family',
       middleInitial: '',
       lastName: 'Trust',
       dateOfBirth: new Date('2020-01-01'),
-      // ssn intentionally left empty for demo
+      ssn: '12-3456789', // Trust EIN format
       email: 'trust@smithfamily.com',
       phoneHome: '(555) 123-4567',
       phoneMobile: '(555) 123-4567',
       homeAddress: '123 Main Street, Anytown, ST 12345',
-      // citizenship intentionally left empty for demo
+      mailingAddress: 'Same as home address',
+      citizenship: 'us-citizen',
       employmentStatus: 'trust',
-      annualIncome: 'over-500k'
-      // netWorth and fundsSource intentionally left empty for demo
+      annualIncome: 'over-500k',
+      netWorth: 'over-5m',
+      fundsSource: 'Trust assets and investment income',
+      
+      // Firm Details - Complete for demo
+      totalNetWorth: 'over-5m',
+      liquidNetWorth: '1m-5m',
+      averageAnnualIncome: 'over-500k',
+      incomeSource: 'investments',
+      investmentExperience: 'extensive',
+      stocksExperience: 'extensive',
+      bondsExperience: 'good',
+      optionsExperience: 'limited',
+      liquidityNeeds: 'low',
+      emergencyFund: true,
+      scenario1: 'hold'
     },
     'joint-account': {
       // Account Setup fields
@@ -229,6 +261,37 @@ export class AppComponent {
       investmentObjectives: 'Long-term growth with moderate risk tolerance. Building wealth for retirement while maintaining liquidity for major purchases.',
       recommendations: 'Diversified portfolio with 70% equities (mix of domestic and international) and 30% fixed income. Regular rebalancing quarterly.',
       alternativeSuggestions: 'Consider tax-advantaged accounts for additional retirement savings. Municipal bonds may provide tax benefits given income level.',
+      
+      // Base form fields for existing product information
+      investmentName: 'Previous Brokerage Account',
+      productType: 'Taxable Investment Account',
+      accountPolicyNumber: 'JOINT-987654',
+      initialDateOfPurchase: new Date('2019-05-01'),
+      initialPremiumInvestment: '$75,000',
+      currentAccountValue: '$125,000',
+      approximateAnnualCost: '0.65%',
+      currentSurrenderValue: 'N/A',
+      surrenderSalesPenaltyCharges: 'None',
+      deathBenefitRiderValue: 'N/A',
+      livingBenefitRiderValue: 'N/A',
+      outstandingLoanAmount: '$0',
+      wasExistingProductRecommended: 'Partial transfer recommended',
+      
+      // Employer Sponsored Retirement Plans
+      recommendationIncludeRetainFunds: 'Transfer 70% of existing balance',
+      
+      // Investment Policy Statement
+      equityRatio: 'balanced-growth',
+      equityRatioOther: '',
+      allocationModelExplanation: 'Balanced growth allocation suitable for joint long-term goals',
+      nonQualifiedAssetConsiderations: 'Tax-loss harvesting opportunities available',
+      additionalInvestmentInstructions: 'Coordinate with existing retirement accounts for overall allocation',
+      
+      // Additional Account Information
+      patriotActForeignFinancial: false,
+      patriotActPrivateBanking: false,
+      patriotActOffshoreBank: false,
+      patriotActGovernmentOfficial: false,
       fundingInstances: {
         'acat': [
           {
@@ -283,6 +346,37 @@ export class AppComponent {
       investmentObjectives: 'Tax-free growth for retirement. Maximize long-term growth potential given extended time horizon until retirement.',
       recommendations: 'Growth-oriented portfolio with 85% equities and 15% fixed income. Focus on low-cost index funds to minimize fees.',
       alternativeSuggestions: 'Consider automatic annual contributions to maximize tax-free growth. Review beneficiary designations annually.',
+      
+      // Base form fields for existing product information
+      investmentName: 'Previous Traditional IRA',
+      productType: 'Traditional IRA',
+      accountPolicyNumber: 'ROTH-456789',
+      initialDateOfPurchase: new Date('2020-04-15'),
+      initialPremiumInvestment: '$5,500',
+      currentAccountValue: '$8,200',
+      approximateAnnualCost: '0.25%',
+      currentSurrenderValue: 'N/A',
+      surrenderSalesPenaltyCharges: 'None (conversion)',
+      deathBenefitRiderValue: 'N/A',
+      livingBenefitRiderValue: 'N/A',
+      outstandingLoanAmount: '$0',
+      wasExistingProductRecommended: 'Roth conversion recommended',
+      
+      // Employer Sponsored Retirement Plans
+      recommendationIncludeRetainFunds: 'Convert traditional IRA to Roth over time',
+      
+      // Investment Policy Statement
+      equityRatio: 'aggressive-growth',
+      equityRatioOther: '',
+      allocationModelExplanation: 'Aggressive growth appropriate for long retirement timeline',
+      nonQualifiedAssetConsiderations: 'N/A for Roth IRA',
+      additionalInvestmentInstructions: 'Maximize annual contributions and consider backdoor Roth strategies',
+      
+      // Additional Account Information
+      patriotActForeignFinancial: false,
+      patriotActPrivateBanking: false,
+      patriotActOffshoreBank: false,
+      patriotActGovernmentOfficial: false,
       fundingInstances: {
         'acat': [],
         'ach': [
@@ -302,26 +396,121 @@ export class AppComponent {
       beneficiaries: []
     },
     'trust-account': {
-      // accountType intentionally left empty for demo
-      // investmentObjective intentionally left empty for demo  
-      // riskTolerance intentionally left empty for demo
+      // Account setup fields - INTENTIONALLY INCOMPLETE for demo purposes
+      accountType: 'trust',
+      investmentObjective: 'preservation', 
+      riskTolerance: 'conservative',
       trustName: 'Smith Family Revocable Living Trust',
       trustType: 'revocable-living',
       trustEffectiveDate: new Date('2020-01-15'),
       trustEin: '12-3456789',
       trustState: 'CA',
-      trustPurpose: 'To manage and distribute family assets for the benefit of current and future generations of the Smith family, providing financial security and wealth preservation.',
-      trusteeName: 'John A. Smith',
+      trustPurpose: '', // EMPTY for demo - required field missing
+      trusteeName: '', // EMPTY for demo - required field missing  
       trusteePhone: '(555) 123-4567',
-      trusteeAddress: '123 Main Street, Anytown, CA 12345',
+      trusteeAddress: '', // EMPTY for demo - required field missing
       hasSuccessorTrustee: true,
       trustees: [],
+      
+      // Firm Details - Account-specific fields
+      investmentObjectives: 'Conservative wealth preservation with modest growth. Protect principal while generating income for trust beneficiaries.',
+      recommendations: 'Conservative allocation with 40% equities and 60% fixed income. Focus on dividend-paying stocks and high-grade bonds.',
+      alternativeSuggestions: 'Consider municipal bonds for tax efficiency. Evaluate real estate investment trusts for diversification.',
+      
       fundingInstances: {
-        'acat': [],
+        'acat': [
+          {
+            type: 'acat',
+            typeName: 'ACAT Transfers',
+            name: 'Trust Assets Transfer',
+            amount: '500000',
+            fromFirm: 'Previous Trust Custodian',
+            transferType: 'Full Transfer'
+          }
+        ],
         'ach': [],
         'initial-ach': [],
         'withdrawal': [],
         'contribution': []
+      }
+    },
+    'traditional-ira-account': {
+      // Account setup fields - partially complete for demo
+      accountType: 'traditional-ira',
+      investmentObjective: 'growth',
+      riskTolerance: 'moderate',
+      primaryBeneficiary: 'Mary Smith',
+      beneficiaryRelationship: 'Spouse',
+      beneficiaryPercentage: 100,
+      liquidityTiming: '10+years',
+      timeHorizon: 'long-term',
+      primaryGoals: 'Retirement savings with tax-deferred growth',
+      
+      // Source of Funds
+      initialSourceOfFunds: '401k-rollover',
+      investmentAmount: '$75,000',
+      additionalSourceFunds: 'Annual IRA contributions up to limit',
+      
+      // Firm Details - Account-specific fields
+      investmentObjectives: 'Long-term growth with moderate risk for retirement planning. Maximize tax-deferred growth potential.',
+      recommendations: 'Growth-oriented allocation with 80% equities and 20% fixed income. Regular contributions and annual rebalancing.',
+      alternativeSuggestions: 'Consider Roth conversion ladder strategy. Evaluate target-date funds for simplicity.',
+      
+      // Beneficiaries
+      beneficiaries: [
+        {
+          id: 'beneficiary-1',
+          name: 'Mary Smith',
+          relationship: 'Spouse',
+          percentage: 50,
+          dateOfBirth: new Date('1987-08-22'),
+          ssn: '987-65-4321',
+          address: '123 Main Street, Anytown, ST 12345'
+        },
+        {
+          id: 'beneficiary-2',
+          name: 'Michael Smith',
+          relationship: 'Child',
+          percentage: 30,
+          dateOfBirth: new Date('2010-03-15'),
+          ssn: '123-45-6789',
+          address: '123 Main Street, Anytown, ST 12345'
+        },
+        {
+          id: 'beneficiary-3',
+          name: 'Sarah Smith',
+          relationship: 'Child',
+          percentage: 20,
+          dateOfBirth: new Date('2012-11-08'),
+          ssn: '234-56-7890',
+          address: '123 Main Street, Anytown, ST 12345'
+        }
+      ],
+      
+      fundingInstances: {
+        'acat': [
+          {
+            type: 'acat',
+            typeName: '401k Rollover',
+            name: 'Previous 401k Rollover',
+            amount: '75000',
+            fromFirm: 'Previous Employer 401k',
+            transferType: 'Direct Rollover'
+          }
+        ],
+        'ach': [],
+        'initial-ach': [],
+        'withdrawal': [],
+        'contribution': [
+          {
+            type: 'contribution',
+            typeName: 'Annual Contribution',
+            name: 'Annual IRA Contribution',
+            amount: '6500',
+            contributionMethod: 'ach',
+            frequency: 'annual'
+          }
+        ]
       }
     }
   };
@@ -398,6 +587,66 @@ export class AppComponent {
         { id: 'funding', name: 'Funding', icon: 'pi pi-dollar' },
         { id: 'firm-details', name: 'Firm Details', icon: 'pi pi-building' }
       ]
+    },
+    {
+      id: 'traditional-ira-account',
+      name: 'Traditional IRA Account',
+      owners: 'John Smith',
+      icon: 'pi pi-university',
+      sections: [
+        { id: 'account-setup', name: 'Account Setup', icon: 'pi pi-cog' },
+        { id: 'funding', name: 'Funding', icon: 'pi pi-dollar' },
+        { id: 'firm-details', name: 'Firm Details', icon: 'pi pi-building' }
+      ]
+    }
+  ];
+
+  // Registration groups data structure
+  registrationGroups = [
+    {
+      id: 'joint-registration',
+      name: 'Joint Registration',
+      icon: 'pi pi-users',
+      members: [
+        { id: 'john-smith', name: 'John Smith', sections: ['owner-details', 'firm-details'] },
+        { id: 'mary-smith', name: 'Mary Smith', sections: ['owner-details', 'firm-details'] }
+      ],
+      accounts: [
+        { id: 'joint-account', name: 'Joint Account', sections: ['account-setup', 'funding', 'firm-details'] }
+      ]
+    },
+    {
+      id: 'roth-registration',
+      name: 'Roth Registration',
+      icon: 'pi pi-star',
+      members: [
+        { id: 'mary-smith', name: 'Mary Smith', sections: ['owner-details', 'firm-details'] }
+      ],
+      accounts: [
+        { id: 'roth-ira-account', name: 'Roth IRA Account', sections: ['account-setup', 'funding', 'firm-details'] }
+      ]
+    },
+    {
+      id: 'trust-registration',
+      name: 'Trust Registration',
+      icon: 'pi pi-shield',
+      members: [
+        { id: 'smith-trust', name: 'Smith Trust', sections: ['owner-details', 'firm-details'] }
+      ],
+      accounts: [
+        { id: 'trust-account', name: 'Trust Account', sections: ['account-setup', 'funding', 'firm-details'] }
+      ]
+    },
+    {
+      id: 'traditional-ira-registration',
+      name: 'Traditional IRA Registration',
+      icon: 'pi pi-university',
+      members: [
+        { id: 'john-smith', name: 'John Smith', sections: ['owner-details', 'firm-details'] }
+      ],
+      accounts: [
+        { id: 'traditional-ira-account', name: 'Traditional IRA Account', sections: ['account-setup', 'funding', 'firm-details'] }
+      ]
     }
   ];
 
@@ -407,8 +656,8 @@ export class AppComponent {
   }
 
   ngOnInit() {
-    // Clear localStorage to ensure demo data is used (uncomment if needed)
-    // localStorage.removeItem('accountSetupData');
+    // Clear localStorage to ensure demo data is used with intentionally incomplete trust account
+    localStorage.removeItem('accountSetupData');
     
     // For demo purposes, prefer default data over saved data to ensure John Smith's data is visible
     const savedData = localStorage.getItem('accountSetupData');
@@ -427,8 +676,46 @@ export class AppComponent {
     // Save the merged data back to localStorage to ensure consistency
     localStorage.setItem('accountSetupData', JSON.stringify(this.formData));
     
+    
     // Update completion status based on actual form data
     this.updateCompletionStatus();
+    
+    // Debug completion status calculations
+    console.log('=== DETAILED COMPLETION STATUS DEBUG ===');
+    
+    // Debug trust account setup specifically
+    const trustAccountData = this.formData['trust-account'];
+    console.log('Trust account data:', trustAccountData);
+    console.log('Trust account setup fields check:');
+    console.log('- accountType:', trustAccountData?.accountType);
+    console.log('- investmentObjective:', trustAccountData?.investmentObjective);
+    console.log('- riskTolerance:', trustAccountData?.riskTolerance);
+    console.log('- trustName:', trustAccountData?.trustName);
+    console.log('- trustType:', trustAccountData?.trustType);
+    console.log('- trustEin:', trustAccountData?.trustEin);
+    console.log('- trustState:', trustAccountData?.trustState);
+    console.log('- trustPurpose:', trustAccountData?.trustPurpose);
+    console.log('- trusteeName:', trustAccountData?.trusteeName);
+    console.log('- trusteeAddress:', trustAccountData?.trusteeAddress);
+    
+    console.log('Trust Account Setup Complete:', this.calculateSectionCompletion('accounts', 'trust-account', 'account-setup'));
+    console.log('Trust Account Firm Details Complete:', this.calculateSectionCompletion('accounts', 'trust-account', 'firm-details'));
+    console.log('Smith Trust Owner Details Complete:', this.calculateSectionCompletion('members', 'smith-trust', 'owner-details'));
+    console.log('Smith Trust Firm Details Complete:', this.calculateSectionCompletion('members', 'smith-trust', 'firm-details'));
+    
+    // Debug overall progress calculation
+    console.log('Overall progress calculation:', this.getOverallProgress());
+    console.log('Overall completion status object:', this.completionStatus);
+    console.log('========================================');
+    
+    // Initialize registration group expansion based on current section
+    if (this.registrationGroupMode) {
+      // Initialize registration context to the first registration
+      if (this.registrationGroups.length > 0) {
+        this.currentRegistrationContext = this.registrationGroups[0].id;
+      }
+      this.updateRegistrationGroupExpansion();
+    }
   }
 
   private mergeFormData(defaultData: FormData, savedData: FormData): FormData {
@@ -438,9 +725,19 @@ export class AppComponent {
     Object.keys(savedData).forEach(entityId => {
       if (merged[entityId]) {
         // For demo entities, prefer default data to ensure demo data is visible
-        if (entityId === 'john-smith' || entityId === 'mary-smith' || entityId === 'joint-account') {
-          // Keep default demo data and only merge non-conflicting fields
-          merged[entityId] = { ...savedData[entityId], ...merged[entityId] };
+        if (entityId === 'john-smith' || entityId === 'mary-smith' || entityId === 'joint-account' || entityId === 'trust-account') {
+          // Keep default demo data and only merge non-empty fields from saved data
+          const defaultEntityData = merged[entityId];
+          const savedEntityData = savedData[entityId];
+          
+          // Create merged entity data preferring default values for key demo fields
+          merged[entityId] = { ...savedEntityData };
+          
+          // For critical demo fields, always preserve default data (including intentionally empty fields for demo)
+          Object.keys(defaultEntityData).forEach(field => {
+            // Always use default data for demo entities, even if it's empty (for demo purposes)
+            merged[entityId][field] = defaultEntityData[field];
+          });
         } else {
           // For other entities, merge normally (prefer saved values but keep default values for missing fields)
           merged[entityId] = { ...merged[entityId], ...savedData[entityId] };
@@ -481,7 +778,7 @@ export class AppComponent {
   // Navigation logic identical to V2
   getNextSectionAndEntity() {
     const memberOrder = ['john-smith', 'mary-smith', 'smith-trust'];
-    const accountOrder = ['joint-account', 'roth-ira-account', 'trust-account'];
+    const accountOrder = ['joint-account', 'roth-ira-account', 'trust-account', 'traditional-ira-account'];
     const memberSections = ['owner-details', 'firm-details'];
     const accountSections = ['account-setup', 'funding', 'firm-details'];
 
@@ -544,7 +841,7 @@ export class AppComponent {
 
   getPreviousSectionAndEntity() {
     const memberOrder = ['john-smith', 'mary-smith', 'smith-trust'];
-    const accountOrder = ['joint-account', 'roth-ira-account', 'trust-account'];
+    const accountOrder = ['joint-account', 'roth-ira-account', 'trust-account', 'traditional-ira-account'];
     const memberSections = ['owner-details', 'firm-details'];
     const accountSections = ['account-setup', 'funding', 'firm-details'];
 
@@ -624,6 +921,7 @@ export class AppComponent {
   }
 
   handleSectionChange(section: Section, memberId: string, accountId: string) {
+    console.log('handleSectionChange called:', { section, memberId, accountId });
     this.currentSection = section;
     
     if (memberId) {
@@ -645,35 +943,53 @@ export class AppComponent {
     // Auto-save notification removed per user request
 
     this.isInitialLoad = false;
+    
+    // Update registration group expansion if in registration group mode
+    if (this.registrationGroupMode) {
+      this.resetSubsectionExpansions();
+      this.updateRegistrationGroupExpansion();
+    }
 
     // Scroll to top of main content area when navigating sections
     setTimeout(() => {
-      // Try multiple scroll targets to ensure reliable scrolling
-      const flexContent = document.querySelector('.flex-1');
-      const mainContentArea = document.querySelector('.main-content-area');
-      const accountForm = document.querySelector('app-account-form');
-      
-      // Priority order: flex-1 content, main area, account form, then window
-      if (flexContent) {
-        flexContent.scrollTo({
-          top: 0,
-          behavior: 'smooth'
-        });
-      } else if (mainContentArea) {
-        mainContentArea.scrollTo({
-          top: 0,
-          behavior: 'smooth'
-        });
-      } else if (accountForm) {
-        accountForm.scrollIntoView({
-          behavior: 'smooth',
-          block: 'start'
-        });
+      if (this.scrollablePagesMode) {
+        // In scrollable mode, target the scrollable view container
+        const scrollableContainer = document.querySelector('.scrollable-view-container');
+        
+        if (scrollableContainer) {
+          scrollableContainer.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+          });
+        }
       } else {
-        window.scrollTo({
-          top: 0,
-          behavior: 'smooth'
-        });
+        // In regular mode, try multiple scroll targets to ensure reliable scrolling
+        const flexContent = document.querySelector('.flex-1');
+        const mainContentArea = document.querySelector('.main-content-area');
+        const accountForm = document.querySelector('app-account-form');
+        
+        // Priority order: flex-1 content, main area, account form, then window
+        if (flexContent) {
+          flexContent.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+          });
+        } else if (mainContentArea) {
+          mainContentArea.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+          });
+        } else if (accountForm) {
+          accountForm.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        } else {
+          window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+          });
+        }
       }
     }, 150);
   }
@@ -708,9 +1024,30 @@ export class AppComponent {
     return this.calculateSectionCompletion(entityType, entityId, sectionId);
   }
 
+  // Calculate overall registration completion (rollup of all entities in registration)
+  isRegistrationComplete(registrationId: string): boolean {
+    const registration = this.registrationGroups.find(r => r.id === registrationId);
+    if (!registration) return false;
+
+    // Check all members in the registration
+    const allMembersComplete = registration.members.every(member => 
+      this.isEntityComplete('members', member.id)
+    );
+
+    // Check all accounts in the registration
+    const allAccountsComplete = registration.accounts.every(account => 
+      this.isEntityComplete('accounts', account.id)
+    );
+
+    return allMembersComplete && allAccountsComplete;
+  }
+
   private calculateSectionCompletion(entityType: 'members' | 'accounts', entityId: string, sectionId: string): boolean {
     const entityData = this.formData[entityId];
-    if (!entityData) return false;
+    if (!entityData) {
+      console.log(`calculateSectionCompletion: No data found for ${entityId}`);
+      return false;
+    }
 
     // Define required fields for each section type
     let requiredFields: string[] = [];
@@ -721,22 +1058,67 @@ export class AppComponent {
         'homeAddress', 'citizenship', 'employmentStatus', 'annualIncome', 'netWorth', 'fundsSource'
       ];
     } else if (sectionId === 'firm-details') {
-      // Base firm details fields (required for both members and accounts)
-      requiredFields = [
-        'totalNetWorth', 'liquidNetWorth', 'averageAnnualIncome', 'incomeSource',
-        'investmentExperience', 'stocksExperience', 'bondsExperience', 'optionsExperience',
-        'liquidityNeeds', 'emergencyFund', 'scenario1'
-      ];
-      
-      // Additional fields only required for account firm details
-      if (entityType === 'accounts') {
-        requiredFields.push('investmentObjectives', 'recommendations', 'alternativeSuggestions');
+      if (entityType === 'members') {
+        // Member-specific firm details fields
+        requiredFields = [
+          'totalNetWorth', 'liquidNetWorth', 'averageAnnualIncome', 'incomeSource',
+          'investmentExperience', 'stocksExperience', 'bondsExperience', 'optionsExperience',
+          'liquidityNeeds', 'emergencyFund', 'scenario1'
+        ];
+      } else if (entityType === 'accounts') {
+        // Account-specific firm details fields
+        requiredFields = ['investmentObjectives', 'recommendations', 'alternativeSuggestions'];
       }
     } else if (sectionId === 'account-setup') {
+      // Base required fields for all account types
       requiredFields = ['accountType', 'investmentObjective', 'riskTolerance'];
+      
+      // Add additional required fields based on account type
+      const accountType = entityData.accountType;
+      
+      if (accountType === 'trust') {
+        // Trust accounts require additional fields but not initialSourceOfFunds/investmentAmount
+        // since they typically get funded through ACAT transfers
+        requiredFields.push(
+          'trustName', 'trustType', 'trustEin', 'trustState', 'trustPurpose',
+          'trusteeName', 'trusteePhone', 'trusteeAddress'
+        );
+      } else if (accountType === 'roth-ira' || accountType === 'traditional-ira') {
+        // IRA accounts require additional fields
+        requiredFields.push('initialSourceOfFunds', 'investmentAmount');
+      } else {
+        // Regular accounts (joint, etc.) require source of funds
+        requiredFields.push('initialSourceOfFunds', 'investmentAmount');
+      }
     } else if (sectionId === 'funding') {
-      // Special case for funding - check if fundingInstances object exists
-      return entityData.fundingInstances !== undefined;
+      // Special case for funding - check if fundingInstances object exists and has at least one funding method
+      if (!entityData.fundingInstances) return false;
+      
+      // Check if at least one funding type has entries
+      return Object.values(entityData.fundingInstances).some(instances => 
+        Array.isArray(instances) && instances.length > 0
+      );
+    }
+
+    // Debug logging for trust account setup specifically
+    if (entityId === 'trust-account' && sectionId === 'account-setup') {
+      console.log(`=== DEBUGGING ${entityId} ${sectionId} ===`);
+      console.log('Required fields:', requiredFields);
+      console.log('Field check results:');
+      
+      const fieldResults = requiredFields.map(field => {
+        const value = entityData[field];
+        const isEmpty = value === null || value === undefined || value === '';
+        const isEmptyString = typeof value === 'string' && value.trim() === '';
+        const isValid = !isEmpty && !isEmptyString;
+        
+        console.log(`- ${field}: "${value}" -> ${isValid ? 'VALID' : 'INVALID'} (isEmpty: ${isEmpty}, isEmptyString: ${isEmptyString})`);
+        return isValid;
+      });
+      
+      const allValid = fieldResults.every(result => result);
+      console.log(`All fields valid: ${allValid}`);
+      console.log('===============================');
     }
 
     // Check if all required fields are filled
@@ -750,11 +1132,29 @@ export class AppComponent {
 
   // Accordion event handlers - allow multiple sections when needed
   onMemberTabChange(event: any) {
+    console.log('onMemberTabChange', event);
+    
     if (!this.scrollablePagesMode) {
       // In regular mode (multiple=true), close all account tabs when opening member tabs
       this.expandedAccountTabs = [];
+      
+      // Get the newly expanded tab index
+      const newIndex = Array.isArray(event.index) ? event.index[event.index.length - 1] : event.index;
+      const previouslyExpanded = Array.isArray(this.expandedMemberTabs) ? this.expandedMemberTabs : [];
+      
       // Handle multiple selection - keep only the last selected
       this.expandedMemberTabs = Array.isArray(event.index) ? [event.index[event.index.length - 1]] : [event.index];
+      
+      // Always navigate to the member when their accordion is opened/clicked
+      // This ensures clicking on any member header navigates to their first section
+      if (newIndex !== null) {
+        const member = this.memberData[newIndex];
+        if (member) {
+          console.log('Navigating to member from accordion click:', member.id);
+          // Navigate to the first section of this member (owner-details)
+          this.handleSectionChange('owner-details', member.id, '');
+        }
+      }
     } else {
       // In scrollable mode (multiple=false), event.index is a single number or null
       // Don't close account tabs - allow one from each category
@@ -763,15 +1163,52 @@ export class AppComponent {
   }
 
   onAccountTabChange(event: any) {
+    console.log('onAccountTabChange', event);
+    
     if (!this.scrollablePagesMode) {
       // In regular mode (multiple=true), close all member tabs when opening account tabs
       this.expandedMemberTabs = [];
+      
+      // Get the newly expanded tab index
+      const newIndex = Array.isArray(event.index) ? event.index[event.index.length - 1] : event.index;
+      const previouslyExpanded = Array.isArray(this.expandedAccountTabs) ? this.expandedAccountTabs : [];
+      
       // Handle multiple selection - keep only the last selected
       this.expandedAccountTabs = Array.isArray(event.index) ? [event.index[event.index.length - 1]] : [event.index];
+      
+      // Always navigate to the account when their accordion is opened/clicked
+      // This ensures clicking on any account header navigates to their first section
+      if (newIndex !== null) {
+        const account = this.accountData[newIndex];
+        if (account) {
+          console.log('Navigating to account from accordion click:', account.id);
+          // Navigate to the first section of this account (account-setup)
+          this.handleSectionChange('account-setup', '', account.id);
+        }
+      }
     } else {
       // In scrollable mode (multiple=false), event.index is a single number or null
       // Don't close member tabs - allow one from each category
       this.expandedAccountTabs = event.index; // Single number or null for non-multiple mode
+    }
+  }
+
+  // Direct header click handlers for normal (non-registration group) mode
+  onMemberHeaderClick(memberId: string) {
+    if (!this.registrationGroupMode) {
+      console.log('Member header clicked in normal mode:', memberId);
+      // Navigate to the member's first section (owner-details)
+      this.handleSectionChange('owner-details', memberId, '');
+      // Note: The accordion expansion is handled by PrimeNG automatically
+    }
+  }
+
+  onAccountHeaderClick(accountId: string) {
+    if (!this.registrationGroupMode) {
+      console.log('Account header clicked in normal mode:', accountId);
+      // Navigate to the account's first section (account-setup)
+      this.handleSectionChange('account-setup', '', accountId);
+      // Note: The accordion expansion is handled by PrimeNG automatically
     }
   }
 
@@ -794,92 +1231,33 @@ export class AppComponent {
       accounts: {}
     };
 
-    // Check member sections
+    // Check member sections using the unified calculation method
     ['john-smith', 'mary-smith', 'smith-trust'].forEach(memberId => {
+      const ownerComplete = this.calculateSectionCompletion('members', memberId, 'owner-details');
+      const firmComplete = this.calculateSectionCompletion('members', memberId, 'firm-details');
+      
       newCompletionStatus.members[memberId] = {
-        'owner-details': this.isMemberOwnerDetailsComplete(memberId),
-        'firm-details': this.isMemberFirmDetailsComplete(memberId)
+        'owner-details': ownerComplete,
+        'firm-details': firmComplete
       };
     });
 
-    // Check account sections
-    ['joint-account', 'roth-ira-account', 'trust-account'].forEach(accountId => {
+    // Check account sections using the unified calculation method
+    ['joint-account', 'roth-ira-account', 'trust-account', 'traditional-ira-account'].forEach(accountId => {
+      const setupComplete = this.calculateSectionCompletion('accounts', accountId, 'account-setup');
+      const fundingComplete = this.calculateSectionCompletion('accounts', accountId, 'funding');
+      const firmComplete = this.calculateSectionCompletion('accounts', accountId, 'firm-details');
+      
       newCompletionStatus.accounts[accountId] = {
-        'account-setup': this.isAccountSetupComplete(accountId),
-        'funding': this.isFundingComplete(accountId),
-        'firm-details': this.isAccountFirmDetailsComplete(accountId)
+        'account-setup': setupComplete,
+        'funding': fundingComplete,
+        'firm-details': firmComplete
       };
     });
 
     this.completionStatus = newCompletionStatus;
   }
 
-  private isMemberOwnerDetailsComplete(memberId: string): boolean {
-    const data = this.formData[memberId];
-    if (!data) return false;
-
-    const requiredFields = [
-      'firstName', 'lastName', 'dateOfBirth', 'ssn', 'phoneHome', 'email',
-      'homeAddress', 'citizenship', 'employmentStatus', 'annualIncome', 'netWorth', 'fundsSource'
-    ];
-
-    return requiredFields.every(field => data[field] && data[field].toString().trim() !== '');
-  }
-
-  private isMemberFirmDetailsComplete(memberId: string): boolean {
-    const data = this.formData[memberId];
-    if (!data) return false;
-
-    const requiredFields = [
-      'totalNetWorth', 'liquidNetWorth', 'averageAnnualIncome', 'incomeSource',
-      'investmentExperience', 'stocksExperience', 'bondsExperience', 'optionsExperience',
-      'liquidityNeeds', 'emergencyFund', 'scenario1'
-    ];
-
-    return requiredFields.every(field => 
-      field === 'emergencyFund' ? data[field] !== undefined : data[field] && data[field].toString().trim() !== ''
-    );
-  }
-
-  private isAccountSetupComplete(accountId: string): boolean {
-    const data = this.formData[accountId];
-    if (!data) return false;
-
-    const requiredFields = ['accountType', 'investmentObjective', 'riskTolerance', 'initialSourceOfFunds', 'investmentAmount'];
-    
-    // Additional fields for trust accounts
-    if (data.accountType === 'trust') {
-      requiredFields.push('trustName', 'trustType', 'trustEin');
-    }
-
-    return requiredFields.every(field => data[field] && data[field].toString().trim() !== '');
-  }
-
-  private isFundingComplete(accountId: string): boolean {
-    const data = this.formData[accountId];
-    if (!data) return false;
-
-    // For funding, we check if there's at least one funding instance
-    const fundingInstances = data.fundingInstances;
-    if (!fundingInstances) return false;
-
-    // Check if at least one funding type has entries
-    return Object.values(fundingInstances).some(instances => 
-      Array.isArray(instances) && instances.length > 0
-    );
-  }
-
-  private isAccountFirmDetailsComplete(accountId: string): boolean {
-    const data = this.formData[accountId];
-    if (!data) return false;
-
-    // Account firm details have different fields than member firm details
-    const requiredFields = [
-      'investmentObjectives', 'recommendations', 'alternativeSuggestions'
-    ];
-
-    return requiredFields.every(field => data[field] && data[field].toString().trim() !== '');
-  }
 
   // Sidebar resize functionality
   handleMouseDown() {
@@ -921,44 +1299,35 @@ export class AppComponent {
     return sectionId as Section;
   }
 
-  // Calculate overall progress percentage based on filled required fields
+  // Calculate overall progress percentage based on actual completion status
   getOverallProgress(): number {
-    let totalRequiredFields = 0;
-    let filledRequiredFields = 0;
+    let totalSections = 0;
+    let completedSections = 0;
 
-    // Define required fields for each entity type
-    const memberRequiredFields = [
-      'firstName', 'lastName', 'dateOfBirth', 'ssn', 'phoneHome', 'email', 
-      'homeAddress', 'citizenship', 'employmentStatus', 'annualIncome', 'netWorth', 'fundsSource'
-    ];
-    
-    const accountRequiredFields = [
-      'accountType', 'investmentObjective', 'riskTolerance'
-    ];
-
-    // Count member fields
+    // Count member sections
     Object.keys(this.completionStatus.members).forEach(memberId => {
-      const memberData = this.formData[memberId];
-      memberRequiredFields.forEach(field => {
-        totalRequiredFields++;
-        if (memberData && memberData[field] && memberData[field].toString().trim()) {
-          filledRequiredFields++;
+      const memberStatus = this.completionStatus.members[memberId];
+      Object.keys(memberStatus).forEach(sectionId => {
+        totalSections++;
+        if (memberStatus[sectionId as keyof typeof memberStatus]) {
+          completedSections++;
         }
       });
     });
 
-    // Count account fields
+    // Count account sections
     Object.keys(this.completionStatus.accounts).forEach(accountId => {
-      const accountData = this.formData[accountId];
-      accountRequiredFields.forEach(field => {
-        totalRequiredFields++;
-        if (accountData && accountData[field] && accountData[field].toString().trim()) {
-          filledRequiredFields++;
+      const accountStatus = this.completionStatus.accounts[accountId];
+      Object.keys(accountStatus).forEach(sectionId => {
+        totalSections++;
+        if (accountStatus[sectionId as keyof typeof accountStatus]) {
+          completedSections++;
         }
       });
     });
 
-    return totalRequiredFields > 0 ? Math.round((filledRequiredFields / totalRequiredFields) * 100) : 0;
+    const progress = totalSections > 0 ? Math.round((completedSections / totalSections) * 100) : 0;
+    return progress;
   }
 
   // Review Summary methods
@@ -986,6 +1355,33 @@ export class AppComponent {
     } else {
       // In regular mode, navigate to account setup section
       this.handleSectionChange('account-setup', '', accountId);
+    }
+  }
+
+  onEditAccountQuickReview(accountId: string) {
+    this.hideReviewSummary();
+    
+    // Force enable scrollable mode, registration group mode, and review mode for quick review
+    this.scrollablePagesMode = true;
+    this.registrationGroupMode = true;
+    this.isReviewMode = true;
+    
+    console.log('Quick Review Mode enabled for account:', accountId);
+    
+    // Get all relevant sections for this registration
+    const relevantSections = this.getRelevantSectionsForAccount(accountId);
+    
+    // Reset all subsections and expand only relevant ones
+    this.resetSubsectionExpansions();
+    this.expandRelevantSections(accountId);
+    this.updateRegistrationGroupExpansion();
+    
+    // Scroll to the first relevant section
+    if (relevantSections.length > 0) {
+      const firstSection = relevantSections[0];
+      setTimeout(() => {
+        this.scrollToSection(firstSection.entityId, firstSection.sectionId);
+      }, 300);
     }
   }
 
@@ -1112,6 +1508,12 @@ export class AppComponent {
         { entityId: 'smith-trust', sectionId: 'owner-details', name: 'Trust - Personal Details' },
         { entityId: 'smith-trust', sectionId: 'firm-details', name: 'Trust - Firm Details' }
       );
+    } else if (accountId === 'traditional-ira-account') {
+      // John Smith sections for Traditional IRA
+      sections.push(
+        { entityId: 'john-smith', sectionId: 'owner-details', name: 'John Smith - Personal Details' },
+        { entityId: 'john-smith', sectionId: 'firm-details', name: 'John Smith - Firm Details' }
+      );
     }
 
     // Add account-specific sections
@@ -1137,12 +1539,15 @@ export class AppComponent {
     } else if (accountId === 'trust-account') {
       this.expandedMemberTabs = [2]; // Trust
       this.expandedAccountTabs = [2]; // Trust account
+    } else if (accountId === 'traditional-ira-account') {
+      this.expandedMemberTabs = [0]; // John Smith
+      this.expandedAccountTabs = [3]; // Traditional IRA
     }
   }
 
   private expandRelevantAccountForMember(accountId: string) {
     // Expand the specific account related to this member edit
-    const accountIds = ['joint-account', 'roth-ira-account', 'trust-account'];
+    const accountIds = ['joint-account', 'roth-ira-account', 'trust-account', 'traditional-ira-account'];
     const accountIndex = accountIds.indexOf(accountId);
     if (accountIndex !== -1) {
       this.expandedAccountTabs = [accountIndex];
@@ -1197,10 +1602,221 @@ export class AppComponent {
     }
   }
 
+  // Registration group helper methods
+  getMemberIcon(memberId: string): string {
+    const member = this.memberData.find(m => m.id === memberId);
+    return member ? member.icon : 'pi pi-user';
+  }
+
+  getAccountIcon(accountId: string): string {
+    const account = this.accountData.find(a => a.id === accountId);
+    return account ? account.icon : 'pi pi-briefcase';
+  }
+
+  getSectionIcon(sectionId: string): string {
+    const iconMap: { [key: string]: string } = {
+      'owner-details': 'pi pi-user',
+      'firm-details': 'pi pi-building',
+      'account-setup': 'pi pi-cog',
+      'funding': 'pi pi-dollar'
+    };
+    return iconMap[sectionId] || 'pi pi-file';
+  }
+
+  getSectionName(sectionId: string): string {
+    const nameMap: { [key: string]: string } = {
+      'owner-details': 'Personal Details',
+      'firm-details': 'Firm Details',
+      'account-setup': 'Account Setup',
+      'funding': 'Funding'
+    };
+    return nameMap[sectionId] || sectionId;
+  }
+
+  onRegistrationGroupTabChange(event: any) {
+    // For single accordion mode, store the active index as an array with one element
+    this.expandedRegistrationGroups = [event.index];
+    
+    // Update registration context when user switches tabs
+    if (event.index >= 0 && event.index < this.registrationGroups.length) {
+      this.currentRegistrationContext = this.registrationGroups[event.index].id;
+    }
+    
+    // Reset all subsection expansions when switching registration groups
+    this.resetSubsectionExpansions();
+    
+    // Only expand subsections that contain the current active section
+    this.updateRegistrationGroupExpansion();
+  }
+
+
+  toggleOwnerSection(ownerId: string) {
+    this.expandedOwnerSections[ownerId] = !this.expandedOwnerSections[ownerId];
+  }
+
+  navigateToOwner(ownerId: string) {
+    console.log('navigateToOwner called for:', ownerId);
+    // Use handleSectionChange to get proper scroll-to-top behavior
+    this.handleSectionChange('owner-details', ownerId, '');
+    console.log('navigateToOwner completed - current state:', {
+      currentMember: this.currentMember,
+      currentAccount: this.currentAccount,
+      currentSection: this.currentSection
+    });
+  }
+
+  handleOwnerHeaderClick(event: Event, ownerId: string, registrationId?: string) {
+    console.log('handleOwnerHeaderClick called:', { ownerId, registrationId, registrationGroupMode: this.registrationGroupMode });
+    
+    if (this.registrationGroupMode) {
+      // In registration group mode, clicking owner header should navigate AND expand
+      // Set the registration context to maintain correct sidebar state
+      if (registrationId) {
+        this.currentRegistrationContext = registrationId;
+      }
+      
+      // Always expand the sections when clicking header
+      this.expandedOwnerSections[ownerId] = true;
+      console.log('Expanded owner sections:', ownerId);
+      
+      // Navigate to the owner (this will also trigger scroll-to-top)
+      console.log('About to call navigateToOwner for:', ownerId);
+      this.navigateToOwner(ownerId);
+      
+      console.log('Owner header clicked - expanded and navigated to:', ownerId);
+    } else {
+      // In normal mode, just toggle the section
+      this.toggleOwnerSection(ownerId);
+    }
+  }
+
+  toggleAccountSection(accountId: string) {
+    this.expandedAccountSections[accountId] = !this.expandedAccountSections[accountId];
+  }
+
+  navigateToAccount(accountId: string) {
+    // Use handleSectionChange to get proper scroll-to-top behavior
+    this.handleSectionChange('account-setup', '', accountId);
+  }
+
+  handleAccountHeaderClick(event: Event, accountId: string, registrationId?: string) {
+    if (this.registrationGroupMode) {
+      // In registration group mode, clicking account header should navigate AND expand
+      // Set the registration context to maintain correct sidebar state
+      if (registrationId) {
+        this.currentRegistrationContext = registrationId;
+      }
+      
+      // Always expand the sections when clicking header
+      this.expandedAccountSections[accountId] = true;
+      
+      // Navigate to the account (this will also trigger scroll-to-top)
+      this.navigateToAccount(accountId);
+      
+      console.log('Account header clicked - expanded and navigated to:', accountId);
+    } else {
+      // In normal mode, just toggle the section
+      this.toggleAccountSection(accountId);
+    }
+  }
+
+  resetSubsectionExpansions() {
+    // Reset all owner section expansion states
+    Object.keys(this.expandedOwnerSections).forEach(key => {
+      this.expandedOwnerSections[key] = false;
+    });
+    
+    // Reset all account section expansion states
+    Object.keys(this.expandedAccountSections).forEach(key => {
+      this.expandedAccountSections[key] = false;
+    });
+  }
+
+  updateRegistrationGroupExpansion() {
+    // Find which registration contains the current active section
+    const activeRegistration = this.findRegistrationForCurrentSection();
+    
+    if (activeRegistration) {
+      // Find the index of the active registration and expand only that one
+      const activeIndex = this.registrationGroups.findIndex(reg => reg.id === activeRegistration.id);
+      if (activeIndex !== -1) {
+        this.expandedRegistrationGroups = [activeIndex];
+      }
+      
+      // Owners section is now always visible, no need to expand it
+      
+      // Expand the specific owner section that contains the current section
+      if (this.currentMember) {
+        const member = activeRegistration.members.find((m: any) => m.id === this.currentMember);
+        if (member) {
+          this.expandedOwnerSections[this.currentMember] = true;
+        }
+      }
+      
+      // Expand the specific account section that contains the current section
+      if (this.currentAccount) {
+        const account = activeRegistration.accounts.find((a: any) => a.id === this.currentAccount);
+        if (account) {
+          this.expandedAccountSections[this.currentAccount] = true;
+        }
+      }
+    }
+  }
+
+  findRegistrationForCurrentSection(): any {
+    // If we have a specific registration context (from user clicks), use that first
+    if (this.currentRegistrationContext) {
+      const contextRegistration = this.registrationGroups.find(reg => reg.id === this.currentRegistrationContext);
+      if (contextRegistration) {
+        // Verify this registration actually contains the current member/account
+        const containsMember = this.currentMember && contextRegistration.members.some((m: any) => m.id === this.currentMember);
+        const containsAccount = this.currentAccount && contextRegistration.accounts.some((a: any) => a.id === this.currentAccount);
+        
+        if (containsMember || containsAccount) {
+          return contextRegistration;
+        }
+      }
+    }
+    
+    // Fallback to finding first registration that contains the current member or account
+    return this.registrationGroups.find(reg => {
+      // Check if current member is in this registration
+      if (this.currentMember && reg.members.some((m: any) => m.id === this.currentMember)) {
+        return true;
+      }
+      // Check if current account is in this registration
+      if (this.currentAccount && reg.accounts.some((a: any) => a.id === this.currentAccount)) {
+        return true;
+      }
+      return false;
+    });
+  }
+
   onScrollableSectionChange(sectionData: {section: Section, memberId: string, accountId: string}) {
     // Update current section to reflect scrolling position
     this.currentSection = sectionData.section;
-    // Don't change currentMember/currentAccount here as they're already set
+    this.currentMember = sectionData.memberId;
+    this.currentAccount = sectionData.accountId;
+    
+    // Update registration group expansion if in registration group mode
+    if (this.registrationGroupMode) {
+      this.updateRegistrationGroupExpansion();
+    }
+  }
+
+  onRegistrationGroupModeChange(enabled: boolean) {
+    if (enabled) {
+      // When enabling registration group mode, reset and initialize proper expansion
+      // Initialize registration context to the first registration
+      if (this.registrationGroups.length > 0) {
+        this.currentRegistrationContext = this.registrationGroups[0].id;
+      }
+      this.resetSubsectionExpansions();
+      this.updateRegistrationGroupExpansion();
+    } else {
+      // Clear registration context when disabling registration group mode
+      this.currentRegistrationContext = '';
+    }
   }
 
   handleSectionNavigation(section: Section, memberId: string, accountId: string) {
@@ -1210,11 +1826,27 @@ export class AppComponent {
     }
     
     if (this.scrollablePagesMode) {
-      // In scrollable mode, first update the current entity, then scroll to the section
+      // Check if we're switching to a different entity
+      const switchingEntity = (memberId && memberId !== this.currentMember) || 
+                             (accountId && accountId !== this.currentAccount);
+      
+      // Debug entity switching (only when switching)
+      if (switchingEntity) {
+        console.log('Switching entity:', { from: this.currentMember || this.currentAccount, to: memberId || accountId });
+      }
+      
+      // In scrollable mode, first update the current entity
       this.handleSectionChange(section, memberId, accountId);
-      setTimeout(() => {
-        this.scrollToSection(memberId || accountId, section);
-      }, 100);
+      
+      if (switchingEntity) {
+        // If switching entities, scroll to top (handleSectionChange already does this)
+        // Don't call scrollToSection as it would override the scroll-to-top behavior
+      } else {
+        // If staying on same entity, scroll to the specific section
+        setTimeout(() => {
+          this.scrollToSection(memberId || accountId, section);
+        }, 400); // Wait longer to ensure scroll-to-top and DOM updates complete
+      }
     } else {
       // In regular mode, use normal section change
       this.handleSectionChange(section, memberId, accountId);

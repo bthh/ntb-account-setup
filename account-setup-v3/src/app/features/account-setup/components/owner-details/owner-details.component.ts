@@ -419,8 +419,103 @@ interface DropdownOption {
         
         <!-- Personal Information Section -->
         <div class="review-mode-section">
-          <div class="review-mode-section-title">Personal Information</div>
-          <div class="review-mode-grid">
+          <div class="review-mode-section-header">
+            <div class="review-mode-section-title">Personal Information</div>
+            <p-button 
+              [label]="sectionEditMode['personal'] ? 'Save' : 'Edit'" 
+              [icon]="sectionEditMode['personal'] ? 'pi pi-check' : 'pi pi-pencil'" 
+              size="small" 
+              [severity]="sectionEditMode['personal'] ? 'success' : 'secondary'"
+              styleClass="edit-section-button"
+              (onClick)="toggleSectionEdit('personal')">
+            </p-button>
+          </div>
+          
+          <!-- Personal Info - Edit Mode -->
+          <div *ngIf="sectionEditMode['personal']" class="grid">
+            <div class="col-12 md:col-4">
+              <label for="firstName" class="block text-900 font-medium mb-2">
+                First Name <span class="text-red-500">*</span>
+              </label>
+              <input
+                pInputText
+                id="firstName"
+                formControlName="firstName"
+                placeholder="Enter first name"
+                class="w-full"
+                [class.ng-invalid]="ownerForm.get('firstName')?.invalid && ownerForm.get('firstName')?.touched" />
+              <small class="p-error" *ngIf="ownerForm.get('firstName')?.invalid && ownerForm.get('firstName')?.touched">
+                First name is required (minimum 2 characters)
+              </small>
+            </div>
+            
+            <div class="col-12 md:col-4">
+              <label for="middleInitial" class="block text-900 font-medium mb-2">
+                Middle Initial
+              </label>
+              <input
+                pInputText
+                id="middleInitial"
+                formControlName="middleInitial"
+                placeholder="MI"
+                maxlength="1"
+                class="w-full" />
+            </div>
+            
+            <div class="col-12 md:col-4">
+              <label for="lastName" class="block text-900 font-medium mb-2">
+                Last Name <span class="text-red-500">*</span>
+              </label>
+              <input
+                pInputText
+                id="lastName"
+                formControlName="lastName"
+                placeholder="Enter last name"
+                class="w-full"
+                [class.ng-invalid]="ownerForm.get('lastName')?.invalid && ownerForm.get('lastName')?.touched" />
+              <small class="p-error" *ngIf="ownerForm.get('lastName')?.invalid && ownerForm.get('lastName')?.touched">
+                Last name is required (minimum 2 characters)
+              </small>
+            </div>
+            
+            <div class="col-12 md:col-6">
+              <label for="dateOfBirth" class="block text-900 font-medium mb-2">
+                Date of Birth <span class="text-red-500">*</span>
+              </label>
+              <p-calendar
+                inputId="dateOfBirth"
+                formControlName="dateOfBirth"
+                [maxDate]="maxDate"
+                dateFormat="mm/dd/yy"
+                placeholder="MM/DD/YYYY"
+                styleClass="w-full"
+                [class.ng-invalid]="ownerForm.get('dateOfBirth')?.invalid && ownerForm.get('dateOfBirth')?.touched">
+              </p-calendar>
+              <small class="p-error" *ngIf="ownerForm.get('dateOfBirth')?.invalid && ownerForm.get('dateOfBirth')?.touched">
+                Date of birth is required
+              </small>
+            </div>
+            
+            <div class="col-12 md:col-6">
+              <label for="ssn" class="block text-900 font-medium mb-2">
+                Social Security Number <span class="text-red-500">*</span>
+              </label>
+              <input
+                pInputText
+                id="ssn"
+                formControlName="ssn"
+                placeholder="XXX-XX-XXXX"
+                pInputMask="999-99-9999"
+                class="w-full"
+                [class.ng-invalid]="ownerForm.get('ssn')?.invalid && ownerForm.get('ssn')?.touched" />
+              <small class="p-error" *ngIf="ownerForm.get('ssn')?.invalid && ownerForm.get('ssn')?.touched">
+                Valid SSN is required
+              </small>
+            </div>
+          </div>
+          
+          <!-- Personal Info - Review Mode -->
+          <div *ngIf="!sectionEditMode['personal']" class="review-mode-grid">
             <div class="review-field-group">
               <div class="review-field-label">First Name</div>
               <div class="review-field-value" 
@@ -489,7 +584,17 @@ interface DropdownOption {
 
         <!-- Address Information Section -->
         <div class="review-mode-section">
-          <div class="review-mode-section-title">Address Information</div>
+          <div class="review-mode-section-header">
+            <div class="review-mode-section-title">Address Information</div>
+            <p-button 
+              label="Edit" 
+              icon="pi pi-pencil" 
+              size="small" 
+              severity="secondary"
+              styleClass="edit-section-button"
+              (onClick)="toggleSectionEdit('address')">
+            </p-button>
+          </div>
           <div class="review-mode-grid">
             <div class="review-field-group">
               <div class="review-field-label">Home Address</div>
@@ -519,7 +624,17 @@ interface DropdownOption {
 
         <!-- Employment Information Section -->
         <div class="review-mode-section">
-          <div class="review-mode-section-title">Employment Information</div>
+          <div class="review-mode-section-header">
+            <div class="review-mode-section-title">Employment Information</div>
+            <p-button 
+              label="Edit" 
+              icon="pi pi-pencil" 
+              size="small" 
+              severity="secondary"
+              styleClass="edit-section-button"
+              (onClick)="toggleSectionEdit('employment')">
+            </p-button>
+          </div>
           <div class="review-mode-grid">
             <div class="review-field-group">
               <div class="review-field-label">Employment Status</div>
@@ -557,7 +672,17 @@ interface DropdownOption {
 
         <!-- Disclosure Questions Section -->
         <div class="review-mode-section">
-          <div class="review-mode-section-title">Disclosure Questions</div>
+          <div class="review-mode-section-header">
+            <div class="review-mode-section-title">Disclosure Questions</div>
+            <p-button 
+              label="Edit" 
+              icon="pi pi-pencil" 
+              size="small" 
+              severity="secondary"
+              styleClass="edit-section-button"
+              (onClick)="toggleSectionEdit('disclosure')">
+            </p-button>
+          </div>
           <div class="review-mode-grid">
             <div class="review-field-group">
               <div class="review-field-label">Affiliated with Financial Services Firm</div>
@@ -577,7 +702,17 @@ interface DropdownOption {
 
         <!-- Trusted Contact Section -->
         <div class="review-mode-section">
-          <div class="review-mode-section-title">Trusted Contact Information</div>
+          <div class="review-mode-section-header">
+            <div class="review-mode-section-title">Trusted Contact Information</div>
+            <p-button 
+              label="Edit" 
+              icon="pi pi-pencil" 
+              size="small" 
+              severity="secondary"
+              styleClass="edit-section-button"
+              (onClick)="toggleSectionEdit('trusted')">
+            </p-button>
+          </div>
           <div class="review-mode-grid">
             <div class="review-field-group">
               <div class="review-field-label">Contact Name</div>
@@ -685,13 +820,24 @@ interface DropdownOption {
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     }
     
+    .review-mode-section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      border-bottom: 2px solid #e5e7eb;
+      padding-bottom: 0.5rem;
+    }
+    
     .review-mode-section-title {
       font-size: 1.25rem;
       font-weight: 600;
       color: #1f2937;
-      margin-bottom: 1rem;
-      border-bottom: 2px solid #e5e7eb;
-      padding-bottom: 0.5rem;
+      flex: 1;
+    }
+    
+    .edit-section-button {
+      flex-shrink: 0;
     }
     
     .review-mode-grid {
@@ -738,6 +884,15 @@ export class OwnerDetailsComponent implements OnInit, OnChanges {
   @Input() entityId: string = '';
   @Input() isReviewMode: boolean = false;
   @Output() formDataChange = new EventEmitter<FormData>();
+
+  // Section editing state for quick review mode
+  sectionEditMode: { [key: string]: boolean } = {
+    personal: false,
+    address: false,
+    employment: false,
+    disclosure: false,
+    trusted: false
+  };
 
   ownerForm!: FormGroup;
   maxDate = new Date();
@@ -847,6 +1002,17 @@ export class OwnerDetailsComponent implements OnInit, OnChanges {
     if (!value) return '';
     const option = options.find(opt => opt.value === value);
     return option ? option.label : value;
+  }
+
+  toggleSectionEdit(sectionName: string): void {
+    console.log('Toggling section edit mode for:', sectionName);
+    
+    // If switching from edit mode to review mode, save the changes
+    if (this.sectionEditMode[sectionName]) {
+      this.updateFormData();
+    }
+    
+    this.sectionEditMode[sectionName] = !this.sectionEditMode[sectionName];
   }
 
   formatDate(date: any): string {
