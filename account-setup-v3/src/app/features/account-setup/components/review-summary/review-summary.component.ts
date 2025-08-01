@@ -93,16 +93,11 @@ interface AccountSummary {
               </div>
             </div>
 
-            <!-- Missing Fields -->
+            <!-- Missing Fields Count -->
             <div *ngIf="account.missingFields.length > 0" class="missing-fields mb-3">
-              <h6 class="text-sm font-medium text-orange-600 mb-2">
+              <div class="text-xs font-medium text-orange-600 m-0">
                 <i class="pi pi-exclamation-triangle mr-1"></i>
-                Missing Required Fields
-              </h6>
-              <div class="missing-fields-list">
-                <span *ngFor="let field of account.missingFields" class="missing-field-tag">
-                  {{field}}
-                </span>
+                {{account.missingFields.length}} Missing Required Fields
               </div>
             </div>
 
@@ -132,15 +127,6 @@ interface AccountSummary {
           </div>
         </div>
 
-        <!-- Bulk Actions -->
-        <div class="bulk-actions mt-4" *ngIf="getReadyAccountsCount() > 0">
-          <p-button 
-            label="Submit All Ready Accounts ({{getReadyAccountsCount()}})"
-            icon="pi pi-send"
-            severity="success"
-            (onClick)="onSubmitAllReady()">
-          </p-button>
-        </div>
 
       </p-card>
     </div>
@@ -268,24 +254,10 @@ interface AccountSummary {
     .missing-fields {
       background: var(--orange-50);
       border: 1px solid var(--orange-200);
-      border-radius: 6px;
-      padding: 1rem;
-    }
-
-    .missing-fields-list {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-    }
-
-    .missing-field-tag {
-      background: var(--orange-100);
-      color: var(--orange-800);
-      padding: 0.25rem 0.5rem;
       border-radius: 4px;
-      font-size: 0.75rem;
-      font-weight: 500;
+      padding: 0.5rem 0.75rem;
     }
+
 
     .account-actions {
       display: flex;
@@ -293,11 +265,6 @@ interface AccountSummary {
       flex-wrap: wrap;
     }
 
-    .bulk-actions {
-      text-align: center;
-      padding-top: 1.5rem;
-      border-top: 1px solid var(--surface-border);
-    }
 
     ::ng-deep .p-progressbar.complete .p-progressbar-value {
       background: var(--green-500) !important;
@@ -318,6 +285,7 @@ export class ReviewSummaryComponent {
   @Input() completionStatus: CompletionStatus = { members: {}, accounts: {} };
   @Output() editAccount = new EventEmitter<string>();
   @Output() editAccountWithSection = new EventEmitter<{accountId: string, entityId: string, sectionId: Section}>();
+  @Output() editAccountQuickReview = new EventEmitter<string>();
   @Output() submitForESign = new EventEmitter<string>();
   @Output() submitAllReady = new EventEmitter<string[]>();
 
@@ -350,6 +318,12 @@ export class ReviewSummaryComponent {
         name: 'Family Trust Account',
         owners: 'Smith Family Trust',
         icon: 'pi pi-shield'
+      },
+      {
+        id: 'traditional-ira-account',
+        name: 'Traditional IRA Account',
+        owners: 'John Smith',
+        icon: 'pi pi-university'
       }
     ];
 
@@ -398,6 +372,12 @@ export class ReviewSummaryComponent {
       sections.push(
         { entityId: 'smith-trust', sectionId: 'owner-details' },
         { entityId: 'smith-trust', sectionId: 'firm-details' }
+      );
+    } else if (accountId === 'traditional-ira-account') {
+      // John Smith sections for Traditional IRA
+      sections.push(
+        { entityId: 'john-smith', sectionId: 'owner-details' },
+        { entityId: 'john-smith', sectionId: 'firm-details' }
       );
     }
     
@@ -466,7 +446,8 @@ export class ReviewSummaryComponent {
       'individual-taxable': 'Individual Taxable', 
       'trust': 'Trust',
       'ira': 'IRA',
-      'roth-ira': 'Roth IRA'
+      'roth-ira': 'Roth IRA',
+      'traditional-ira': 'Traditional IRA'
     };
     return typeMap[accountType] || accountType || 'Not Set';
   }
@@ -503,7 +484,7 @@ export class ReviewSummaryComponent {
     });
 
     // Count account fields
-    const accountIds = ['joint-account', 'roth-ira-account', 'trust-account'];
+    const accountIds = ['joint-account', 'roth-ira-account', 'trust-account', 'traditional-ira-account'];
     accountIds.forEach(accountId => {
       const accountData = this.formData[accountId];
       accountRequiredFields.forEach(field => {
@@ -535,8 +516,9 @@ export class ReviewSummaryComponent {
         sectionId: account.nextMissingSection.sectionId
       });
     } else {
-      // If no missing fields, just navigate to the account
-      this.editAccount.emit(accountId);
+      // If no missing fields (registration complete), automatically enter quick review mode
+      // Emit a new event specifically for quick review mode
+      this.editAccountQuickReview.emit(accountId);
     }
   }
 

@@ -756,7 +756,17 @@ interface DropdownOption {
         
         <!-- Existing Product Information Section -->
         <div class="review-mode-section">
-          <div class="review-mode-section-title">Existing Product Information</div>
+          <div class="review-mode-section-header">
+            <div class="review-mode-section-title">Existing Product Information</div>
+            <p-button 
+              [label]="sectionEditMode['firm-details'] ? 'Save' : 'Edit'" 
+              [icon]="sectionEditMode['firm-details'] ? 'pi pi-check' : 'pi pi-pencil'" 
+              size="small" 
+              [severity]="sectionEditMode['firm-details'] ? 'success' : 'secondary'"
+              styleClass="edit-section-button"
+              (onClick)="toggleSectionEdit('firm-details')">
+            </p-button>
+          </div>
           <div class="review-mode-grid">
             <div class="review-field-group">
               <div class="review-field-label">Investment Name</div>
@@ -1209,6 +1219,24 @@ interface DropdownOption {
       border-bottom: 2px solid #e5e7eb;
       padding-bottom: 0.5rem;
     }
+
+    .review-mode-section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .review-mode-section-header .review-mode-section-title {
+      margin-bottom: 0;
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    ::ng-deep .edit-section-button .p-button {
+      font-size: 0.75rem !important;
+      padding: 0.25rem 0.75rem !important;
+    }
     
     .review-mode-grid {
       width: 100%;
@@ -1257,6 +1285,11 @@ export class FirmDetailsComponent implements OnInit, OnChanges {
   @Output() formDataChange = new EventEmitter<FormData>();
 
   firmForm!: FormGroup;
+
+  // Section edit mode tracking
+  sectionEditMode: { [key: string]: boolean } = {
+    'firm-details': false
+  };
 
   // Dropdown options exactly matching V2 specification
   totalNetWorthOptions: DropdownOption[] = [
@@ -1398,9 +1431,50 @@ export class FirmDetailsComponent implements OnInit, OnChanges {
   }
 
   private loadFormData() {
+    if (this.entityId === 'mary-smith') {
+      console.log('🔍 MARY DEBUG: loadFormData called');
+      console.log('🔍 MARY DEBUG: formData:', this.formData);
+      console.log('🔍 MARY DEBUG: entityId:', this.entityId);
+      console.log('🔍 MARY DEBUG: isMemberEntity:', this.isMemberEntity);
+    }
+    
+    if (this.entityId === 'joint-account') {
+      console.log('🔍 JOINT DEBUG: loadFormData called');
+      console.log('🔍 JOINT DEBUG: formData:', this.formData);
+      console.log('🔍 JOINT DEBUG: entityId:', this.entityId);
+      console.log('🔍 JOINT DEBUG: isMemberEntity:', this.isMemberEntity);
+    }
+    
     if (this.formData && this.formData[this.entityId]) {
       const entityData = this.formData[this.entityId];
+      
+      if (this.entityId === 'mary-smith') {
+        console.log('🔍 MARY DEBUG: entityData:', entityData);
+        console.log('🔍 MARY DEBUG: investmentExperience in data:', entityData.investmentExperience);
+        console.log('🔍 MARY DEBUG: bondsExperience in data:', entityData.bondsExperience);
+        console.log('🔍 MARY DEBUG: form controls before patch:', Object.keys(this.firmForm.controls));
+      }
+      
+      if (this.entityId === 'joint-account') {
+        console.log('🔍 JOINT DEBUG: entityData:', entityData);
+        console.log('🔍 JOINT DEBUG: investmentObjectives in data:', entityData['investmentObjectives']);
+        console.log('🔍 JOINT DEBUG: recommendations in data:', entityData['recommendations']);
+        console.log('🔍 JOINT DEBUG: form controls before patch:', Object.keys(this.firmForm.controls));
+      }
+      
       this.firmForm.patchValue(entityData);
+      
+      if (this.entityId === 'mary-smith') {
+        console.log('🔍 MARY DEBUG: form values after patch:', this.firmForm.value);
+        console.log('🔍 MARY DEBUG: investmentExperience form value:', this.firmForm.get('investmentExperience')?.value);
+        console.log('🔍 MARY DEBUG: bondsExperience form value:', this.firmForm.get('bondsExperience')?.value);
+      }
+      
+      if (this.entityId === 'joint-account') {
+        console.log('🔍 JOINT DEBUG: form values after patch:', this.firmForm.value);
+        console.log('🔍 JOINT DEBUG: investmentObjectives form value:', this.firmForm.get('investmentObjectives')?.value);
+        console.log('🔍 JOINT DEBUG: recommendations form value:', this.firmForm.get('recommendations')?.value);
+      }
     }
   }
 
@@ -1430,6 +1504,17 @@ export class FirmDetailsComponent implements OnInit, OnChanges {
   onSubmit() {
     if (this.firmForm.valid) {
       this.updateFormData();
+    }
+  }
+
+  toggleSectionEdit(sectionKey: string) {
+    if (this.sectionEditMode[sectionKey]) {
+      // Save changes and exit edit mode
+      this.updateFormData();
+      this.sectionEditMode[sectionKey] = false;
+    } else {
+      // Enter edit mode
+      this.sectionEditMode[sectionKey] = true;
     }
   }
 

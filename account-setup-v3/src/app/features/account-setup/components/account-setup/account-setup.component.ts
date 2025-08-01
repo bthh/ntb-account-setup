@@ -17,6 +17,8 @@ import { MessageService, SharedModule } from 'primeng/api';
 
 // Local Imports
 import { FormData } from '../../../../shared/models/types';
+import { ExistingInstanceModalComponent, ExistingInstance } from '../../../../shared/components/existing-instance-modal/existing-instance-modal.component';
+import { ExistingInstancesService } from '../../../../shared/services/existing-instances.service';
 
 interface DropdownOption {
   label: string;
@@ -40,9 +42,10 @@ interface DropdownOption {
     ButtonModule,
     ToastModule,
     TooltipModule,
-    SharedModule
+    SharedModule,
+    ExistingInstanceModalComponent
   ],
-  providers: [MessageService],
+  providers: [MessageService, ExistingInstancesService],
   template: `
     <div class="account-setup-section">
       <p-toast></p-toast>
@@ -421,6 +424,13 @@ interface DropdownOption {
                   <div class="funding-type-name">Add Beneficiary <i class="pi pi-plus-circle"></i></div>
                 </div>
               </div>
+              <div class="funding-button-wrapper">
+                <div 
+                  class="funding-type-button existing-instance-button"
+                  (click)="showExistingBeneficiariesModal()">
+                  <div class="funding-type-name">Add Existing <i class="pi pi-history"></i></div>
+                </div>
+              </div>
             </div>
 
             <!-- Beneficiary Form -->
@@ -591,8 +601,87 @@ interface DropdownOption {
         
         <!-- Account Setup Section -->
         <div class="review-mode-section">
-          <div class="review-mode-section-title">Account Setup</div>
-          <div class="review-mode-grid">
+          <div class="review-mode-section-header">
+            <div class="review-mode-section-title">Account Setup</div>
+            <p-button 
+              [label]="sectionEditMode['account-setup'] ? 'Save' : 'Edit'" 
+              [icon]="sectionEditMode['account-setup'] ? 'pi pi-check' : 'pi pi-pencil'" 
+              size="small" 
+              [severity]="sectionEditMode['account-setup'] ? 'success' : 'secondary'"
+              styleClass="edit-section-button"
+              (onClick)="toggleSectionEdit('account-setup')">
+            </p-button>
+          </div>
+          <!-- Account Setup - Edit Mode -->
+          <div *ngIf="sectionEditMode['account-setup']" class="grid">
+            <div class="col-12 md:col-6">
+              <label for="accountType" class="block text-900 font-medium mb-2">
+                Account Type <span class="text-red-500">*</span>
+              </label>
+              <p-dropdown
+                inputId="accountType"
+                formControlName="accountType"
+                [options]="accountTypeOptions"
+                placeholder="Select account type"
+                styleClass="w-full"
+                (onChange)="onAccountTypeChange($event)"
+                [class.ng-invalid]="accountForm.get('accountType')?.invalid && accountForm.get('accountType')?.touched">
+              </p-dropdown>
+              <small class="p-error" *ngIf="accountForm.get('accountType')?.invalid && accountForm.get('accountType')?.touched">
+                Account type is required
+              </small>
+            </div>
+            
+            <div class="col-12 md:col-6">
+              <label for="accountProfile" class="block text-900 font-medium mb-2">
+                Account Profile
+              </label>
+              <p-dropdown
+                inputId="accountProfile"
+                formControlName="accountProfile"
+                [options]="accountProfileOptions"
+                placeholder="Select account profile"
+                styleClass="w-full">
+              </p-dropdown>
+            </div>
+            
+            <div class="col-12 md:col-6">
+              <label for="investmentObjective" class="block text-900 font-medium mb-2">
+                Primary Investment Objective for This Account <span class="text-red-500">*</span>
+              </label>
+              <p-dropdown
+                inputId="investmentObjective"
+                formControlName="investmentObjective"
+                [options]="investmentObjectiveOptions"
+                placeholder="Select investment objective"
+                styleClass="w-full"
+                [class.ng-invalid]="accountForm.get('investmentObjective')?.invalid && accountForm.get('investmentObjective')?.touched">
+              </p-dropdown>
+              <small class="p-error" *ngIf="accountForm.get('investmentObjective')?.invalid && accountForm.get('investmentObjective')?.touched">
+                Investment objective is required
+              </small>
+            </div>
+            
+            <div class="col-12 md:col-6">
+              <label for="riskTolerance" class="block text-900 font-medium mb-2">
+                Risk Tolerance <span class="text-red-500">*</span>
+              </label>
+              <p-dropdown
+                inputId="riskTolerance"
+                formControlName="riskTolerance"
+                [options]="riskToleranceOptions"
+                placeholder="Select risk tolerance"
+                styleClass="w-full"
+                [class.ng-invalid]="accountForm.get('riskTolerance')?.invalid && accountForm.get('riskTolerance')?.touched">
+              </p-dropdown>
+              <small class="p-error" *ngIf="accountForm.get('riskTolerance')?.invalid && accountForm.get('riskTolerance')?.touched">
+                Risk tolerance is required
+              </small>
+            </div>
+          </div>
+
+          <!-- Account Setup - Review Mode -->
+          <div *ngIf="!sectionEditMode['account-setup']" class="review-mode-grid">
             <div class="review-field-group">
               <div class="review-field-label">Account Type</div>
               <div class="review-field-value"
@@ -618,34 +707,10 @@ interface DropdownOption {
             </div>
             
             <div class="review-field-group">
-              <div class="review-field-label">Liquidity Needs - Timing</div>
-              <div class="review-field-value"
-                   [ngClass]="{'empty': !accountForm.get('liquidityTiming')?.value}">
-                {{accountForm.get('liquidityTiming')?.value || 'Not provided'}}
-              </div>
-            </div>
-            
-            <div class="review-field-group">
-              <div class="review-field-label">Time Horizon</div>
-              <div class="review-field-value"
-                   [ngClass]="{'empty': !accountForm.get('timeHorizon')?.value}">
-                {{getFieldDisplayValue('timeHorizon', timeHorizonOptions) || 'Not provided'}}
-              </div>
-            </div>
-            
-            <div class="review-field-group">
               <div class="review-field-label">Risk Tolerance</div>
               <div class="review-field-value"
                    [ngClass]="{'missing': !accountForm.get('riskTolerance')?.value}">
                 {{getFieldDisplayValue('riskTolerance', riskToleranceOptions) || 'Required field missing'}}
-              </div>
-            </div>
-            
-            <div class="review-field-group">
-              <div class="review-field-label">Primary Goals</div>
-              <div class="review-field-value"
-                   [ngClass]="{'empty': !accountForm.get('primaryGoals')?.value}">
-                {{accountForm.get('primaryGoals')?.value || 'Not provided'}}
               </div>
             </div>
           </div>
@@ -653,7 +718,17 @@ interface DropdownOption {
 
         <!-- Source of Funds Section -->
         <div class="review-mode-section">
-          <div class="review-mode-section-title">Source of Funds</div>
+          <div class="review-mode-section-header">
+            <div class="review-mode-section-title">Source of Funds</div>
+            <p-button 
+              [label]="sectionEditMode['source-of-funds'] ? 'Save' : 'Edit'" 
+              [icon]="sectionEditMode['source-of-funds'] ? 'pi pi-check' : 'pi pi-pencil'" 
+              size="small" 
+              [severity]="sectionEditMode['source-of-funds'] ? 'success' : 'secondary'"
+              styleClass="edit-section-button"
+              (onClick)="toggleSectionEdit('source-of-funds')">
+            </p-button>
+          </div>
           <div class="review-mode-grid">
             <div class="review-field-group">
               <div class="review-field-label">Initial Source of Funds</div>
@@ -675,7 +750,17 @@ interface DropdownOption {
 
         <!-- Additional Source of Funds Section -->
         <div class="review-mode-section">
-          <div class="review-mode-section-title">Additional Source of Funds for IC UMA</div>
+          <div class="review-mode-section-header">
+            <div class="review-mode-section-title">Additional Source of Funds for IC UMA</div>
+            <p-button 
+              [label]="sectionEditMode['additional-funds'] ? 'Save' : 'Edit'" 
+              [icon]="sectionEditMode['additional-funds'] ? 'pi pi-check' : 'pi pi-pencil'" 
+              size="small" 
+              [severity]="sectionEditMode['additional-funds'] ? 'success' : 'secondary'"
+              styleClass="edit-section-button"
+              (onClick)="toggleSectionEdit('additional-funds')">
+            </p-button>
+          </div>
           <div class="review-mode-grid">
             <div class="review-field-group">
               <div class="review-field-label">Corporate Stock Transfer</div>
@@ -689,7 +774,17 @@ interface DropdownOption {
 
         <!-- Trust Information Section -->
         <div *ngIf="isTrustAccount" class="review-mode-section">
-          <div class="review-mode-section-title">Trust Information</div>
+          <div class="review-mode-section-header">
+            <div class="review-mode-section-title">Trust Information</div>
+            <p-button 
+              [label]="sectionEditMode['trust-info'] ? 'Save' : 'Edit'" 
+              [icon]="sectionEditMode['trust-info'] ? 'pi pi-check' : 'pi pi-pencil'" 
+              size="small" 
+              [severity]="sectionEditMode['trust-info'] ? 'success' : 'secondary'"
+              styleClass="edit-section-button"
+              (onClick)="toggleSectionEdit('trust-info')">
+            </p-button>
+          </div>
           <div class="review-mode-grid">
             <div class="review-field-group">
               <div class="review-field-label">Trust Name</div>
@@ -703,7 +798,17 @@ interface DropdownOption {
 
         <!-- Trustees Section -->
         <div *ngIf="isTrustAccount" class="review-mode-section">
-          <div class="review-mode-section-title">Trustees</div>
+          <div class="review-mode-section-header">
+            <div class="review-mode-section-title">Trustees</div>
+            <p-button 
+              [label]="sectionEditMode['trustees'] ? 'Save' : 'Edit'" 
+              [icon]="sectionEditMode['trustees'] ? 'pi pi-check' : 'pi pi-pencil'" 
+              size="small" 
+              [severity]="sectionEditMode['trustees'] ? 'success' : 'secondary'"
+              styleClass="edit-section-button"
+              (onClick)="toggleSectionEdit('trustees')">
+            </p-button>
+          </div>
           <div *ngIf="trustees.length > 0" class="review-mode-grid">
             <div *ngFor="let trustee of trustees; let i = index" class="review-field-group">
               <div class="review-field-label">Trustee {{i + 1}}</div>
@@ -728,7 +833,17 @@ interface DropdownOption {
 
         <!-- Beneficiaries Section -->
         <div *ngIf="isIraAccount" class="review-mode-section">
-          <div class="review-mode-section-title">Beneficiaries</div>
+          <div class="review-mode-section-header">
+            <div class="review-mode-section-title">Beneficiaries</div>
+            <p-button 
+              [label]="sectionEditMode['beneficiaries'] ? 'Save' : 'Edit'" 
+              [icon]="sectionEditMode['beneficiaries'] ? 'pi pi-check' : 'pi pi-pencil'" 
+              size="small" 
+              [severity]="sectionEditMode['beneficiaries'] ? 'success' : 'secondary'"
+              styleClass="edit-section-button"
+              (onClick)="toggleSectionEdit('beneficiaries')">
+            </p-button>
+          </div>
           <div *ngIf="beneficiaries.length > 0" class="review-mode-grid">
             <div *ngFor="let beneficiary of beneficiaries; let i = index" class="review-field-group">
               <div class="review-field-label">Beneficiary {{i + 1}}</div>
@@ -752,6 +867,15 @@ interface DropdownOption {
           </div>
         </div>
       </div>
+      
+      <!-- Existing Beneficiaries Modal -->
+      <app-existing-instance-modal
+        [(visible)]="showExistingModal"
+        instanceType="beneficiary"
+        [instances]="existingInstances"
+        (instanceSelected)="onExistingBeneficiarySelected($event)"
+        (modalClosed)="onExistingModalClosed()">
+      </app-existing-instance-modal>
     </div>
   `,
   styles: [`
@@ -963,6 +1087,24 @@ interface DropdownOption {
       border-bottom: 2px solid #e5e7eb;
       padding-bottom: 0.5rem;
     }
+
+    .review-mode-section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .review-mode-section-header .review-mode-section-title {
+      margin-bottom: 0;
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    ::ng-deep .edit-section-button .p-button {
+      font-size: 0.75rem !important;
+      padding: 0.25rem 0.75rem !important;
+    }
     
     .review-mode-grid {
       width: 100%;
@@ -1001,6 +1143,17 @@ interface DropdownOption {
       color: #9ca3af;
       font-style: italic;
     }
+
+    /* Existing Instance Button Styles */
+    .funding-type-button.existing-instance-button {
+      background: #8b5cf6;
+      border-color: #8b5cf6;
+    }
+
+    .funding-type-button.existing-instance-button:hover {
+      background: #7c3aed;
+      border-color: #7c3aed;
+    }
   `]
 })
 export class AccountSetupComponent implements OnInit, OnChanges {
@@ -1022,13 +1175,28 @@ export class AccountSetupComponent implements OnInit, OnChanges {
   editingBeneficiaryIndex: number = -1;
   maxDate: Date = new Date();
 
+  // Existing instances functionality
+  showExistingModal = false;
+  existingInstances: ExistingInstance[] = [];
+
+  // Section edit mode tracking
+  sectionEditMode: { [key: string]: boolean } = {
+    'account-setup': false,
+    'source-of-funds': false,
+    'additional-funds': false,
+    'trust-info': false,
+    'trustees': false,
+    'beneficiaries': false
+  };
+
   // Dropdown options
   accountTypeOptions: DropdownOption[] = [
     { label: 'Joint Taxable Account', value: 'joint-taxable' },
     { label: 'Individual Taxable Account', value: 'individual-taxable' },
     { label: 'Trust Account', value: 'trust' },
     { label: 'IRA', value: 'ira' },
-    { label: 'Roth IRA', value: 'roth-ira' }
+    { label: 'Roth IRA', value: 'roth-ira' },
+    { label: 'Traditional IRA', value: 'traditional-ira' }
   ];
 
   investmentObjectiveOptions: DropdownOption[] = [
@@ -1076,7 +1244,11 @@ export class AccountSetupComponent implements OnInit, OnChanges {
     { label: 'Other', value: 'other' }
   ];
 
-  constructor(private fb: FormBuilder, private messageService: MessageService) {}
+  constructor(
+    private fb: FormBuilder, 
+    private messageService: MessageService,
+    private existingInstancesService: ExistingInstancesService
+  ) {}
 
   ngOnInit() {
     this.initializeForm();
@@ -1140,7 +1312,7 @@ export class AccountSetupComponent implements OnInit, OnChanges {
       
       // Check account type to show/hide conditional fields
       this.isTrustAccount = entityData.accountType === 'trust';
-      this.isIraAccount = entityData.accountType === 'roth-ira' || entityData.accountType === 'ira';
+      this.isIraAccount = entityData.accountType === 'roth-ira' || entityData.accountType === 'ira' || entityData.accountType === 'traditional-ira';
       
       
       // Load trustees and beneficiaries
@@ -1158,14 +1330,14 @@ export class AccountSetupComponent implements OnInit, OnChanges {
 
   onAccountTypeChange(event: any) {
     this.isTrustAccount = event.value === 'trust';
-    this.isIraAccount = event.value === 'roth-ira' || event.value === 'ira';
+    this.isIraAccount = event.value === 'roth-ira' || event.value === 'ira' || event.value === 'traditional-ira';
     
   }
 
   private updateAccountType() {
     const accountType = this.accountForm.get('accountType')?.value;
     this.isTrustAccount = accountType === 'trust';
-    this.isIraAccount = accountType === 'roth-ira' || accountType === 'ira';
+    this.isIraAccount = accountType === 'roth-ira' || accountType === 'ira' || accountType === 'traditional-ira';
   }
 
   handleAddTrustee() {
@@ -1309,5 +1481,61 @@ export class AccountSetupComponent implements OnInit, OnChanges {
     if (this.accountForm.valid) {
       this.updateFormData();
     }
+  }
+
+  toggleSectionEdit(sectionKey: string) {
+    if (this.sectionEditMode[sectionKey]) {
+      // Save changes and exit edit mode
+      this.updateFormData();
+      this.sectionEditMode[sectionKey] = false;
+    } else {
+      // Enter edit mode
+      this.sectionEditMode[sectionKey] = true;
+    }
+  }
+
+  // Existing Beneficiaries Modal Methods
+  showExistingBeneficiariesModal() {
+    // Collect all existing instances from the form data
+    this.existingInstances = this.existingInstancesService.collectExistingInstances(this.formData);
+    this.showExistingModal = true;
+  }
+
+  onExistingBeneficiarySelected(instance: ExistingInstance) {
+    if (instance.type === 'beneficiary') {
+      // Add the existing beneficiary to this account
+      const beneficiaryData = { ...instance.data };
+      
+      // Check if this beneficiary already exists in the current account
+      const existingBeneficiary = this.beneficiaries.find(b => 
+        b.name === beneficiaryData.name && 
+        b.ssn === beneficiaryData.ssn
+      );
+      
+      if (existingBeneficiary) {
+        this.messageService.add({
+          severity: 'warn',
+          summary: 'Beneficiary Already Exists',
+          detail: 'This beneficiary is already added to this account',
+          life: 3000
+        });
+      } else {
+        this.beneficiaries.push(beneficiaryData);
+        this.updateFormData();
+        
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Beneficiary Added',
+          detail: `${beneficiaryData.name} added from ${instance.sourceRegistration}`,
+          life: 3000
+        });
+      }
+    }
+    
+    this.showExistingModal = false;
+  }
+
+  onExistingModalClosed() {
+    this.showExistingModal = false;
   }
 }

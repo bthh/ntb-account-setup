@@ -14,6 +14,8 @@ import { MessageService } from 'primeng/api';
 
 // Local Imports
 import { FormData, FundingInstance as SharedFundingInstance } from '../../../../shared/models/types';
+import { ExistingInstanceModalComponent, ExistingInstance } from '../../../../shared/components/existing-instance-modal/existing-instance-modal.component';
+import { ExistingInstancesService } from '../../../../shared/services/existing-instances.service';
 
 interface DropdownOption {
   label: string;
@@ -41,9 +43,10 @@ interface FundingInstances {
     ButtonModule,
     CardModule,
     ToastModule,
-    TooltipModule
+    TooltipModule,
+    ExistingInstanceModalComponent
   ],
-  providers: [MessageService],
+  providers: [MessageService, ExistingInstancesService],
   template: `
     <div class="funding-section">
       <p-toast></p-toast>
@@ -99,6 +102,15 @@ interface FundingInstances {
                 [class.disabled]="fundingInstances.contribution.length >= 4"
                 (click)="handleFundingTypeClick('contribution')">
                 <div class="funding-type-name">Add Contribution <i class="pi pi-plus-circle"></i></div>
+              </div>
+            </div>
+            
+            <!-- Add Existing Instance Button -->
+            <div class="funding-button-wrapper">
+              <div 
+                class="funding-type-button existing-instance-button"
+                (click)="showExistingInstanceModal()">
+                <div class="funding-type-name">Add Existing <i class="pi pi-history"></i></div>
               </div>
             </div>
           </div>
@@ -457,19 +469,35 @@ interface FundingInstances {
         
         <!-- Funding Section -->
         <div class="review-mode-section">
-          <div class="review-mode-section-title">Funding</div>
+          <div class="review-mode-section-header">
+            <div class="review-mode-section-title">Funding</div>
+            <p-button 
+              [label]="sectionEditMode['funding'] ? 'Save' : 'Edit'" 
+              [icon]="sectionEditMode['funding'] ? 'pi pi-check' : 'pi pi-pencil'" 
+              size="small" 
+              [severity]="sectionEditMode['funding'] ? 'success' : 'secondary'"
+              styleClass="edit-section-button"
+              (onClick)="toggleSectionEdit('funding')">
+            </p-button>
+          </div>
           
           <!-- ACAT Transfers -->
           <div *ngIf="fundingInstances.acat.length > 0" class="review-subsection">
             <div class="review-subsection-title">ACAT Transfers</div>
-            <div class="review-mode-grid">
-              <div *ngFor="let acat of fundingInstances.acat; let i = index" class="review-field-group">
-                <div class="review-field-label">ACAT Transfer {{i + 1}}</div>
-                <div class="review-field-value">
-                  <strong>{{acat.name}}</strong><br>
-                  Amount: {{formatStoredAmount(acat.amount)}}<br>
-                  From Firm: {{acat.fromFirm}}<br>
-                  Transfer Type: {{acat.transferType}}
+            <div *ngFor="let acat of fundingInstances.acat; let i = index" class="funding-instance-row">
+              <div class="funding-instance-header">ACAT Transfer {{i + 1}}: {{acat.name}}</div>
+              <div class="funding-instance-details">
+                <div class="funding-detail-item">
+                  <span class="funding-detail-label">Amount:</span>
+                  <span class="funding-detail-value">{{formatStoredAmount(acat.amount)}}</span>
+                </div>
+                <div class="funding-detail-item">
+                  <span class="funding-detail-label">From Firm:</span>
+                  <span class="funding-detail-value">{{acat.fromFirm}}</span>
+                </div>
+                <div class="funding-detail-item">
+                  <span class="funding-detail-label">Transfer Type:</span>
+                  <span class="funding-detail-value">{{acat.transferType}}</span>
                 </div>
               </div>
             </div>
@@ -478,14 +506,20 @@ interface FundingInstances {
           <!-- ACH Transfers -->
           <div *ngIf="fundingInstances.ach.length > 0" class="review-subsection">
             <div class="review-subsection-title">ACH Transfers</div>
-            <div class="review-mode-grid">
-              <div *ngFor="let ach of fundingInstances.ach; let i = index" class="review-field-group">
-                <div class="review-field-label">ACH Transfer {{i + 1}}</div>
-                <div class="review-field-value">
-                  <strong>{{ach.name}}</strong><br>
-                  Amount: {{formatStoredAmount(ach.amount)}}<br>
-                  Bank: {{ach.bankName}}<br>
-                  <span *ngIf="ach.frequency">Frequency: {{ach.frequency}}</span>
+            <div *ngFor="let ach of fundingInstances.ach; let i = index" class="funding-instance-row">
+              <div class="funding-instance-header">ACH Transfer {{i + 1}}: {{ach.name}}</div>
+              <div class="funding-instance-details">
+                <div class="funding-detail-item">
+                  <span class="funding-detail-label">Amount:</span>
+                  <span class="funding-detail-value">{{formatStoredAmount(ach.amount)}}</span>
+                </div>
+                <div class="funding-detail-item">
+                  <span class="funding-detail-label">Bank:</span>
+                  <span class="funding-detail-value">{{ach.bankName}}</span>
+                </div>
+                <div class="funding-detail-item" *ngIf="ach.frequency">
+                  <span class="funding-detail-label">Frequency:</span>
+                  <span class="funding-detail-value">{{ach.frequency}}</span>
                 </div>
               </div>
             </div>
@@ -494,14 +528,20 @@ interface FundingInstances {
           <!-- Initial ACH Transfers -->
           <div *ngIf="fundingInstances['initial-ach'].length > 0" class="review-subsection">
             <div class="review-subsection-title">Initial ACH Transfers</div>
-            <div class="review-mode-grid">
-              <div *ngFor="let initialAch of fundingInstances['initial-ach']; let i = index" class="review-field-group">
-                <div class="review-field-label">Initial ACH {{i + 1}}</div>
-                <div class="review-field-value">
-                  <strong>{{initialAch.name}}</strong><br>
-                  Amount: {{formatStoredAmount(initialAch.amount)}}<br>
-                  Bank: {{initialAch.bankName}}<br>
-                  <span *ngIf="initialAch.transferDate">Transfer Date: {{initialAch.transferDate | date:'shortDate'}}</span>
+            <div *ngFor="let initialAch of fundingInstances['initial-ach']; let i = index" class="funding-instance-row">
+              <div class="funding-instance-header">Initial ACH {{i + 1}}: {{initialAch.name}}</div>
+              <div class="funding-instance-details">
+                <div class="funding-detail-item">
+                  <span class="funding-detail-label">Amount:</span>
+                  <span class="funding-detail-value">{{formatStoredAmount(initialAch.amount)}}</span>
+                </div>
+                <div class="funding-detail-item">
+                  <span class="funding-detail-label">Bank:</span>
+                  <span class="funding-detail-value">{{initialAch.bankName}}</span>
+                </div>
+                <div class="funding-detail-item" *ngIf="initialAch.transferDate">
+                  <span class="funding-detail-label">Transfer Date:</span>
+                  <span class="funding-detail-value">{{initialAch.transferDate | date:'shortDate'}}</span>
                 </div>
               </div>
             </div>
@@ -510,14 +550,20 @@ interface FundingInstances {
           <!-- Withdrawals -->
           <div *ngIf="fundingInstances.withdrawal.length > 0" class="review-subsection">
             <div class="review-subsection-title">Systematic Withdrawals</div>
-            <div class="review-mode-grid">
-              <div *ngFor="let withdrawal of fundingInstances.withdrawal; let i = index" class="review-field-group">
-                <div class="review-field-label">Withdrawal {{i + 1}}</div>
-                <div class="review-field-value">
-                  <strong>{{withdrawal.name}}</strong><br>
-                  Amount: {{formatStoredAmount(withdrawal.amount)}}<br>
-                  Frequency: {{withdrawal.frequency}}<br>
-                  <span *ngIf="withdrawal.startDate">Start Date: {{withdrawal.startDate | date:'shortDate'}}</span>
+            <div *ngFor="let withdrawal of fundingInstances.withdrawal; let i = index" class="funding-instance-row">
+              <div class="funding-instance-header">Withdrawal {{i + 1}}: {{withdrawal.name}}</div>
+              <div class="funding-instance-details">
+                <div class="funding-detail-item">
+                  <span class="funding-detail-label">Amount:</span>
+                  <span class="funding-detail-value">{{formatStoredAmount(withdrawal.amount)}}</span>
+                </div>
+                <div class="funding-detail-item">
+                  <span class="funding-detail-label">Frequency:</span>
+                  <span class="funding-detail-value">{{withdrawal.frequency}}</span>
+                </div>
+                <div class="funding-detail-item" *ngIf="withdrawal.startDate">
+                  <span class="funding-detail-label">Start Date:</span>
+                  <span class="funding-detail-value">{{withdrawal.startDate | date:'shortDate'}}</span>
                 </div>
               </div>
             </div>
@@ -526,14 +572,20 @@ interface FundingInstances {
           <!-- Contributions -->
           <div *ngIf="fundingInstances.contribution.length > 0" class="review-subsection">
             <div class="review-subsection-title">Systematic Contributions</div>
-            <div class="review-mode-grid">
-              <div *ngFor="let contribution of fundingInstances.contribution; let i = index" class="review-field-group">
-                <div class="review-field-label">Contribution {{i + 1}}</div>
-                <div class="review-field-value">
-                  <strong>{{contribution.name}}</strong><br>
-                  Amount: {{formatStoredAmount(contribution.amount)}}<br>
-                  Bank: {{contribution.bankName}}<br>
-                  Frequency: {{contribution.frequency}}
+            <div *ngFor="let contribution of fundingInstances.contribution; let i = index" class="funding-instance-row">
+              <div class="funding-instance-header">Contribution {{i + 1}}: {{contribution.name}}</div>
+              <div class="funding-instance-details">
+                <div class="funding-detail-item">
+                  <span class="funding-detail-label">Amount:</span>
+                  <span class="funding-detail-value">{{formatStoredAmount(contribution.amount)}}</span>
+                </div>
+                <div class="funding-detail-item">
+                  <span class="funding-detail-label">Bank:</span>
+                  <span class="funding-detail-value">{{contribution.bankName}}</span>
+                </div>
+                <div class="funding-detail-item">
+                  <span class="funding-detail-label">Frequency:</span>
+                  <span class="funding-detail-value">{{contribution.frequency}}</span>
                 </div>
               </div>
             </div>
@@ -551,6 +603,16 @@ interface FundingInstances {
         </div>
       </div>
     </div>
+
+    <!-- Existing Instance Modal -->
+    <app-existing-instance-modal
+      [(visible)]="showExistingModal"
+      [instanceType]="'funding'"
+      [instances]="existingInstances"
+      [currentRegistration]="getCurrentRegistration()"
+      (instanceSelected)="onExistingInstanceSelected($event)"
+      (modalClosed)="onExistingModalClosed()">
+    </app-existing-instance-modal>
   `,
   styles: [`
     .funding-section {
@@ -624,6 +686,16 @@ interface FundingInstances {
 
     .funding-type-button.disabled .funding-type-name {
       color: #f3f4f6;
+    }
+
+    .funding-type-button.existing-instance-button {
+      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+      border-color: #f59e0b;
+    }
+
+    .funding-type-button.existing-instance-button:hover {
+      background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+      border-color: #d97706;
     }
 
     .funding-instances-table {
@@ -704,6 +776,24 @@ interface FundingInstances {
       border-bottom: 2px solid #e5e7eb;
       padding-bottom: 0.5rem;
     }
+
+    .review-mode-section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .review-mode-section-header .review-mode-section-title {
+      margin-bottom: 0;
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    ::ng-deep .edit-section-button .p-button {
+      font-size: 0.75rem !important;
+      padding: 0.25rem 0.75rem !important;
+    }
     
     .review-subsection {
       margin-bottom: 1.5rem;
@@ -759,6 +849,50 @@ interface FundingInstances {
       color: #9ca3af;
       font-style: italic;
     }
+
+    /* Funding Instance Row Layout */
+    .funding-instance-row {
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      background: white;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .funding-instance-header {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #1f2937;
+      margin-bottom: 0.75rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid #f3f4f6;
+    }
+
+    .funding-instance-details {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+    }
+
+    .funding-detail-item {
+      display: flex;
+      flex-direction: column;
+      min-width: 150px;
+    }
+
+    .funding-detail-label {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: #6b7280;
+      margin-bottom: 0.25rem;
+    }
+
+    .funding-detail-value {
+      font-size: 0.875rem;
+      color: #1f2937;
+      font-weight: 500;
+    }
   `]
 })
 export class FundingComponent implements OnInit, OnChanges {
@@ -779,6 +913,15 @@ export class FundingComponent implements OnInit, OnChanges {
     withdrawal: [],
     contribution: []
   };
+
+  // Existing instance modal properties
+  showExistingModal = false;
+
+  // Section edit mode tracking
+  sectionEditMode: { [key: string]: boolean } = {
+    'funding': false
+  };
+  existingInstances: ExistingInstance[] = [];
 
   // Funding type names
   fundingTypeNames = {
@@ -816,7 +959,8 @@ export class FundingComponent implements OnInit, OnChanges {
 
   constructor(
     private fb: FormBuilder,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private existingInstancesService: ExistingInstancesService
   ) {}
 
   ngOnInit() {
@@ -870,6 +1014,17 @@ export class FundingComponent implements OnInit, OnChanges {
       contribution: this.fundingInstances.contribution
     };
     this.formDataChange.emit(updatedFormData);
+  }
+
+  toggleSectionEdit(sectionKey: string) {
+    if (this.sectionEditMode[sectionKey]) {
+      // Save changes and exit edit mode
+      this.updateFormData();
+      this.sectionEditMode[sectionKey] = false;
+    } else {
+      // Enter edit mode
+      this.sectionEditMode[sectionKey] = true;
+    }
   }
 
   handleFundingTypeClick(type: string) {
@@ -1103,5 +1258,57 @@ export class FundingComponent implements OnInit, OnChanges {
 
   getTotalFundingInstances(): number {
     return Object.values(this.fundingInstances).reduce((total, instances) => total + instances.length, 0);
+  }
+
+  // Existing instance modal methods
+  showExistingInstanceModal() {
+    // Collect all existing instances from the form data
+    this.existingInstances = this.existingInstancesService.collectExistingInstances(this.formData);
+    this.showExistingModal = true;
+  }
+
+  onExistingInstanceSelected(instance: ExistingInstance) {
+    // Apply the selected instance data to create a new funding instance
+    const fundingData = instance.data;
+    
+    // Determine the funding type based on the instance data
+    let fundingType: string = 'acat'; // default
+    if (fundingData.bankName || fundingData.routingNumber) {
+      fundingType = 'ach';
+    } else if (fundingData.institutionName) {
+      fundingType = 'acat';
+    }
+
+    // Add the funding instance to the appropriate type
+    const fundingInstances = this.fundingInstances as any;
+    fundingInstances[fundingType].push({
+      ...fundingData,
+      id: `${fundingType}-${Date.now()}` // Generate unique ID
+    });
+
+    this.updateFormData();
+    this.messageService.add({
+      severity: 'success',
+      summary: 'Success',
+      detail: `Existing funding instance added successfully`
+    });
+  }
+
+  onExistingModalClosed() {
+    this.showExistingModal = false;
+  }
+
+  getCurrentRegistration(): string {
+    // Map entity IDs to registration names
+    const registrationMap: { [key: string]: string } = {
+      'john-smith': 'Joint Registration',
+      'mary-smith': 'Joint Registration',
+      'smith-trust': 'Trust Registration',
+      'joint-account': 'Joint Registration',
+      'roth-ira-account': 'Roth Registration',
+      'trust-account': 'Trust Registration'
+    };
+    
+    return registrationMap[this.entityId] || 'Unknown Registration';
   }
 }
