@@ -18,6 +18,8 @@ import { SharedModule } from 'primeng/api';
 
 // Local Imports
 import { FormData } from '../../../../shared/models/types';
+import { ExistingInstanceModalComponent, ExistingInstance } from '../../../../shared/components/existing-instance-modal/existing-instance-modal.component';
+import { ExistingInstancesService } from '../../../../shared/services/existing-instances.service';
 
 interface DropdownOption {
   label: string;
@@ -42,8 +44,10 @@ interface DropdownOption {
     RadioButtonModule,
     ButtonModule,
     DividerModule,
-    SharedModule
+    SharedModule,
+    ExistingInstanceModalComponent
   ],
+  providers: [ExistingInstancesService],
   template: `
       <!-- Edit Mode - Form -->
       <form *ngIf="!isReviewMode" [formGroup]="ownerForm" (ngSubmit)="onSubmit()">
@@ -217,6 +221,17 @@ interface DropdownOption {
               <small class="text-orange-500 text-xs">
                 Consider specifying if different from home address
               </small>
+            </div>
+            
+            <div class="col-12 mt-3">
+              <p-button 
+                label="Add Existing Address" 
+                icon="pi pi-history"
+                severity="secondary"
+                size="small"
+                styleClass="existing-address-button"
+                (onClick)="showExistingAddressModal()">
+              </p-button>
             </div>
             
             <div class="col-12 md:col-6">
@@ -748,6 +763,16 @@ interface DropdownOption {
           </div>
         </div>
       </div>
+
+      <!-- Existing Address Modal -->
+      <app-existing-instance-modal
+        [(visible)]="showExistingModal"
+        [instanceType]="'address'"
+        [instances]="existingInstances"
+        [currentRegistration]="getCurrentRegistration()"
+        (instanceSelected)="onExistingAddressSelected($event)"
+        (modalClosed)="onExistingModalClosed()">
+      </app-existing-instance-modal>
   `,
   styles: [`
     /* Remove all constraints that cause overflow */
@@ -877,6 +902,24 @@ interface DropdownOption {
       color: #9ca3af;
       font-style: italic;
     }
+
+    /* Existing Address Button Styling */
+    ::ng-deep .existing-address-button .p-button {
+      background: #f8fafc;
+      border: 1px dashed #cbd5e1;
+      color: #64748b;
+      transition: all 0.2s ease;
+    }
+
+    ::ng-deep .existing-address-button .p-button:hover {
+      background: #e2e8f0;
+      border-color: #94a3b8;
+      color: #475569;
+    }
+
+    ::ng-deep .existing-address-button .p-button .p-button-icon {
+      margin-right: 0.5rem;
+    }
   `]
 })
 export class OwnerDetailsComponent implements OnInit, OnChanges {
@@ -893,6 +936,10 @@ export class OwnerDetailsComponent implements OnInit, OnChanges {
     disclosure: false,
     trusted: false
   };
+
+  // Existing instance modal properties
+  showExistingModal = false;
+  existingInstances: ExistingInstance[] = [];
 
   ownerForm!: FormGroup;
   maxDate = new Date();
@@ -935,7 +982,10 @@ export class OwnerDetailsComponent implements OnInit, OnChanges {
     { label: 'Other', value: 'other' }
   ];
 
-  constructor(private fb: FormBuilder) {}
+  constructor(
+    private fb: FormBuilder,
+    private existingInstancesService: ExistingInstancesService
+  ) {}
 
   ngOnInit() {
     this.initializeForm();
@@ -1013,6 +1063,61 @@ export class OwnerDetailsComponent implements OnInit, OnChanges {
     }
     
     this.sectionEditMode[sectionName] = !this.sectionEditMode[sectionName];
+  }
+
+  // Existing Address Modal Methods
+  showExistingAddressModal() {
+    // Collect all existing instances from the form data
+    this.existingInstances = this.existingInstancesService.collectExistingInstances(this.formData);
+    this.showExistingModal = true;
+  }
+
+  onExistingAddressSelected(instance: ExistingInstance) {
+    if (instance.type === 'address') {
+      // Use the service to apply the address data
+      const currentValues = this.ownerForm.value;
+      const updatedValues = this.existingInstancesService.applyInstanceData('address', instance.data, currentValues);
+      
+      // Check if home address is empty, use it first, otherwise use mailing
+      const currentHomeAddress = this.ownerForm.get('homeAddress')?.value;
+      const currentMailingAddress = this.ownerForm.get('mailingAddress')?.value;
+      
+      if (!currentHomeAddress) {
+        this.ownerForm.patchValue({
+          homeAddress: updatedValues.homeAddress
+        });
+      } else if (!currentMailingAddress) {
+        this.ownerForm.patchValue({
+          mailingAddress: updatedValues.mailingAddress
+        });
+      } else {
+        // Both fields have values, replace home address
+        this.ownerForm.patchValue({
+          homeAddress: updatedValues.homeAddress
+        });
+      }
+      
+      this.updateFormData();
+    }
+  }
+
+  onExistingModalClosed() {
+    this.showExistingModal = false;
+  }
+
+  getCurrentRegistration(): string {
+    // Map entity IDs to registration names
+    const registrationMap: { [key: string]: string } = {
+      'john-smith': 'Joint Registration',
+      'mary-smith': 'Joint Registration', 
+      'smith-trust': 'Trust Registration',
+      'joint-account': 'Joint Registration',
+      'roth-ira-account': 'Roth Registration',
+      'trust-account': 'Trust Registration',
+      'traditional-ira-account': 'Traditional IRA Registration'
+    };
+    
+    return registrationMap[this.entityId] || 'Unknown Registration';
   }
 
   formatDate(date: any): string {
