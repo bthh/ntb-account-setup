@@ -683,7 +683,7 @@ app-funding :host :deep(.p-card:first-child) {
   border-left: 2px solid var(--surface-200);
   padding-left: 0.5rem;
   position: relative;
-  z-index: 2; /* Higher z-index to ensure visibility */
+  isolation: isolate; /* Create new stacking context to prevent icon overlap */
 }
 
 .registration-entity-header {
@@ -696,7 +696,7 @@ app-funding :host :deep(.p-card:first-child) {
   font-weight: 500;
   margin-bottom: 0.25rem;
   position: relative;
-  z-index: 3; /* Ensure header is above other elements */
+  z-index: 1; /* Keep header above nested content within this context */
 }
 
 .registration-entity-header .entity-name {
@@ -713,17 +713,16 @@ app-funding :host :deep(.p-card:first-child) {
 }
 
 .registration-entity-header .completion-icon {
-  font-size: 1rem; /* Increased size for better visibility */
+  font-size: 1rem;
   margin-left: auto;
   margin-right: 0.25rem;
   flex-shrink: 0;
-  min-width: 20px; /* Increased min-width */
-  height: 20px; /* Added explicit height */
+  min-width: 20px;
+  height: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
-  z-index: 4; /* Highest z-index to ensure icon visibility */
 }
 
 .registration-entity-header .toggle-icon {
@@ -736,7 +735,6 @@ app-funding :host :deep(.p-card:first-child) {
   align-items: center;
   justify-content: center;
   position: relative;
-  z-index: 4; /* Ensure toggle icon is visible */
 }
 
 /* Registration Group Accordion Header Styles */
@@ -784,21 +782,24 @@ app-funding :host :deep(.p-card:first-child) {
   margin-left: 1rem;
   margin-top: 0.5rem;
   border-left: 2px solid var(--surface-200);
-  padding-left: 0.75rem;
+  padding: 0.5rem 0.75rem;
   position: relative;
-  z-index: 2; /* Ensure nested sections are visible */
+  background: var(--surface-0);
+  border-radius: 4px;
+  margin-bottom: 0.5rem;
+  overflow: hidden; /* Ensure content stays contained */
+  contain: layout style; /* Improve containment */
 }
 
 /* Enhanced completion icons for nested sections */
 .nested-sections .section-nav-item .completion-icon {
-  font-size: 1rem; /* Larger size for better visibility */
+  font-size: 1rem;
   min-width: 20px;
   height: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
-  z-index: 5; /* Higher z-index than parent containers */
 }
 
 /* Ensure all completion icons are properly styled and visible */
@@ -820,9 +821,10 @@ app-funding :host :deep(.p-card:first-child) {
 
 .registration-group-mode .completion-icon {
   position: relative;
-  z-index: 1;
   visibility: visible !important;
   display: flex !important;
+  flex-shrink: 0; /* Prevent icon from shrinking */
+  align-self: center; /* Center icon vertically */
 }
 
 .registration-subsection-header.clickable {
