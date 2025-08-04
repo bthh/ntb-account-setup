@@ -5,7 +5,7 @@ import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } 
 // PrimeNG Imports
 import { InputTextModule } from 'primeng/inputtext';
 import { CalendarModule } from 'primeng/calendar';
-import { DropdownModule } from 'primeng/dropdown';
+import { AutoCompleteModule } from 'primeng/autocomplete';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { CheckboxModule } from 'primeng/checkbox';
 import { CardModule } from 'primeng/card';
@@ -19,6 +19,10 @@ import { MessageService, SharedModule } from 'primeng/api';
 import { FormData } from '../../../../shared/models/types';
 import { ExistingInstanceModalComponent, ExistingInstance } from '../../../../shared/components/existing-instance-modal/existing-instance-modal.component';
 import { ExistingInstancesService } from '../../../../shared/services/existing-instances.service';
+import { TrusteeDropdownComponent } from '../../../../shared/components/trustee-dropdown/trustee-dropdown.component';
+import { BeneficiaryDropdownComponent } from '../../../../shared/components/beneficiary-dropdown/beneficiary-dropdown.component';
+import { TrusteeStorageService, StoredTrustee } from '../../../../shared/services/trustee-storage.service';
+import { BeneficiaryStorageService, StoredBeneficiary } from '../../../../shared/services/beneficiary-storage.service';
 
 interface DropdownOption {
   label: string;
@@ -34,7 +38,7 @@ interface DropdownOption {
     ReactiveFormsModule,
     InputTextModule,
     CalendarModule,
-    DropdownModule,
+    AutoCompleteModule,
     InputTextareaModule,
     CheckboxModule,
     CardModule,
@@ -43,9 +47,11 @@ interface DropdownOption {
     ToastModule,
     TooltipModule,
     SharedModule,
-    ExistingInstanceModalComponent
+    ExistingInstanceModalComponent,
+    TrusteeDropdownComponent,
+    BeneficiaryDropdownComponent
   ],
-  providers: [MessageService, ExistingInstancesService],
+  providers: [MessageService, ExistingInstancesService, TrusteeStorageService, BeneficiaryStorageService],
   template: `
     <div class="account-setup-section">
       <p-toast></p-toast>
@@ -63,15 +69,19 @@ interface DropdownOption {
               <label for="accountType" class="block text-900 font-medium mb-2">
                 Account Type <span class="text-red-500">*</span>
               </label>
-              <p-dropdown
+              <p-autoComplete
                 inputId="accountType"
                 formControlName="accountType"
-                [options]="accountTypeOptions"
+                [suggestions]="filteredAccountTypeOptions"
+                (completeMethod)="filterAccountTypeOptions($event)"
+                field="label"
+                [dropdown]="true"
+                [forceSelection]="true"
                 placeholder="Select account type"
-                styleClass="w-full"
-                (onChange)="onAccountTypeChange($event)"
+                styleClass="w-full compact-autocomplete"
+                (onSelect)="onAccountTypeChange($event)"
                 [class.ng-invalid]="accountForm.get('accountType')?.invalid && accountForm.get('accountType')?.touched">
-              </p-dropdown>
+              </p-autoComplete>
               <small class="p-error" *ngIf="accountForm.get('accountType')?.invalid && accountForm.get('accountType')?.touched">
                 Account type is required
               </small>
@@ -81,27 +91,35 @@ interface DropdownOption {
               <label for="accountProfile" class="block text-900 font-medium mb-2">
                 Account Profile
               </label>
-              <p-dropdown
+              <p-autoComplete
                 inputId="accountProfile"
                 formControlName="accountProfile"
-                [options]="accountProfileOptions"
+                [suggestions]="filteredAccountProfileOptions"
+                (completeMethod)="filterAccountProfileOptions($event)"
+                field="label"
+                [dropdown]="true"
+                [forceSelection]="true"
                 placeholder="Select account profile"
-                styleClass="w-full">
-              </p-dropdown>
+                styleClass="w-full compact-autocomplete">
+              </p-autoComplete>
             </div>
             
             <div class="col-12 md:col-6">
               <label for="investmentObjective" class="block text-900 font-medium mb-2">
                 Primary Investment Objective for This Account <span class="text-red-500">*</span>
               </label>
-              <p-dropdown
+              <p-autoComplete
                 inputId="investmentObjective"
                 formControlName="investmentObjective"
-                [options]="investmentObjectiveOptions"
+                [suggestions]="filteredInvestmentObjectiveOptions"
+                (completeMethod)="filterInvestmentObjectiveOptions($event)"
+                field="label"
+                [dropdown]="true"
+                [forceSelection]="true"
                 placeholder="Please select one"
-                styleClass="w-full"
+                styleClass="w-full compact-autocomplete"
                 [class.ng-invalid]="accountForm.get('investmentObjective')?.invalid && accountForm.get('investmentObjective')?.touched">
-              </p-dropdown>
+              </p-autoComplete>
               <small class="p-error" *ngIf="accountForm.get('investmentObjective')?.invalid && accountForm.get('investmentObjective')?.touched">
                 Investment objective is required
               </small>
@@ -130,27 +148,35 @@ interface DropdownOption {
               <label for="timeHorizon" class="block text-900 font-medium mb-2">
                 Time Horizon for This Account
               </label>
-              <p-dropdown
+              <p-autoComplete
                 inputId="timeHorizon"
                 formControlName="timeHorizon"
-                [options]="timeHorizonOptions"
+                [suggestions]="filteredTimeHorizonOptions"
+                (completeMethod)="filterTimeHorizonOptions($event)"
+                field="label"
+                [dropdown]="true"
+                [forceSelection]="true"
                 placeholder="Please select one"
-                styleClass="w-full">
-              </p-dropdown>
+                styleClass="w-full compact-autocomplete">
+              </p-autoComplete>
             </div>
             
             <div class="col-12 md:col-6">
               <label for="riskTolerance" class="block text-900 font-medium mb-2">
                 Risk Tolerance <span class="text-red-500">*</span>
               </label>
-              <p-dropdown
+              <p-autoComplete
                 inputId="riskTolerance"
                 formControlName="riskTolerance"
-                [options]="riskToleranceOptions"
+                [suggestions]="filteredRiskToleranceOptions"
+                (completeMethod)="filterRiskToleranceOptions($event)"
+                field="label"
+                [dropdown]="true"
+                [forceSelection]="true"
                 placeholder="Risk Tolerance for This Account"
-                styleClass="w-full"
+                styleClass="w-full compact-autocomplete"
                 [class.ng-invalid]="accountForm.get('riskTolerance')?.invalid && accountForm.get('riskTolerance')?.touched">
-              </p-dropdown>
+              </p-autoComplete>
               <small class="p-error" *ngIf="accountForm.get('riskTolerance')?.invalid && accountForm.get('riskTolerance')?.touched">
                 Risk tolerance is required
               </small>
@@ -257,8 +283,17 @@ interface DropdownOption {
         <p-card header="Trustees" class="mb-4" *ngIf="isTrustAccount">
           <div class="funding-dashboard">
             
-            <!-- Add Trustee Button -->
-            <div class="funding-buttons-container">
+            <!-- Copy Dropdown Mode - Trustee Dropdown -->
+            <div *ngIf="copyDropdownsMode" class="copy-dropdown-section">
+              <app-trustee-dropdown
+                [formData]="formData"
+                [disabled]="isReviewMode"
+                (trusteeSelected)="onTrusteeSelected($event)">
+              </app-trustee-dropdown>
+            </div>
+
+            <!-- Regular Mode - Add Trustee Button -->
+            <div *ngIf="!copyDropdownsMode" class="funding-buttons-container">
               <div class="funding-button-wrapper">
                 <div 
                   class="funding-type-button"
@@ -284,13 +319,17 @@ interface DropdownOption {
                     </div>
                     <div class="col-12 md:col-6">
                       <label for="trusteeRole" class="block text-900 font-medium mb-2">Role <span class="text-red-500">*</span></label>
-                      <p-dropdown
+                      <p-autoComplete
                         inputId="trusteeRole"
                         formControlName="role"
-                        [options]="trusteeRoleOptions"
+                        [suggestions]="filteredTrusteeRoleOptions"
+                        (completeMethod)="filterTrusteeRoles($event)"
+                        field="label"
+                        [dropdown]="true"
+                        [forceSelection]="true"
                         placeholder="Select role"
-                        styleClass="w-full">
-                      </p-dropdown>
+                        styleClass="w-full compact-autocomplete">
+                      </p-autoComplete>
                     </div>
                     <div class="col-12 md:col-6">
                       <label for="trusteePhone" class="block text-900 font-medium mb-2">Phone <span class="text-red-500">*</span></label>
@@ -299,7 +338,7 @@ interface DropdownOption {
                         formControlName="phone"
                         mask="(999) 999-9999"
                         placeholder="(XXX) XXX-XXXX"
-                        styleClass="w-full">
+                        styleClass="w-full compact-autocomplete">
                       </p-inputMask>
                     </div>
                     <div class="col-12 md:col-6">
@@ -415,8 +454,17 @@ interface DropdownOption {
         <p-card header="Beneficiaries" class="mb-4" *ngIf="isIraAccount">
           <div class="funding-dashboard">
             
-            <!-- Add Beneficiary Button -->
-            <div class="funding-buttons-container">
+            <!-- Copy Dropdown Mode - Beneficiary Dropdown -->
+            <div *ngIf="copyDropdownsMode" class="copy-dropdown-section">
+              <app-beneficiary-dropdown
+                [formData]="formData"
+                [disabled]="isReviewMode"
+                (beneficiarySelected)="onBeneficiarySelected($event)">
+              </app-beneficiary-dropdown>
+            </div>
+
+            <!-- Regular Mode - Add Beneficiary Buttons -->
+            <div *ngIf="!copyDropdownsMode" class="funding-buttons-container">
               <div class="funding-button-wrapper">
                 <div 
                   class="funding-type-button"
@@ -449,13 +497,17 @@ interface DropdownOption {
                     </div>
                     <div class="col-12 md:col-6">
                       <label for="beneficiaryRelationship" class="block text-900 font-medium mb-2">Relationship <span class="text-red-500">*</span></label>
-                      <p-dropdown
+                      <p-autoComplete
                         inputId="beneficiaryRelationship"
                         formControlName="relationship"
-                        [options]="relationshipOptions"
+                        [suggestions]="filteredRelationshipOptions"
+                (completeMethod)="filterRelationshipOptions($event)"
+                        field="label"
+                        [dropdown]="true"
+                        [forceSelection]="true"
                         placeholder="Select relationship"
-                        styleClass="w-full">
-                      </p-dropdown>
+                        styleClass="w-full compact-autocomplete">
+                      </p-autoComplete>
                     </div>
                     <div class="col-12 md:col-4">
                       <label for="beneficiaryPercentage" class="block text-900 font-medium mb-2">Percentage <span class="text-red-500">*</span></label>
@@ -478,7 +530,7 @@ interface DropdownOption {
                         [showIcon]="true"
                         [maxDate]="maxDate"
                         placeholder="Select date"
-                        styleClass="w-full">
+                        styleClass="w-full compact-autocomplete">
                       </p-calendar>
                     </div>
                     <div class="col-12 md:col-4">
@@ -488,7 +540,7 @@ interface DropdownOption {
                         formControlName="ssn"
                         mask="999-99-9999"
                         placeholder="XXX-XX-XXXX"
-                        styleClass="w-full">
+                        styleClass="w-full compact-autocomplete">
                       </p-inputMask>
                     </div>
                     <div class="col-12">
@@ -618,15 +670,19 @@ interface DropdownOption {
               <label for="accountType" class="block text-900 font-medium mb-2">
                 Account Type <span class="text-red-500">*</span>
               </label>
-              <p-dropdown
+              <p-autoComplete
                 inputId="accountType"
                 formControlName="accountType"
-                [options]="accountTypeOptions"
+                [suggestions]="filteredAccountTypeOptions"
+                (completeMethod)="filterAccountTypeOptions($event)"
+                field="label"
+                [dropdown]="true"
+                [forceSelection]="true"
                 placeholder="Select account type"
-                styleClass="w-full"
-                (onChange)="onAccountTypeChange($event)"
+                styleClass="w-full compact-autocomplete"
+                (onSelect)="onAccountTypeChange($event)"
                 [class.ng-invalid]="accountForm.get('accountType')?.invalid && accountForm.get('accountType')?.touched">
-              </p-dropdown>
+              </p-autoComplete>
               <small class="p-error" *ngIf="accountForm.get('accountType')?.invalid && accountForm.get('accountType')?.touched">
                 Account type is required
               </small>
@@ -636,27 +692,35 @@ interface DropdownOption {
               <label for="accountProfile" class="block text-900 font-medium mb-2">
                 Account Profile
               </label>
-              <p-dropdown
+              <p-autoComplete
                 inputId="accountProfile"
                 formControlName="accountProfile"
-                [options]="accountProfileOptions"
+                [suggestions]="filteredAccountProfileOptions"
+                (completeMethod)="filterAccountProfileOptions($event)"
+                field="label"
+                [dropdown]="true"
+                [forceSelection]="true"
                 placeholder="Select account profile"
-                styleClass="w-full">
-              </p-dropdown>
+                styleClass="w-full compact-autocomplete">
+              </p-autoComplete>
             </div>
             
             <div class="col-12 md:col-6">
               <label for="investmentObjective" class="block text-900 font-medium mb-2">
                 Primary Investment Objective for This Account <span class="text-red-500">*</span>
               </label>
-              <p-dropdown
+              <p-autoComplete
                 inputId="investmentObjective"
                 formControlName="investmentObjective"
-                [options]="investmentObjectiveOptions"
+                [suggestions]="filteredInvestmentObjectiveOptions"
+                (completeMethod)="filterInvestmentObjectiveOptions($event)"
+                field="label"
+                [dropdown]="true"
+                [forceSelection]="true"
                 placeholder="Select investment objective"
-                styleClass="w-full"
+                styleClass="w-full compact-autocomplete"
                 [class.ng-invalid]="accountForm.get('investmentObjective')?.invalid && accountForm.get('investmentObjective')?.touched">
-              </p-dropdown>
+              </p-autoComplete>
               <small class="p-error" *ngIf="accountForm.get('investmentObjective')?.invalid && accountForm.get('investmentObjective')?.touched">
                 Investment objective is required
               </small>
@@ -666,14 +730,18 @@ interface DropdownOption {
               <label for="riskTolerance" class="block text-900 font-medium mb-2">
                 Risk Tolerance <span class="text-red-500">*</span>
               </label>
-              <p-dropdown
+              <p-autoComplete
                 inputId="riskTolerance"
                 formControlName="riskTolerance"
-                [options]="riskToleranceOptions"
+                [suggestions]="filteredRiskToleranceOptions"
+                (completeMethod)="filterRiskToleranceOptions($event)"
+                field="label"
+                [dropdown]="true"
+                [forceSelection]="true"
                 placeholder="Select risk tolerance"
-                styleClass="w-full"
+                styleClass="w-full compact-autocomplete"
                 [class.ng-invalid]="accountForm.get('riskTolerance')?.invalid && accountForm.get('riskTolerance')?.touched">
-              </p-dropdown>
+              </p-autoComplete>
               <small class="p-error" *ngIf="accountForm.get('riskTolerance')?.invalid && accountForm.get('riskTolerance')?.touched">
                 Risk tolerance is required
               </small>
@@ -1154,12 +1222,27 @@ interface DropdownOption {
       background: #7c3aed;
       border-color: #7c3aed;
     }
+
+    /* Copy Dropdown Section Styles */
+    .copy-dropdown-section {
+      padding: 1rem;
+      background: #f8f9fa;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      border: 2px dashed #dee2e6;
+    }
+
+    .copy-dropdown-section:hover {
+      border-color: #6c757d;
+      background: #f1f3f4;
+    }
   `]
 })
 export class AccountSetupComponent implements OnInit, OnChanges {
   @Input() formData: FormData = {};
   @Input() entityId: string = '';
   @Input() isReviewMode: boolean = false;
+  @Input() copyDropdownsMode: boolean = false;
   @Output() formDataChange = new EventEmitter<FormData>();
 
   accountForm!: FormGroup;
@@ -1178,6 +1261,14 @@ export class AccountSetupComponent implements OnInit, OnChanges {
   // Existing instances functionality
   showExistingModal = false;
   existingInstances: ExistingInstance[] = [];
+
+  // Filtered arrays for AutoComplete components
+  filteredAccountTypeOptions: DropdownOption[] = [];
+  filteredAccountProfileOptions: DropdownOption[] = [];
+  filteredInvestmentObjectiveOptions: DropdownOption[] = [];
+  filteredTimeHorizonOptions: DropdownOption[] = [];
+  filteredRiskToleranceOptions: DropdownOption[] = [];
+  filteredRelationshipOptions: DropdownOption[] = [];
 
   // Section edit mode tracking
   sectionEditMode: { [key: string]: boolean } = {
@@ -1236,6 +1327,8 @@ export class AccountSetupComponent implements OnInit, OnChanges {
     { label: 'Successor Trustee', value: 'successor-trustee' }
   ];
 
+  filteredTrusteeRoleOptions: DropdownOption[] = [];
+
   relationshipOptions: DropdownOption[] = [
     { label: 'Spouse', value: 'spouse' },
     { label: 'Child', value: 'child' },
@@ -1247,13 +1340,29 @@ export class AccountSetupComponent implements OnInit, OnChanges {
   constructor(
     private fb: FormBuilder, 
     private messageService: MessageService,
-    private existingInstancesService: ExistingInstancesService
+    private existingInstancesService: ExistingInstancesService,
+    private trusteeStorageService: TrusteeStorageService,
+    private beneficiaryStorageService: BeneficiaryStorageService
   ) {}
 
   ngOnInit() {
     this.initializeForm();
     this.loadFormData();
     this.setupFormSubscriptions();
+    // Initialize filtered options
+    this.filteredTrusteeRoleOptions = [...this.trusteeRoleOptions];
+    this.initializeFilteredOptions();
+    // Add demo data if none exists
+    this.addDemoDataIfNeeded();
+  }
+
+  private initializeFilteredOptions() {
+    this.filteredAccountTypeOptions = [...this.accountTypeOptions];
+    this.filteredAccountProfileOptions = [...this.accountProfileOptions];
+    this.filteredInvestmentObjectiveOptions = [...this.investmentObjectiveOptions];
+    this.filteredTimeHorizonOptions = [...this.timeHorizonOptions];
+    this.filteredRiskToleranceOptions = [...this.riskToleranceOptions];
+    this.filteredRelationshipOptions = [...this.relationshipOptions];
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -1329,8 +1438,10 @@ export class AccountSetupComponent implements OnInit, OnChanges {
   }
 
   onAccountTypeChange(event: any) {
-    this.isTrustAccount = event.value === 'trust';
-    this.isIraAccount = event.value === 'roth-ira' || event.value === 'ira' || event.value === 'traditional-ira';
+    // For p-autoComplete, event is the selected object with {label, value} structure
+    const value = event?.value || event;
+    this.isTrustAccount = value === 'trust';
+    this.isIraAccount = value === 'roth-ira' || value === 'ira' || value === 'traditional-ira';
     
   }
 
@@ -1377,6 +1488,18 @@ export class AccountSetupComponent implements OnInit, OnChanges {
       } else {
         // Add new trustee
         this.trustees.push(trusteeData);
+        
+        // Also save to copy dropdown storage for future use
+        if (trusteeData.name && trusteeData.role && trusteeData.phone && trusteeData.address) {
+          this.trusteeStorageService.saveTrustee({
+            label: `${trusteeData.name} - ${trusteeData.role}`,
+            name: trusteeData.name,
+            role: trusteeData.role,
+            phone: trusteeData.phone,
+            email: trusteeData.email || '',
+            address: trusteeData.address
+          });
+        }
       }
       
       this.cancelTrusteeForm();
@@ -1421,6 +1544,19 @@ export class AccountSetupComponent implements OnInit, OnChanges {
       } else {
         // Add new beneficiary
         this.beneficiaries.push(beneficiaryData);
+        
+        // Also save to copy dropdown storage for future use
+        if (beneficiaryData.name && beneficiaryData.relationship && beneficiaryData.ssn) {
+          this.beneficiaryStorageService.saveBeneficiary({
+            label: `${beneficiaryData.name} - ${beneficiaryData.relationship} (${beneficiaryData.percentage}%)`,
+            name: beneficiaryData.name,
+            relationship: beneficiaryData.relationship,
+            percentage: beneficiaryData.percentage || 0,
+            dateOfBirth: beneficiaryData.dateOfBirth || '',
+            ssn: beneficiaryData.ssn,
+            address: beneficiaryData.address || ''
+          });
+        }
       }
       
       this.cancelBeneficiaryForm();
@@ -1439,6 +1575,13 @@ export class AccountSetupComponent implements OnInit, OnChanges {
     this.showBeneficiaryForm = null;
     this.editingBeneficiaryIndex = -1;
     this.beneficiaryForm.reset();
+  }
+
+  filterTrusteeRoles(event: any) {
+    const query = event.query.toLowerCase();
+    this.filteredTrusteeRoleOptions = this.trusteeRoleOptions.filter(option => 
+      option.label.toLowerCase().includes(query)
+    );
   }
 
   deleteBeneficiary(index: number) {
@@ -1537,5 +1680,182 @@ export class AccountSetupComponent implements OnInit, OnChanges {
 
   onExistingModalClosed() {
     this.showExistingModal = false;
+  }
+
+  // Copy dropdown event handlers
+  onTrusteeSelected(trustee: StoredTrustee) {
+    console.log('Trustee selected from dropdown:', trustee);
+    
+    // Check if trustee already exists in current trustees list
+    const existingTrustee = this.trustees.find(t => 
+      t.name === trustee.name && t.role === trustee.role && t.phone === trustee.phone
+    );
+    
+    if (existingTrustee) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Trustee Already Exists',
+        detail: 'This trustee is already added to this account',
+        life: 3000
+      });
+    } else {
+      // Add the trustee to the list
+      const newTrustee = {
+        name: trustee.name,
+        role: trustee.role,
+        phone: trustee.phone,
+        email: trustee.email || '',
+        address: trustee.address
+      };
+      
+      this.trustees.push(newTrustee);
+      this.updateFormData();
+      
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Trustee Added',
+        detail: `${trustee.name} added successfully`,
+        life: 3000
+      });
+    }
+  }
+
+  onBeneficiarySelected(beneficiary: StoredBeneficiary) {
+    console.log('Beneficiary selected from dropdown:', beneficiary);
+    
+    // Check if beneficiary already exists in current beneficiaries list
+    const existingBeneficiary = this.beneficiaries.find(b => 
+      b.name === beneficiary.name && b.ssn === beneficiary.ssn
+    );
+    
+    if (existingBeneficiary) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Beneficiary Already Exists',
+        detail: 'This beneficiary is already added to this account',
+        life: 3000
+      });
+    } else {
+      // Add the beneficiary to the list
+      const newBeneficiary = {
+        name: beneficiary.name,
+        relationship: beneficiary.relationship,
+        percentage: beneficiary.percentage,
+        dateOfBirth: beneficiary.dateOfBirth,
+        ssn: beneficiary.ssn,
+        address: beneficiary.address || ''
+      };
+      
+      this.beneficiaries.push(newBeneficiary);
+      this.updateFormData();
+      
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Beneficiary Added',
+        detail: `${beneficiary.name} added successfully`,
+        life: 3000
+      });
+    }
+  }
+
+  private addDemoDataIfNeeded() {
+    // Add demo trustees if none exist
+    const existingTrustees = this.trusteeStorageService.getStoredTrustees();
+    if (existingTrustees.length === 0) {
+      this.trusteeStorageService.saveTrustee({
+        label: 'John Smith - Trustee',
+        name: 'John Smith',
+        role: 'Trustee',
+        phone: '(555) 123-4567',
+        email: 'john.smith@email.com',
+        address: '123 Main St, Anytown, CA 90210'
+      });
+
+      this.trusteeStorageService.saveTrustee({
+        label: 'Sarah Johnson - Co-Trustee',
+        name: 'Sarah Johnson',
+        role: 'Co-Trustee',
+        phone: '(555) 987-6543',
+        email: 'sarah.johnson@email.com',
+        address: '456 Oak Ave, Springfield, NY 12345'
+      });
+    }
+
+    // Add demo beneficiaries if none exist
+    const existingBeneficiaries = this.beneficiaryStorageService.getStoredBeneficiaries();
+    if (existingBeneficiaries.length === 0) {
+      this.beneficiaryStorageService.saveBeneficiary({
+        label: 'Michael Smith - Spouse (50%)',
+        name: 'Michael Smith',
+        relationship: 'Spouse',
+        percentage: 50,
+        dateOfBirth: '1980-05-15',
+        ssn: '123-45-6789',
+        address: '123 Main St, Anytown, CA 90210'
+      });
+
+      this.beneficiaryStorageService.saveBeneficiary({
+        label: 'Emma Smith - Child (25%)',
+        name: 'Emma Smith',
+        relationship: 'Child',
+        percentage: 25,
+        dateOfBirth: '2005-03-22',
+        ssn: '987-65-4321',
+        address: '123 Main St, Anytown, CA 90210'
+      });
+
+      this.beneficiaryStorageService.saveBeneficiary({
+        label: 'Robert Johnson - Parent (25%)',
+        name: 'Robert Johnson',
+        relationship: 'Parent',
+        percentage: 25,
+        dateOfBirth: '1955-11-08',
+        ssn: '456-78-9012',
+        address: '789 Pine St, Somewhere, TX 75001'
+      });
+    }
+  }
+
+  // Filter methods for AutoComplete components
+  filterAccountTypeOptions(event: any) {
+    const query = event.query.toLowerCase();
+    this.filteredAccountTypeOptions = this.accountTypeOptions.filter(option => 
+      option.label.toLowerCase().includes(query)
+    );
+  }
+
+  filterAccountProfileOptions(event: any) {
+    const query = event.query.toLowerCase();
+    this.filteredAccountProfileOptions = this.accountProfileOptions.filter(option => 
+      option.label.toLowerCase().includes(query)
+    );
+  }
+
+  filterInvestmentObjectiveOptions(event: any) {
+    const query = event.query.toLowerCase();
+    this.filteredInvestmentObjectiveOptions = this.investmentObjectiveOptions.filter(option => 
+      option.label.toLowerCase().includes(query)
+    );
+  }
+
+  filterTimeHorizonOptions(event: any) {
+    const query = event.query.toLowerCase();
+    this.filteredTimeHorizonOptions = this.timeHorizonOptions.filter(option => 
+      option.label.toLowerCase().includes(query)
+    );
+  }
+
+  filterRiskToleranceOptions(event: any) {
+    const query = event.query.toLowerCase();
+    this.filteredRiskToleranceOptions = this.riskToleranceOptions.filter(option => 
+      option.label.toLowerCase().includes(query)
+    );
+  }
+
+  filterRelationshipOptions(event: any) {
+    const query = event.query.toLowerCase();
+    this.filteredRelationshipOptions = this.relationshipOptions.filter(option => 
+      option.label.toLowerCase().includes(query)
+    );
   }
 }

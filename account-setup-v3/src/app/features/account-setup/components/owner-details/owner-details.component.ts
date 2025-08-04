@@ -6,6 +6,7 @@ import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } 
 import { InputTextModule } from 'primeng/inputtext';
 import { CalendarModule } from 'primeng/calendar';
 import { DropdownModule } from 'primeng/dropdown';
+import { AutoCompleteModule } from 'primeng/autocomplete';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { CheckboxModule } from 'primeng/checkbox';
 import { FileUploadModule } from 'primeng/fileupload';
@@ -20,6 +21,8 @@ import { SharedModule } from 'primeng/api';
 import { FormData } from '../../../../shared/models/types';
 import { ExistingInstanceModalComponent, ExistingInstance } from '../../../../shared/components/existing-instance-modal/existing-instance-modal.component';
 import { ExistingInstancesService } from '../../../../shared/services/existing-instances.service';
+import { AddressDropdownComponent } from '../../../../shared/components/address-dropdown/address-dropdown.component';
+import { CompactDropdownComponent } from '../../../../shared/components/compact-dropdown/compact-dropdown.component';
 
 interface DropdownOption {
   label: string;
@@ -36,6 +39,7 @@ interface DropdownOption {
     InputTextModule,
     CalendarModule,
     DropdownModule,
+    AutoCompleteModule,
     InputTextareaModule,
     CheckboxModule,
     FileUploadModule,
@@ -45,7 +49,8 @@ interface DropdownOption {
     ButtonModule,
     DividerModule,
     SharedModule,
-    ExistingInstanceModalComponent
+    ExistingInstanceModalComponent,
+    AddressDropdownComponent
   ],
   providers: [ExistingInstancesService],
   template: `
@@ -109,7 +114,7 @@ interface DropdownOption {
                 [showIcon]="true"
                 dateFormat="mm/dd/yy"
                 placeholder="mm/dd/yyyy"
-                styleClass="w-full"
+                styleClass="w-full compact-autocomplete"
                 [maxDate]="maxDate"
                 [class.ng-invalid]="ownerForm.get('dateOfBirth')?.invalid && ownerForm.get('dateOfBirth')?.touched">
               </p-calendar>
@@ -129,7 +134,7 @@ interface DropdownOption {
                 formControlName="ssn"
                 mask="999-99-9999"
                 placeholder="***-**-****"
-                styleClass="w-full"
+                styleClass="w-full compact-autocomplete"
                 [class.ng-invalid]="ownerForm.get('ssn')?.invalid && ownerForm.get('ssn')?.touched">
               </p-inputMask>
               <small class="p-error" *ngIf="ownerForm.get('ssn')?.invalid && ownerForm.get('ssn')?.touched">
@@ -146,7 +151,7 @@ interface DropdownOption {
                 formControlName="phoneHome"
                 mask="(999) 999-9999"
                 placeholder="(XXX) XXX-XXXX"
-                styleClass="w-full"
+                styleClass="w-full compact-autocomplete"
                 [class.ng-invalid]="ownerForm.get('phoneHome')?.invalid && ownerForm.get('phoneHome')?.touched">
               </p-inputMask>
               <small class="p-error" *ngIf="ownerForm.get('phoneHome')?.invalid && ownerForm.get('phoneHome')?.touched">
@@ -163,7 +168,7 @@ interface DropdownOption {
                 formControlName="phoneMobile"
                 mask="(999) 999-9999"
                 placeholder="(XXX) XXX-XXXX"
-                styleClass="w-full">
+                styleClass="w-full compact-autocomplete">
               </p-inputMask>
               <small class="text-orange-500 text-xs">
                 Recommended for account notifications
@@ -197,6 +202,7 @@ interface DropdownOption {
               <div class="flex justify-content-between align-items-center mb-3">
                 <h5 class="m-0 text-lg font-semibold">Home Address <span class="text-red-500">*</span></h5>
                 <p-button 
+                  *ngIf="!copyDropdownsMode"
                   label="Add Existing" 
                   icon="pi pi-history"
                   severity="primary"
@@ -206,7 +212,19 @@ interface DropdownOption {
               </div>
             </div>
             
-            <div class="col-12 md:col-8">
+            <!-- Copy Dropdowns Mode - Home Address Dropdown -->
+            <div class="col-12" *ngIf="copyDropdownsMode">
+              <app-address-dropdown
+                [formGroup]="ownerForm"
+                addressPrefix="home"
+                label="Home Address"
+                [disabled]="isReviewMode"
+                [formData]="formData">
+              </app-address-dropdown>
+            </div>
+            
+            <!-- Regular Mode - Home Address Fields -->
+            <div class="col-12 md:col-8" *ngIf="!copyDropdownsMode">
               <label for="homeAddress" class="block text-900 font-medium mb-2">
                 Street Address <span class="text-red-500">*</span>
               </label>
@@ -222,7 +240,7 @@ interface DropdownOption {
               </small>
             </div>
             
-            <div class="col-12 md:col-4">
+            <div class="col-12 md:col-4" *ngIf="!copyDropdownsMode">
               <label for="homeAddress2" class="block text-900 font-medium mb-2">
                 Apt/Suite/Unit
               </label>
@@ -234,7 +252,7 @@ interface DropdownOption {
                 class="w-full" />
             </div>
             
-            <div class="col-12 md:col-5">
+            <div class="col-12 md:col-5" *ngIf="!copyDropdownsMode">
               <label for="homeCity" class="block text-900 font-medium mb-2">
                 City <span class="text-red-500">*</span>
               </label>
@@ -250,7 +268,7 @@ interface DropdownOption {
               </small>
             </div>
             
-            <div class="col-12 md:col-2">
+            <div class="col-12 md:col-2" *ngIf="!copyDropdownsMode">
               <label for="homeState" class="block text-900 font-medium mb-2">
                 State <span class="text-red-500">*</span>
               </label>
@@ -258,8 +276,10 @@ interface DropdownOption {
                 inputId="homeState"
                 formControlName="homeState"
                 [options]="stateOptions"
-                placeholder="State"
-                styleClass="w-full"
+                optionLabel="label"
+                optionValue="value"
+                placeholder="Select state"
+                styleClass="w-full compact-autocomplete"
                 [class.ng-invalid]="ownerForm.get('homeState')?.invalid && ownerForm.get('homeState')?.touched">
               </p-dropdown>
               <small class="p-error" *ngIf="ownerForm.get('homeState')?.invalid && ownerForm.get('homeState')?.touched">
@@ -267,7 +287,7 @@ interface DropdownOption {
               </small>
             </div>
             
-            <div class="col-12 md:col-3">
+            <div class="col-12 md:col-3" *ngIf="!copyDropdownsMode">
               <label for="homeZipCode" class="block text-900 font-medium mb-2">
                 ZIP Code <span class="text-red-500">*</span>
               </label>
@@ -283,7 +303,7 @@ interface DropdownOption {
               </small>
             </div>
             
-            <div class="col-12 md:col-2">
+            <div class="col-12 md:col-2" *ngIf="!copyDropdownsMode">
               <label for="homeCountry" class="block text-900 font-medium mb-2">
                 Country <span class="text-red-500">*</span>
               </label>
@@ -291,8 +311,10 @@ interface DropdownOption {
                 inputId="homeCountry"
                 formControlName="homeCountry"
                 [options]="countryOptions"
-                placeholder="Country"
-                styleClass="w-full"
+                optionLabel="label"
+                optionValue="value"
+                placeholder="Select country"
+                styleClass="w-full compact-autocomplete"
                 [class.ng-invalid]="ownerForm.get('homeCountry')?.invalid && ownerForm.get('homeCountry')?.touched">
               </p-dropdown>
               <small class="p-error" *ngIf="ownerForm.get('homeCountry')?.invalid && ownerForm.get('homeCountry')?.touched">
@@ -305,6 +327,7 @@ interface DropdownOption {
               <div class="flex justify-content-between align-items-center mb-3">
                 <h5 class="m-0 text-lg font-semibold">Mailing Address</h5>
                 <p-button 
+                  *ngIf="!copyDropdownsMode"
                   label="Add Existing" 
                   icon="pi pi-history"
                   severity="primary"
@@ -312,12 +335,24 @@ interface DropdownOption {
                   (onClick)="showExistingAddressModal('mailing')">
                 </p-button>
               </div>
-              <small class="text-orange-500 text-xs block mb-3">
+              <small class="text-orange-500 text-xs block mb-3" *ngIf="!copyDropdownsMode">
                 Leave blank if same as home address
               </small>
             </div>
             
-            <div class="col-12 md:col-8">
+            <!-- Copy Dropdowns Mode - Mailing Address Dropdown -->
+            <div class="col-12" *ngIf="copyDropdownsMode">
+              <app-address-dropdown
+                [formGroup]="ownerForm"
+                addressPrefix="mailing"
+                label="Mailing Address"
+                [disabled]="isReviewMode"
+                [formData]="formData">
+              </app-address-dropdown>
+            </div>
+            
+            <!-- Regular Mode - Mailing Address Fields -->
+            <div class="col-12 md:col-8" *ngIf="!copyDropdownsMode">
               <label for="mailingAddress" class="block text-900 font-medium mb-2">
                 Street Address
               </label>
@@ -329,7 +364,7 @@ interface DropdownOption {
                 class="w-full" />
             </div>
             
-            <div class="col-12 md:col-4">
+            <div class="col-12 md:col-4" *ngIf="!copyDropdownsMode">
               <label for="mailingAddress2" class="block text-900 font-medium mb-2">
                 Apt/Suite/Unit
               </label>
@@ -341,7 +376,7 @@ interface DropdownOption {
                 class="w-full" />
             </div>
             
-            <div class="col-12 md:col-5">
+            <div class="col-12 md:col-5" *ngIf="!copyDropdownsMode">
               <label for="mailingCity" class="block text-900 font-medium mb-2">
                 City
               </label>
@@ -353,7 +388,7 @@ interface DropdownOption {
                 class="w-full" />
             </div>
             
-            <div class="col-12 md:col-2">
+            <div class="col-12 md:col-2" *ngIf="!copyDropdownsMode">
               <label for="mailingState" class="block text-900 font-medium mb-2">
                 State
               </label>
@@ -361,12 +396,14 @@ interface DropdownOption {
                 inputId="mailingState"
                 formControlName="mailingState"
                 [options]="stateOptions"
-                placeholder="State"
-                styleClass="w-full">
+                optionLabel="label"
+                optionValue="value"
+                placeholder="Select state"
+                styleClass="w-full compact-autocomplete">
               </p-dropdown>
             </div>
             
-            <div class="col-12 md:col-3">
+            <div class="col-12 md:col-3" *ngIf="!copyDropdownsMode">
               <label for="mailingZipCode" class="block text-900 font-medium mb-2">
                 ZIP Code
               </label>
@@ -378,7 +415,7 @@ interface DropdownOption {
                 class="w-full" />
             </div>
             
-            <div class="col-12 md:col-2">
+            <div class="col-12 md:col-2" *ngIf="!copyDropdownsMode">
               <label for="mailingCountry" class="block text-900 font-medium mb-2">
                 Country
               </label>
@@ -386,11 +423,19 @@ interface DropdownOption {
                 inputId="mailingCountry"
                 formControlName="mailingCountry"
                 [options]="countryOptions"
+                optionLabel="label"
+                optionValue="value"
                 placeholder="Country"
-                styleClass="w-full">
+                styleClass="w-full compact-autocomplete">
               </p-dropdown>
             </div>
             
+          </div>
+        </p-card>
+
+        <!-- Citizenship Card -->
+        <p-card header="Citizenship" class="mb-4">
+          <div class="grid">
             <div class="col-12 md:col-6">
               <label for="citizenship" class="block text-900 font-medium mb-2">
                 Citizenship Type <span class="text-red-500">*</span>
@@ -399,21 +444,18 @@ interface DropdownOption {
                 inputId="citizenship"
                 formControlName="citizenship"
                 [options]="citizenshipOptions"
+                optionLabel="label"
+                optionValue="value"
                 placeholder="Select citizenship type"
-                styleClass="w-full"
+                styleClass="w-full compact-autocomplete"
                 [class.ng-invalid]="ownerForm.get('citizenship')?.invalid && ownerForm.get('citizenship')?.touched">
               </p-dropdown>
               <small class="p-error" *ngIf="ownerForm.get('citizenship')?.invalid && ownerForm.get('citizenship')?.touched">
                 Citizenship type is required
               </small>
             </div>
-          </div>
-        </p-card>
-
-        <!-- Identification Card -->
-        <p-card header="Identification" class="mb-4">
-          <div class="grid">
-            <div class="col-12">
+            
+            <div class="col-12 md:col-6">
               <label class="block text-900 font-medium mb-2">
                 Upload ID Document
               </label>
@@ -437,8 +479,10 @@ interface DropdownOption {
                 inputId="employmentStatus"
                 formControlName="employmentStatus"
                 [options]="employmentOptions"
+                optionLabel="label"
+                optionValue="value"
                 placeholder="Select employment status"
-                styleClass="w-full"
+                styleClass="w-full compact-autocomplete"
                 [class.ng-invalid]="ownerForm.get('employmentStatus')?.invalid && ownerForm.get('employmentStatus')?.touched">
               </p-dropdown>
               <small class="p-error" *ngIf="ownerForm.get('employmentStatus')?.invalid && ownerForm.get('employmentStatus')?.touched">
@@ -454,8 +498,10 @@ interface DropdownOption {
                 inputId="annualIncome"
                 formControlName="annualIncome"
                 [options]="incomeOptions"
+                optionLabel="label"
+                optionValue="value"
                 placeholder="Select income range"
-                styleClass="w-full"
+                styleClass="w-full compact-autocomplete"
                 [class.ng-invalid]="ownerForm.get('annualIncome')?.invalid && ownerForm.get('annualIncome')?.touched">
               </p-dropdown>
               <small class="p-error" *ngIf="ownerForm.get('annualIncome')?.invalid && ownerForm.get('annualIncome')?.touched">
@@ -471,8 +517,10 @@ interface DropdownOption {
                 inputId="netWorth"
                 formControlName="netWorth"
                 [options]="netWorthOptions"
+                optionLabel="label"
+                optionValue="value"
                 placeholder="Select net worth range"
-                styleClass="w-full"
+                styleClass="w-full compact-autocomplete"
                 [class.ng-invalid]="ownerForm.get('netWorth')?.invalid && ownerForm.get('netWorth')?.touched">
               </p-dropdown>
               <small class="p-error" *ngIf="ownerForm.get('netWorth')?.invalid && ownerForm.get('netWorth')?.touched">
@@ -553,7 +601,7 @@ interface DropdownOption {
                 formControlName="trustedPhone"
                 mask="(999) 999-9999"
                 placeholder="Phone number"
-                styleClass="w-full">
+                styleClass="w-full compact-autocomplete">
               </p-inputMask>
             </div>
             
@@ -578,8 +626,10 @@ interface DropdownOption {
                 inputId="trustedRelationship"
                 formControlName="trustedRelationship"
                 [options]="relationshipOptions"
+                optionLabel="label"
+                optionValue="value"
                 placeholder="Select relationship"
-                styleClass="w-full">
+                styleClass="w-full compact-autocomplete">
               </p-dropdown>
             </div>
           </div>
@@ -660,7 +710,7 @@ interface DropdownOption {
                 [maxDate]="maxDate"
                 dateFormat="mm/dd/yy"
                 placeholder="MM/DD/YYYY"
-                styleClass="w-full"
+                styleClass="w-full compact-autocomplete"
                 [class.ng-invalid]="ownerForm.get('dateOfBirth')?.invalid && ownerForm.get('dateOfBirth')?.touched">
               </p-calendar>
               <small class="p-error" *ngIf="ownerForm.get('dateOfBirth')?.invalid && ownerForm.get('dateOfBirth')?.touched">
@@ -1083,6 +1133,7 @@ export class OwnerDetailsComponent implements OnInit, OnChanges {
   @Input() formData: FormData = {};
   @Input() entityId: string = '';
   @Input() isReviewMode: boolean = false;
+  @Input() copyDropdownsMode: boolean = false;
   @Output() formDataChange = new EventEmitter<FormData>();
 
   // Section editing state for quick review mode
@@ -1093,6 +1144,15 @@ export class OwnerDetailsComponent implements OnInit, OnChanges {
     disclosure: false,
     trusted: false
   };
+
+  // Filtered arrays for AutoComplete components
+  filteredCitizenshipOptions: DropdownOption[] = [];
+  filteredEmploymentOptions: DropdownOption[] = [];
+  filteredIncomeOptions: DropdownOption[] = [];
+  filteredNetWorthOptions: DropdownOption[] = [];
+  filteredRelationshipOptions: DropdownOption[] = [];
+  filteredStateOptions: DropdownOption[] = [];
+  filteredCountryOptions: DropdownOption[] = [];
 
   // Existing instance modal properties
   showExistingModal = false;
@@ -1212,6 +1272,17 @@ export class OwnerDetailsComponent implements OnInit, OnChanges {
     this.initializeForm();
     this.loadFormData();
     this.setupFormSubscriptions();
+    this.initializeFilteredOptions();
+  }
+
+  private initializeFilteredOptions() {
+    this.filteredCitizenshipOptions = [...this.citizenshipOptions];
+    this.filteredEmploymentOptions = [...this.employmentOptions];
+    this.filteredIncomeOptions = [...this.incomeOptions];
+    this.filteredNetWorthOptions = [...this.netWorthOptions];
+    this.filteredRelationshipOptions = [...this.relationshipOptions];
+    this.filteredStateOptions = [...this.stateOptions];
+    this.filteredCountryOptions = [...this.countryOptions];
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -1406,5 +1477,55 @@ export class OwnerDetailsComponent implements OnInit, OnChanges {
     if (this.ownerForm.valid) {
       this.updateFormData();
     }
+  }
+
+  // Filter methods for AutoComplete components
+  filterCitizenshipOptions(event: any) {
+    const query = event.query.toLowerCase();
+    this.filteredCitizenshipOptions = this.citizenshipOptions.filter(option => 
+      option.label.toLowerCase().includes(query)
+    );
+  }
+
+  filterEmploymentOptions(event: any) {
+    const query = event.query.toLowerCase();
+    this.filteredEmploymentOptions = this.employmentOptions.filter(option => 
+      option.label.toLowerCase().includes(query)
+    );
+  }
+
+  filterIncomeOptions(event: any) {
+    const query = event.query.toLowerCase();
+    this.filteredIncomeOptions = this.incomeOptions.filter(option => 
+      option.label.toLowerCase().includes(query)
+    );
+  }
+
+  filterNetWorthOptions(event: any) {
+    const query = event.query.toLowerCase();
+    this.filteredNetWorthOptions = this.netWorthOptions.filter(option => 
+      option.label.toLowerCase().includes(query)
+    );
+  }
+
+  filterRelationshipOptions(event: any) {
+    const query = event.query.toLowerCase();
+    this.filteredRelationshipOptions = this.relationshipOptions.filter(option => 
+      option.label.toLowerCase().includes(query)
+    );
+  }
+
+  filterStateOptions(event: any) {
+    const query = event.query.toLowerCase();
+    this.filteredStateOptions = this.stateOptions.filter(option => 
+      option.label.toLowerCase().includes(query)
+    );
+  }
+
+  filterCountryOptions(event: any) {
+    const query = event.query.toLowerCase();
+    this.filteredCountryOptions = this.countryOptions.filter(option => 
+      option.label.toLowerCase().includes(query)
+    );
   }
 }

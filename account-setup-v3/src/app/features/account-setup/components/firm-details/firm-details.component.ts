@@ -5,6 +5,7 @@ import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } 
 // PrimeNG Imports
 import { InputTextModule } from 'primeng/inputtext';
 import { DropdownModule } from 'primeng/dropdown';
+import { AutoCompleteModule } from 'primeng/autocomplete';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { CardModule } from 'primeng/card';
@@ -32,6 +33,7 @@ interface DropdownOption {
     ReactiveFormsModule,
     InputTextModule,
     DropdownModule,
+    AutoCompleteModule,
     InputTextareaModule,
     RadioButtonModule,
     CardModule,
@@ -101,7 +103,7 @@ interface DropdownOption {
                 dateFormat="mm/dd/yy"
                 [showIcon]="true"
                 placeholder="N/A"
-                styleClass="w-full">
+                styleClass="w-full compact-autocomplete">
               </p-calendar>
             </div>
             
@@ -434,8 +436,10 @@ interface DropdownOption {
                   inputId="totalNetWorth"
                   formControlName="totalNetWorth"
                   [options]="totalNetWorthOptions"
+                  optionLabel="label"
+                  optionValue="value"
                   placeholder="Select total net worth"
-                  styleClass="w-full"
+                  styleClass="w-full compact-autocomplete"
                   [class.ng-invalid]="firmForm.get('totalNetWorth')?.invalid && firmForm.get('totalNetWorth')?.touched">
                 </p-dropdown>
                 <small class="p-error" *ngIf="firmForm.get('totalNetWorth')?.invalid && firmForm.get('totalNetWorth')?.touched">
@@ -451,8 +455,10 @@ interface DropdownOption {
                   inputId="liquidNetWorth"
                   formControlName="liquidNetWorth"
                   [options]="liquidNetWorthOptions"
+                  optionLabel="label"
+                  optionValue="value"
                   placeholder="Select liquid net worth"
-                  styleClass="w-full"
+                  styleClass="w-full compact-autocomplete"
                   [class.ng-invalid]="firmForm.get('liquidNetWorth')?.invalid && firmForm.get('liquidNetWorth')?.touched">
                 </p-dropdown>
                 <small class="p-error" *ngIf="firmForm.get('liquidNetWorth')?.invalid && firmForm.get('liquidNetWorth')?.touched">
@@ -468,8 +474,10 @@ interface DropdownOption {
                   inputId="averageAnnualIncome"
                   formControlName="averageAnnualIncome"
                   [options]="averageIncomeOptions"
+                  optionLabel="label"
+                  optionValue="value"
                   placeholder="Select average annual income"
-                  styleClass="w-full"
+                  styleClass="w-full compact-autocomplete"
                   [class.ng-invalid]="firmForm.get('averageAnnualIncome')?.invalid && firmForm.get('averageAnnualIncome')?.touched">
                 </p-dropdown>
                 <small class="p-error" *ngIf="firmForm.get('averageAnnualIncome')?.invalid && firmForm.get('averageAnnualIncome')?.touched">
@@ -485,8 +493,10 @@ interface DropdownOption {
                   inputId="incomeSource"
                   formControlName="incomeSource"
                   [options]="incomeSourceOptions"
+                  optionLabel="label"
+                  optionValue="value"
                   placeholder="Select primary income source"
-                  styleClass="w-full"
+                  styleClass="w-full compact-autocomplete"
                   [class.ng-invalid]="firmForm.get('incomeSource')?.invalid && firmForm.get('incomeSource')?.touched">
                 </p-dropdown>
                 <small class="p-error" *ngIf="firmForm.get('incomeSource')?.invalid && firmForm.get('incomeSource')?.touched">
@@ -507,8 +517,10 @@ interface DropdownOption {
                   inputId="investmentExperience"
                   formControlName="investmentExperience"
                   [options]="investmentExperienceOptions"
+                  optionLabel="label"
+                  optionValue="value"
                   placeholder="Select investment experience"
-                  styleClass="w-full"
+                  styleClass="w-full compact-autocomplete"
                   [class.ng-invalid]="firmForm.get('investmentExperience')?.invalid && firmForm.get('investmentExperience')?.touched">
                 </p-dropdown>
                 <small class="p-error" *ngIf="firmForm.get('investmentExperience')?.invalid && firmForm.get('investmentExperience')?.touched">
@@ -524,8 +536,10 @@ interface DropdownOption {
                   inputId="stocksExperience"
                   formControlName="stocksExperience"
                   [options]="experienceOptions"
+                  optionLabel="label"
+                  optionValue="value"
                   placeholder="Select stocks experience"
-                  styleClass="w-full"
+                  styleClass="w-full compact-autocomplete"
                   [class.ng-invalid]="firmForm.get('stocksExperience')?.invalid && firmForm.get('stocksExperience')?.touched">
                 </p-dropdown>
                 <small class="p-error" *ngIf="firmForm.get('stocksExperience')?.invalid && firmForm.get('stocksExperience')?.touched">
@@ -541,8 +555,10 @@ interface DropdownOption {
                   inputId="bondsExperience"
                   formControlName="bondsExperience"
                   [options]="experienceOptions"
+                  optionLabel="label"
+                  optionValue="value"
                   placeholder="Select bonds experience"
-                  styleClass="w-full"
+                  styleClass="w-full compact-autocomplete"
                   [class.ng-invalid]="firmForm.get('bondsExperience')?.invalid && firmForm.get('bondsExperience')?.touched">
                 </p-dropdown>
                 <small class="p-error" *ngIf="firmForm.get('bondsExperience')?.invalid && firmForm.get('bondsExperience')?.touched">
@@ -558,8 +574,10 @@ interface DropdownOption {
                   inputId="optionsExperience"
                   formControlName="optionsExperience"
                   [options]="experienceOptions"
+                  optionLabel="label"
+                  optionValue="value"
                   placeholder="Select options experience"
-                  styleClass="w-full"
+                  styleClass="w-full compact-autocomplete"
                   [class.ng-invalid]="firmForm.get('optionsExperience')?.invalid && firmForm.get('optionsExperience')?.touched">
                 </p-dropdown>
                 <small class="p-error" *ngIf="firmForm.get('optionsExperience')?.invalid && firmForm.get('optionsExperience')?.touched">
@@ -580,8 +598,10 @@ interface DropdownOption {
                   inputId="liquidityNeeds"
                   formControlName="liquidityNeeds"
                   [options]="liquidityNeedsOptions"
+                  optionLabel="label"
+                  optionValue="value"
                   placeholder="Select liquidity needs"
-                  styleClass="w-full"
+                  styleClass="w-full compact-autocomplete"
                   [class.ng-invalid]="firmForm.get('liquidityNeeds')?.invalid && firmForm.get('liquidityNeeds')?.touched">
                 </p-dropdown>
                 <small class="p-error" *ngIf="firmForm.get('liquidityNeeds')?.invalid && firmForm.get('liquidityNeeds')?.touched">
@@ -597,8 +617,10 @@ interface DropdownOption {
                   inputId="emergencyFund"
                   formControlName="emergencyFund"
                   [options]="emergencyFundOptions"
+                  optionLabel="label"
+                  optionValue="value"
                   placeholder="Select emergency fund status"
-                  styleClass="w-full"
+                  styleClass="w-full compact-autocomplete"
                   [class.ng-invalid]="firmForm.get('emergencyFund')?.invalid && firmForm.get('emergencyFund')?.touched">
                 </p-dropdown>
                 <small class="p-error" *ngIf="firmForm.get('emergencyFund')?.invalid && firmForm.get('emergencyFund')?.touched">
@@ -876,7 +898,17 @@ interface DropdownOption {
 
         <!-- Employer Sponsored Retirement Plans Section -->
         <div class="review-mode-section">
-          <div class="review-mode-section-title">Employer Sponsored Retirement Plans and IRAs</div>
+          <div class="review-mode-section-header">
+            <div class="review-mode-section-title">Employer Sponsored Retirement Plans and IRAs</div>
+            <p-button 
+              [label]="sectionEditMode['retirement-plans'] ? 'Save' : 'Edit'" 
+              [icon]="sectionEditMode['retirement-plans'] ? 'pi pi-check' : 'pi pi-pencil'" 
+              size="small" 
+              [severity]="sectionEditMode['retirement-plans'] ? 'success' : 'secondary'"
+              styleClass="edit-section-button"
+              (onClick)="toggleSectionEdit('retirement-plans')">
+            </p-button>
+          </div>
           <div class="review-mode-grid">
             <div class="review-field-group">
               <div class="review-field-label">Recommendation Include Retain Funds</div>
@@ -890,7 +922,17 @@ interface DropdownOption {
 
         <!-- Investment Policy Statement Section -->
         <div class="review-mode-section">
-          <div class="review-mode-section-title">Investment Policy Statement (UMAs)</div>
+          <div class="review-mode-section-header">
+            <div class="review-mode-section-title">Investment Policy Statement (UMAs)</div>
+            <p-button 
+              [label]="sectionEditMode['investment-policy'] ? 'Save' : 'Edit'" 
+              [icon]="sectionEditMode['investment-policy'] ? 'pi pi-check' : 'pi pi-pencil'" 
+              size="small" 
+              [severity]="sectionEditMode['investment-policy'] ? 'success' : 'secondary'"
+              styleClass="edit-section-button"
+              (onClick)="toggleSectionEdit('investment-policy')">
+            </p-button>
+          </div>
           <div class="review-mode-grid">
             <div class="review-field-group">
               <div class="review-field-label">Equity to Fixed Income Ratio</div>
@@ -936,7 +978,17 @@ interface DropdownOption {
 
         <!-- Additional Account Information Section -->
         <div class="review-mode-section">
-          <div class="review-mode-section-title">Additional Account Information - Patriot Act</div>
+          <div class="review-mode-section-header">
+            <div class="review-mode-section-title">Additional Account Information - Patriot Act</div>
+            <p-button 
+              [label]="sectionEditMode['patriot-act'] ? 'Save' : 'Edit'" 
+              [icon]="sectionEditMode['patriot-act'] ? 'pi pi-check' : 'pi pi-pencil'" 
+              size="small" 
+              [severity]="sectionEditMode['patriot-act'] ? 'success' : 'secondary'"
+              styleClass="edit-section-button"
+              (onClick)="toggleSectionEdit('patriot-act')">
+            </p-button>
+          </div>
           <div class="review-mode-grid">
             <div class="review-field-group">
               <div class="review-field-label">Foreign Financial Institution</div>
@@ -973,7 +1025,17 @@ interface DropdownOption {
           
           <!-- Net Worth Assessment Section -->
           <div class="review-mode-section">
-            <div class="review-mode-section-title">Net Worth Assessment</div>
+            <div class="review-mode-section-header">
+              <div class="review-mode-section-title">Net Worth Assessment</div>
+              <p-button 
+                [label]="sectionEditMode['net-worth'] ? 'Save' : 'Edit'" 
+                [icon]="sectionEditMode['net-worth'] ? 'pi pi-check' : 'pi pi-pencil'" 
+                size="small" 
+                [severity]="sectionEditMode['net-worth'] ? 'success' : 'secondary'"
+                styleClass="edit-section-button"
+                (onClick)="toggleSectionEdit('net-worth')">
+              </p-button>
+            </div>
             <div class="review-mode-grid">
               <div class="review-field-group">
                 <div class="review-field-label">Total Net Worth</div>
@@ -1011,7 +1073,17 @@ interface DropdownOption {
 
           <!-- Investment Experience Section -->
           <div class="review-mode-section">
-            <div class="review-mode-section-title">Investment Experience</div>
+            <div class="review-mode-section-header">
+              <div class="review-mode-section-title">Investment Experience</div>
+              <p-button 
+                [label]="sectionEditMode['investment-experience'] ? 'Save' : 'Edit'" 
+                [icon]="sectionEditMode['investment-experience'] ? 'pi pi-check' : 'pi pi-pencil'" 
+                size="small" 
+                [severity]="sectionEditMode['investment-experience'] ? 'success' : 'secondary'"
+                styleClass="edit-section-button"
+                (onClick)="toggleSectionEdit('investment-experience')">
+              </p-button>
+            </div>
             <div class="review-mode-grid">
               <div class="review-field-group">
                 <div class="review-field-label">Overall Investment Experience</div>
@@ -1049,7 +1121,17 @@ interface DropdownOption {
 
           <!-- Liquidity Needs Section -->
           <div class="review-mode-section">
-            <div class="review-mode-section-title">Liquidity Needs</div>
+            <div class="review-mode-section-header">
+              <div class="review-mode-section-title">Liquidity Needs</div>
+              <p-button 
+                [label]="sectionEditMode['liquidity-needs'] ? 'Save' : 'Edit'" 
+                [icon]="sectionEditMode['liquidity-needs'] ? 'pi pi-check' : 'pi pi-pencil'" 
+                size="small" 
+                [severity]="sectionEditMode['liquidity-needs'] ? 'success' : 'secondary'"
+                styleClass="edit-section-button"
+                (onClick)="toggleSectionEdit('liquidity-needs')">
+              </p-button>
+            </div>
             <div class="review-mode-grid">
               <div class="review-field-group">
                 <div class="review-field-label">Portfolio Liquidity Needs (2 years)</div>
@@ -1079,7 +1161,17 @@ interface DropdownOption {
 
           <!-- Market Conditions Section -->
           <div class="review-mode-section">
-            <div class="review-mode-section-title">Market Conditions Response</div>
+            <div class="review-mode-section-header">
+              <div class="review-mode-section-title">Market Conditions Response</div>
+              <p-button 
+                [label]="sectionEditMode['market-conditions'] ? 'Save' : 'Edit'" 
+                [icon]="sectionEditMode['market-conditions'] ? 'pi pi-check' : 'pi pi-pencil'" 
+                size="small" 
+                [severity]="sectionEditMode['market-conditions'] ? 'success' : 'secondary'"
+                styleClass="edit-section-button"
+                (onClick)="toggleSectionEdit('market-conditions')">
+              </p-button>
+            </div>
             <div class="review-mode-grid">
               <div class="review-field-group">
                 <div class="review-field-label">10% Portfolio Decline Response</div>
@@ -1097,7 +1189,17 @@ interface DropdownOption {
           
           <!-- Firm Details Section -->
           <div class="review-mode-section">
-            <div class="review-mode-section-title">Firm Details</div>
+            <div class="review-mode-section-header">
+              <div class="review-mode-section-title">Firm Details</div>
+              <p-button 
+                [label]="sectionEditMode['firm-details-account'] ? 'Save' : 'Edit'" 
+                [icon]="sectionEditMode['firm-details-account'] ? 'pi pi-check' : 'pi pi-pencil'" 
+                size="small" 
+                [severity]="sectionEditMode['firm-details-account'] ? 'success' : 'secondary'"
+                styleClass="edit-section-button"
+                (onClick)="toggleSectionEdit('firm-details-account')">
+              </p-button>
+            </div>
             <div class="review-mode-grid">
               <div class="review-field-group">
                 <div class="review-field-label">Investment Objectives</div>
@@ -1288,7 +1390,15 @@ export class FirmDetailsComponent implements OnInit, OnChanges {
 
   // Section edit mode tracking
   sectionEditMode: { [key: string]: boolean } = {
-    'firm-details': false
+    'firm-details': false,
+    'retirement-plans': false,
+    'investment-policy': false,
+    'patriot-act': false,
+    'net-worth': false,
+    'investment-experience': false,
+    'liquidity-needs': false,
+    'market-conditions': false,
+    'firm-details-account': false
   };
 
   // Dropdown options exactly matching V2 specification

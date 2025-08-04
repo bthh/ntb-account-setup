@@ -5,7 +5,7 @@ import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } 
 // PrimeNG Imports
 import { InputTextModule } from 'primeng/inputtext';
 import { CalendarModule } from 'primeng/calendar';
-import { DropdownModule } from 'primeng/dropdown';
+import { AutoCompleteModule } from 'primeng/autocomplete';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { CheckboxModule } from 'primeng/checkbox';
 import { FileUploadModule } from 'primeng/fileupload';
@@ -32,7 +32,7 @@ interface DropdownOption {
     ReactiveFormsModule,
     InputTextModule,
     CalendarModule,
-    DropdownModule,
+    AutoCompleteModule,
     InputTextareaModule,
     CheckboxModule,
     FileUploadModule,
@@ -118,7 +118,7 @@ interface DropdownOption {
                 [showIcon]="true"
                 dateFormat="mm/dd/yy"
                 placeholder="mm/dd/yyyy"
-                styleClass="w-full"
+                styleClass="w-full compact-autocomplete"
                 [disabled]="isReviewMode"
                 [maxDate]="maxDate"
                 [class.ng-invalid]="ownerForm.get('dateOfBirth')?.invalid && ownerForm.get('dateOfBirth')?.touched">
@@ -139,7 +139,7 @@ interface DropdownOption {
                 formControlName="ssn"
                 mask="999-99-9999"
                 placeholder="***-**-****"
-                styleClass="w-full"
+                styleClass="w-full compact-autocomplete"
                 [disabled]="isReviewMode"
                 [class.ng-invalid]="ownerForm.get('ssn')?.invalid && ownerForm.get('ssn')?.touched">
               </p-inputMask>
@@ -157,7 +157,7 @@ interface DropdownOption {
                 formControlName="phoneHome"
                 mask="(999) 999-9999"
                 placeholder="(XXX) XXX-XXXX"
-                styleClass="w-full"
+                styleClass="w-full compact-autocomplete"
                 [disabled]="isReviewMode"
                 [class.ng-invalid]="ownerForm.get('phoneHome')?.invalid && ownerForm.get('phoneHome')?.touched">
               </p-inputMask>
@@ -175,7 +175,7 @@ interface DropdownOption {
                 formControlName="phoneMobile"
                 mask="(999) 999-9999"
                 placeholder="(XXX) XXX-XXXX"
-                styleClass="w-full"
+                styleClass="w-full compact-autocomplete"
                 [disabled]="isReviewMode">
               </p-inputMask>
               <small class="text-orange-500 text-xs">
@@ -246,14 +246,17 @@ interface DropdownOption {
               <div *ngIf="isReviewMode" [class.missing-required]="!ownerForm.get('citizenship')?.value" class="review-field">
                 {{getFieldDisplayValue('citizenship', citizenshipOptions) || 'Not provided'}}
               </div>
-              <p-dropdown *ngIf="!isReviewMode"
+              <p-autoComplete *ngIf="!isReviewMode"
                 inputId="citizenship"
                 formControlName="citizenship"
-                [options]="citizenshipOptions"
+                [suggestions]="citizenshipOptions"
+                field="label"
+                [dropdown]="true"
+                [forceSelection]="true"
                 placeholder="Select citizenship type"
-                styleClass="w-full"
+                styleClass="w-full compact-autocomplete"
                 [class.ng-invalid]="ownerForm.get('citizenship')?.invalid && ownerForm.get('citizenship')?.touched">
-              </p-dropdown>
+              </p-autoComplete>
               <small class="p-error" *ngIf="ownerForm.get('citizenship')?.invalid && ownerForm.get('citizenship')?.touched && !isReviewMode">
                 Citizenship type is required
               </small>
@@ -288,15 +291,18 @@ interface DropdownOption {
               <label for="employmentStatus" class="block text-900 font-medium mb-2">
                 Employment Status <span class="text-red-500">*</span>
               </label>
-              <p-dropdown
+              <p-autoComplete
                 inputId="employmentStatus"
                 formControlName="employmentStatus"
-                [options]="employmentOptions"
+                [suggestions]="employmentOptions"
+                field="label"
+                [dropdown]="true"
+                [forceSelection]="true"
                 placeholder="Select employment status"
-                styleClass="w-full"
+                styleClass="w-full compact-autocomplete"
                 [disabled]="isReviewMode"
                 [class.ng-invalid]="ownerForm.get('employmentStatus')?.invalid && ownerForm.get('employmentStatus')?.touched">
-              </p-dropdown>
+              </p-autoComplete>
               <small class="p-error" *ngIf="ownerForm.get('employmentStatus')?.invalid && ownerForm.get('employmentStatus')?.touched">
                 Employment status is required
               </small>
@@ -306,15 +312,18 @@ interface DropdownOption {
               <label for="annualIncome" class="block text-900 font-medium mb-2">
                 Annual Income Range <span class="text-red-500">*</span>
               </label>
-              <p-dropdown
+              <p-autoComplete
                 inputId="annualIncome"
                 formControlName="annualIncome"
-                [options]="incomeOptions"
+                [suggestions]="incomeOptions"
+                field="label"
+                [dropdown]="true"
+                [forceSelection]="true"
                 placeholder="Select income range"
-                styleClass="w-full"
+                styleClass="w-full compact-autocomplete"
                 [disabled]="isReviewMode"
                 [class.ng-invalid]="ownerForm.get('annualIncome')?.invalid && ownerForm.get('annualIncome')?.touched">
-              </p-dropdown>
+              </p-autoComplete>
               <small class="p-error" *ngIf="ownerForm.get('annualIncome')?.invalid && ownerForm.get('annualIncome')?.touched">
                 Annual income is required
               </small>
@@ -324,15 +333,18 @@ interface DropdownOption {
               <label for="netWorth" class="block text-900 font-medium mb-2">
                 Net Worth Range <span class="text-red-500">*</span>
               </label>
-              <p-dropdown
+              <p-autoComplete
                 inputId="netWorth"
                 formControlName="netWorth"
-                [options]="netWorthOptions"
+                [suggestions]="netWorthOptions"
+                field="label"
+                [dropdown]="true"
+                [forceSelection]="true"
                 placeholder="Select net worth range"
-                styleClass="w-full"
+                styleClass="w-full compact-autocomplete"
                 [disabled]="isReviewMode"
                 [class.ng-invalid]="ownerForm.get('netWorth')?.invalid && ownerForm.get('netWorth')?.touched">
-              </p-dropdown>
+              </p-autoComplete>
               <small class="p-error" *ngIf="ownerForm.get('netWorth')?.invalid && ownerForm.get('netWorth')?.touched">
                 Net worth range is required
               </small>
@@ -417,7 +429,7 @@ interface DropdownOption {
                 formControlName="trustedPhone"
                 mask="(999) 999-9999"
                 placeholder="Phone number"
-                styleClass="w-full"
+                styleClass="w-full compact-autocomplete"
                 [disabled]="isReviewMode">
               </p-inputMask>
             </div>
@@ -440,14 +452,17 @@ interface DropdownOption {
               <label for="trustedRelationship" class="block text-900 font-medium mb-2">
                 Relationship
               </label>
-              <p-dropdown
+              <p-autoComplete
                 inputId="trustedRelationship"
                 formControlName="trustedRelationship"
-                [options]="relationshipOptions"
+                [suggestions]="relationshipOptions"
+                field="label"
+                [dropdown]="true"
+                [forceSelection]="true"
                 placeholder="Select relationship"
-                styleClass="w-full"
+                styleClass="w-full compact-autocomplete"
                 [disabled]="isReviewMode">
-              </p-dropdown>
+              </p-autoComplete>
             </div>
           </div>
         </p-card>

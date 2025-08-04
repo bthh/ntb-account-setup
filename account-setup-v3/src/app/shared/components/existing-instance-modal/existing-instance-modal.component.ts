@@ -70,8 +70,8 @@ export interface ExistingInstance {
           <p-card 
             *ngFor="let instance of filteredInstances" 
             class="instance-card cursor-pointer"
-            (click)="selectInstance(instance)"
-            [styleClass]="'hover:border-primary transition-colors'">
+            (click)="onInstanceClick(instance)"
+            [styleClass]="selectedInstance?.id === instance.id ? 'border-primary selected-instance' : 'hover:border-primary transition-colors'">
             
             <div class="instance-header flex justify-content-between align-items-start mb-3">
               <div class="instance-info flex-1">
@@ -104,6 +104,14 @@ export interface ExistingInstance {
           icon="pi pi-times" 
           severity="secondary"
           (onClick)="onCancel()">
+        </p-button>
+        <p-button 
+          label="Add Selected" 
+          icon="pi pi-plus" 
+          severity="primary"
+          [disabled]="!selectedInstance"
+          (onClick)="onAddSelected()"
+          styleClass="ml-2">
         </p-button>
       </ng-template>
     </p-dialog>
@@ -185,6 +193,13 @@ export interface ExistingInstance {
     .search-container .p-input-icon-left > i {
       left: 0.75rem;
     }
+
+    /* Selected instance styling */
+    ::ng-deep .selected-instance {
+      border-color: var(--primary-color) !important;
+      background-color: var(--primary-50, rgba(var(--primary-color-rgb), 0.05));
+      box-shadow: 0 0 0 1px var(--primary-color);
+    }
   `]
 })
 export class ExistingInstanceModalComponent implements OnInit {
@@ -199,6 +214,7 @@ export class ExistingInstanceModalComponent implements OnInit {
 
   searchTerm = '';
   filteredInstances: ExistingInstance[] = [];
+  selectedInstance: ExistingInstance | null = null;
 
   get instanceTypeLabel(): string {
     const labels = {
@@ -259,6 +275,17 @@ export class ExistingInstanceModalComponent implements OnInit {
     return String(value);
   }
 
+  onInstanceClick(instance: ExistingInstance) {
+    this.selectedInstance = instance;
+  }
+
+  onAddSelected() {
+    if (this.selectedInstance) {
+      this.instanceSelected.emit(this.selectedInstance);
+      this.close();
+    }
+  }
+
   selectInstance(instance: ExistingInstance) {
     this.instanceSelected.emit(instance);
     this.close();
@@ -277,5 +304,6 @@ export class ExistingInstanceModalComponent implements OnInit {
     this.visibleChange.emit(false);
     this.modalClosed.emit();
     this.searchTerm = '';
+    this.selectedInstance = null;
   }
 }

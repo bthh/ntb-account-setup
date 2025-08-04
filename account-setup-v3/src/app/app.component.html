@@ -87,6 +87,15 @@
               </p-inputSwitch>
             </div>
           </div>
+          <div class="profile-menu-item">
+            <div class="scrollable-pages-toggle">
+              <span class="toggle-label">Copy Dropdowns</span>
+              <p-inputSwitch
+                [(ngModel)]="copyDropdownsMode"
+                styleClass="profile-toggle">
+              </p-inputSwitch>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -511,6 +520,7 @@
           [currentMember]="currentMember"
           [currentAccount]="currentAccount"
           [isReviewMode]="isReviewMode"
+          [copyDropdownsMode]="copyDropdownsMode"
           (formDataChange)="onFormDataChange($event)"
           (sectionChange)="onScrollableSectionChange($event)">
         </app-scrollable-view>
@@ -523,6 +533,7 @@
           [isReviewMode]="isReviewMode"
           [formData]="formData"
           [completionStatus]="completionStatus"
+          [copyDropdownsMode]="copyDropdownsMode"
           (formDataChange)="onFormDataChange($event)"
           (completionStatusChange)="onCompletionStatusChange($event)"
           (previous)="handlePreviousSection()"

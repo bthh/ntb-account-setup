@@ -60,6 +60,7 @@ export class AppComponent {
   scrollablePagesMode = true;
   showProfileMenu = false;
   registrationGroupMode = false;
+  copyDropdownsMode = false;
   expandedRegistrationGroups: number[] = [0]; // Start with first registration expanded only
   currentRegistrationContext: string = ''; // Track which registration the user is currently focused on
   
@@ -89,8 +90,20 @@ export class AppComponent {
       email: 'john.smith@example.com',
       phoneHome: '(555) 123-4567',
       phoneMobile: '(555) 987-6543',
-      homeAddress: '123 Main Street, Anytown, ST 12345',
-      mailingAddress: 'Same as home address',
+      // Home Address - separate fields
+      homeAddress: '123 Main Street',
+      homeAddress2: '',
+      homeCity: 'Anytown',
+      homeState: 'CA',
+      homeZipCode: '12345',
+      homeCountry: 'US',
+      // Mailing Address - separate fields  
+      mailingAddress: '456 Business Ave',
+      mailingAddress2: 'Suite 100',
+      mailingCity: 'Business City',
+      mailingState: 'NY',
+      mailingZipCode: '67890',
+      mailingCountry: 'US',
       citizenship: 'us-citizen',
       employmentStatus: 'employed',
       annualIncome: '100k-250k',
@@ -158,8 +171,20 @@ export class AppComponent {
       email: 'mary.smith@example.com',
       phoneHome: '(555) 123-4567',
       phoneMobile: '(555) 987-6544',
-      homeAddress: '123 Main Street, Anytown, ST 12345',
-      mailingAddress: 'Same as home address',
+      // Home Address - separate fields
+      homeAddress: '789 Oak Avenue',
+      homeAddress2: 'Unit 5',
+      homeCity: 'Springfield',
+      homeState: 'TX',
+      homeZipCode: '54321',
+      homeCountry: 'US',
+      // Mailing Address - separate fields  
+      mailingAddress: '321 Pine Street',
+      mailingAddress2: '',
+      mailingCity: 'Houston',
+      mailingState: 'TX',
+      mailingZipCode: '77001',
+      mailingCountry: 'US',
       citizenship: 'us-citizen',
       employmentStatus: 'employed',
       annualIncome: '50k-100k',

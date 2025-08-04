@@ -112,7 +112,7 @@ interface DropdownOption {
                 [showIcon]="true"
                 dateFormat="mm/dd/yy"
                 placeholder="mm/dd/yyyy"
-                styleClass="w-full"
+                styleClass="w-full compact-autocomplete"
                 [disabled]="isReviewMode"
                 [maxDate]="maxDate">
               </p-calendar>
@@ -130,7 +130,7 @@ interface DropdownOption {
                 formControlName="ssn"
                 mask="999-99-9999"
                 placeholder="***-**-****"
-                styleClass="w-full"
+                styleClass="w-full compact-autocomplete"
                 [disabled]="isReviewMode">
               </p-inputMask>
               <small class="p-error" *ngIf="ownerForm.get('ssn')?.invalid && ownerForm.get('ssn')?.touched">
@@ -148,7 +148,7 @@ interface DropdownOption {
                 formControlName="primaryPhone"
                 mask="999-999-9999"
                 placeholder="***-***-****"
-                styleClass="w-full"
+                styleClass="w-full compact-autocomplete"
                 [disabled]="isReviewMode">
               </p-inputMask>
               <small class="p-error" *ngIf="ownerForm.get('primaryPhone')?.invalid && ownerForm.get('primaryPhone')?.touched">
@@ -165,7 +165,7 @@ interface DropdownOption {
                 formControlName="secondaryPhone"
                 mask="999-999-9999"
                 placeholder="***-***-****"
-                styleClass="w-full"
+                styleClass="w-full compact-autocomplete"
                 [disabled]="isReviewMode">
               </p-inputMask>
             </div>
@@ -240,7 +240,7 @@ interface DropdownOption {
                 formControlName="homeZip"
                 mask="99999"
                 placeholder="Zip Code"
-                styleClass="w-full"
+                styleClass="w-full compact-autocomplete"
                 [disabled]="isReviewMode">
               </p-inputMask>
             </div>
@@ -298,7 +298,7 @@ interface DropdownOption {
                 formControlName="mailingZip"
                 mask="99999"
                 placeholder="Zip Code"
-                styleClass="w-full"
+                styleClass="w-full compact-autocomplete"
                 [disabled]="isReviewMode">
               </p-inputMask>
             </div>

@@ -6,6 +6,125 @@
 @import 'primeicons/primeicons.css';
 @import 'primeflex/primeflex.css';
 
+/* Global z-index fix for PrimeNG dropdowns and AutoComplete */
+.p-dropdown-panel {
+  z-index: 999999 !important;
+  position: absolute !important;
+}
+
+.p-dropdown.p-dropdown-open {
+  z-index: 99999 !important;
+}
+
+.p-component-overlay {
+  z-index: 999999 !important;
+}
+
+/* Comprehensive AutoComplete panel z-index fix */
+.p-autocomplete-panel {
+  z-index: 2147483647 !important; /* Maximum z-index value */
+  position: absolute !important;
+  transform: translateZ(0) !important;
+}
+
+/* Ensure AutoComplete panels are always on top */
+.p-autocomplete-panel.p-component {
+  z-index: 2147483647 !important;
+}
+
+/* Override any potential stacking context issues */
+.p-autocomplete.p-component {
+  position: relative !important;
+}
+
+/* Consistent styling for ALL dropdowns - both p-dropdown and compact-dropdown */
+.compact-dropdown .p-dropdown,
+.compact-autocomplete .p-dropdown {
+  height: 2.25rem !important;
+  min-height: 2.25rem !important;
+  font-size: 0.875rem !important;
+  max-width: 350px !important;
+}
+
+.compact-dropdown .p-dropdown-label,
+.compact-autocomplete .p-dropdown-label {
+  font-weight: normal !important;
+  font-size: 0.875rem !important;
+  padding: 0.375rem 0.5rem !important;
+  line-height: 1.2 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+.compact-dropdown .p-dropdown-trigger,
+.compact-autocomplete .p-dropdown-trigger {
+  width: 2rem !important;
+}
+
+.compact-dropdown .p-dropdown-trigger .p-dropdown-trigger-icon,
+.compact-autocomplete .p-dropdown-trigger .p-dropdown-trigger-icon {
+  font-size: 0.75rem !important;
+}
+
+/* Consistent AutoComplete styling for all dropdowns */
+.p-autocomplete {
+  max-width: 350px !important;
+}
+
+.p-autocomplete .p-autocomplete-input {
+  height: 2.25rem !important;
+  font-size: 0.875rem !important;
+  padding: 0.375rem 0.5rem !important;
+}
+
+.p-autocomplete .p-autocomplete-dropdown {
+  width: 2rem !important;
+  height: 2.25rem !important;
+}
+
+.p-autocomplete-panel {
+  z-index: 99999 !important;
+  min-width: 250px !important;
+  max-width: 400px !important;
+}
+
+/* Compact AutoComplete styling for consistent look */
+.compact-autocomplete .p-autocomplete {
+  width: 100%;
+}
+
+.compact-autocomplete .p-inputtext {
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+}
+
+/* Ensure p-dropdown components also get consistent styling */
+.compact-autocomplete .p-dropdown {
+  height: 2.25rem !important;
+  min-height: 2.25rem !important;
+  font-size: 0.875rem !important;
+  max-width: 350px !important;
+}
+
+.compact-autocomplete .p-dropdown-label {
+  font-weight: normal !important;
+  font-size: 0.875rem !important;
+  padding: 0.375rem 0.5rem !important;
+  line-height: 1.2 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+.compact-autocomplete .p-dropdown-trigger {
+  width: 2rem !important;
+}
+
+.compact-autocomplete .p-dropdown-trigger .p-dropdown-trigger-icon {
+  font-size: 0.75rem !important;
+}
+
 /* Enterprise Color System */
 :root {
   /* OPL Primary Brand Colors */

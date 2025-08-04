@@ -51,6 +51,7 @@ import { FundingComponent } from '../funding/funding.component';
             [formData]="formData"
             [entityId]="currentEntityData.id"
             [isReviewMode]="isReviewMode"
+            [copyDropdownsMode]="copyDropdownsMode"
             (formDataChange)="onFormDataChange($event)">
           </app-owner-details>
 
@@ -70,6 +71,7 @@ import { FundingComponent } from '../funding/funding.component';
             [formData]="formData"
             [entityId]="currentEntityData.id"
             [isReviewMode]="isReviewMode"
+            [copyDropdownsMode]="copyDropdownsMode"
             (formDataChange)="onFormDataChange($event)">
           </app-account-setup>
 
@@ -207,6 +209,7 @@ export class ScrollableViewComponent implements OnInit, OnChanges, OnDestroy {
   @Input() currentMember: string = '';
   @Input() currentAccount: string = '';
   @Input() isReviewMode: boolean = false;
+  @Input() copyDropdownsMode: boolean = false;
   @Output() formDataChange = new EventEmitter<FormData>();
   @Output() sectionChange = new EventEmitter<{section: Section, memberId: string, accountId: string}>();
 

@@ -5,7 +5,7 @@ import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } 
 // PrimeNG Imports
 import { InputTextModule } from 'primeng/inputtext';
 import { CalendarModule } from 'primeng/calendar';
-import { DropdownModule } from 'primeng/dropdown';
+import { AutoCompleteModule } from 'primeng/autocomplete';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { ToastModule } from 'primeng/toast';
@@ -39,7 +39,7 @@ interface FundingInstances {
     ReactiveFormsModule,
     InputTextModule,
     CalendarModule,
-    DropdownModule,
+    AutoCompleteModule,
     ButtonModule,
     CardModule,
     ToastModule,
@@ -156,14 +156,18 @@ interface FundingInstances {
                     </div>
                     <div class="col-12 md:col-6">
                       <label for="transferType" class="block text-900 font-medium mb-2">Transfer Type <span class="text-red-500">*</span></label>
-                      <p-dropdown
+                      <p-autoComplete
                         inputId="transferType"
                         formControlName="transferType"
-                        [options]="transferTypeOptions"
+                        [suggestions]="filteredTransferTypeOptions"
+                        (completeMethod)="filterTransferTypeOptions($event)"
+                        field="label"
+                        [dropdown]="true"
+                        [forceSelection]="true"
                         placeholder="Select type"
-                        styleClass="w-full"
+                        styleClass="w-full compact-autocomplete"
                         [disabled]="isReviewMode">
-                      </p-dropdown>
+                      </p-autoComplete>
                     </div>
                   </div>
                 </form>
@@ -206,14 +210,18 @@ interface FundingInstances {
                     </div>
                     <div class="col-12 md:col-6">
                       <label for="achFrequency" class="block text-900 font-medium mb-2">Frequency</label>
-                      <p-dropdown
+                      <p-autoComplete
                         inputId="achFrequency"
                         formControlName="frequency"
-                        [options]="achFrequencyOptions"
+                        [suggestions]="filteredAchFrequencyOptions"
+                        (completeMethod)="filterAchFrequencyOptions($event)"
+                        field="label"
+                        [dropdown]="true"
+                        [forceSelection]="true"
                         placeholder="Select frequency"
-                        styleClass="w-full"
+                        styleClass="w-full compact-autocomplete"
                         [disabled]="isReviewMode">
-                      </p-dropdown>
+                      </p-autoComplete>
                     </div>
                   </div>
                 </form>
@@ -262,7 +270,7 @@ interface FundingInstances {
                         [showIcon]="true"
                         dateFormat="mm/dd/yy"
                         placeholder="Select date"
-                        styleClass="w-full"
+                        styleClass="w-full compact-autocomplete"
                         [disabled]="isReviewMode">
                       </p-calendar>
                     </div>
@@ -297,14 +305,18 @@ interface FundingInstances {
                     </div>
                     <div class="col-12 md:col-6">
                       <label for="withdrawalFreq" class="block text-900 font-medium mb-2">Frequency <span class="text-red-500">*</span></label>
-                      <p-dropdown
+                      <p-autoComplete
                         inputId="withdrawalFreq"
                         formControlName="frequency"
-                        [options]="withdrawalFrequencyOptions"
+                        [suggestions]="filteredWithdrawalFrequencyOptions"
+                        (completeMethod)="filterWithdrawalFrequencyOptions($event)"
+                        field="label"
+                        [dropdown]="true"
+                        [forceSelection]="true"
                         placeholder="Select frequency"
-                        styleClass="w-full"
+                        styleClass="w-full compact-autocomplete"
                         [disabled]="isReviewMode">
-                      </p-dropdown>
+                      </p-autoComplete>
                     </div>
                     <div class="col-12 md:col-6">
                       <label for="startDate" class="block text-900 font-medium mb-2">Start Date <span class="text-red-500">*</span></label>
@@ -314,7 +326,7 @@ interface FundingInstances {
                         [showIcon]="true"
                         dateFormat="mm/dd/yy"
                         placeholder="Select start date"
-                        styleClass="w-full"
+                        styleClass="w-full compact-autocomplete"
                         [disabled]="isReviewMode">
                       </p-calendar>
                     </div>
@@ -359,14 +371,18 @@ interface FundingInstances {
                     </div>
                     <div class="col-12 md:col-6">
                       <label for="contributionFreq" class="block text-900 font-medium mb-2">Frequency <span class="text-red-500">*</span></label>
-                      <p-dropdown
+                      <p-autoComplete
                         inputId="contributionFreq"
                         formControlName="frequency"
-                        [options]="contributionFrequencyOptions"
+                        [suggestions]="filteredContributionFrequencyOptions"
+                        (completeMethod)="filterContributionFrequencyOptions($event)"
+                        field="label"
+                        [dropdown]="true"
+                        [forceSelection]="true"
                         placeholder="Select frequency"
-                        styleClass="w-full"
+                        styleClass="w-full compact-autocomplete"
                         [disabled]="isReviewMode">
-                      </p-dropdown>
+                      </p-autoComplete>
                     </div>
                   </div>
                 </form>
@@ -923,6 +939,12 @@ export class FundingComponent implements OnInit, OnChanges {
   };
   existingInstances: ExistingInstance[] = [];
 
+  // Filtered arrays for AutoComplete components
+  filteredTransferTypeOptions: DropdownOption[] = [];
+  filteredAchFrequencyOptions: DropdownOption[] = [];
+  filteredWithdrawalFrequencyOptions: DropdownOption[] = [];
+  filteredContributionFrequencyOptions: DropdownOption[] = [];
+
   // Funding type names
   fundingTypeNames = {
     'acat': 'ACAT Transfers',
@@ -966,6 +988,14 @@ export class FundingComponent implements OnInit, OnChanges {
   ngOnInit() {
     this.initializeForm();
     this.loadFundingData();
+    this.initializeFilteredOptions();
+  }
+
+  private initializeFilteredOptions() {
+    this.filteredTransferTypeOptions = [...this.transferTypeOptions];
+    this.filteredAchFrequencyOptions = [...this.achFrequencyOptions];
+    this.filteredWithdrawalFrequencyOptions = [...this.withdrawalFrequencyOptions];
+    this.filteredContributionFrequencyOptions = [...this.contributionFrequencyOptions];
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -1310,5 +1340,34 @@ export class FundingComponent implements OnInit, OnChanges {
     };
     
     return registrationMap[this.entityId] || 'Unknown Registration';
+  }
+
+  // Filter methods for AutoComplete components
+  filterTransferTypeOptions(event: any) {
+    const query = event.query.toLowerCase();
+    this.filteredTransferTypeOptions = this.transferTypeOptions.filter(option => 
+      option.label.toLowerCase().includes(query)
+    );
+  }
+
+  filterAchFrequencyOptions(event: any) {
+    const query = event.query.toLowerCase();
+    this.filteredAchFrequencyOptions = this.achFrequencyOptions.filter(option => 
+      option.label.toLowerCase().includes(query)
+    );
+  }
+
+  filterWithdrawalFrequencyOptions(event: any) {
+    const query = event.query.toLowerCase();
+    this.filteredWithdrawalFrequencyOptions = this.withdrawalFrequencyOptions.filter(option => 
+      option.label.toLowerCase().includes(query)
+    );
+  }
+
+  filterContributionFrequencyOptions(event: any) {
+    const query = event.query.toLowerCase();
+    this.filteredContributionFrequencyOptions = this.contributionFrequencyOptions.filter(option => 
+      option.label.toLowerCase().includes(query)
+    );
   }
 }

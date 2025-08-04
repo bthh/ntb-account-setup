@@ -49,6 +49,7 @@ import { FundingComponent } from '../funding/funding.component';
           [formData]="formData"
           [entityId]="getCurrentEntityId()"
           [isReviewMode]="isReviewMode"
+          [copyDropdownsMode]="copyDropdownsMode"
           (formDataChange)="onFormDataUpdate($event)">
         </app-owner-details>
         
@@ -133,6 +134,7 @@ export class AccountFormComponent {
   @Input() completionStatus: CompletionStatus = { members: {}, accounts: {} };
   @Input() canGoPrevious: boolean = false;
   @Input() canGoNext: boolean = false;
+  @Input() copyDropdownsMode: boolean = false;
 
   @Output() formDataChange = new EventEmitter<FormData>();
   @Output() completionStatusChange = new EventEmitter<CompletionStatus>();
