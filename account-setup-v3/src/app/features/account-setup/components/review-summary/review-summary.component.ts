@@ -1,12 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-// PrimeNG Imports
-import { CardModule } from 'primeng/card';
-import { ButtonModule } from 'primeng/button';
-import { ProgressBarModule } from 'primeng/progressbar';
-import { BadgeModule } from 'primeng/badge';
-import { TooltipModule } from 'primeng/tooltip';
+// PrimeNG Imports - removed unused modules for cleaner design
 
 // Local Imports  
 import { FormData, CompletionStatus, Section } from '../../../../shared/models/types';
@@ -30,253 +25,288 @@ interface AccountSummary {
   selector: 'app-review-summary',
   standalone: true,
   imports: [
-    CommonModule,
-    CardModule,
-    ButtonModule,
-    ProgressBarModule,
-    BadgeModule,
-    TooltipModule
+    CommonModule
   ],
   template: `
     <div class="review-summary-section">
-      <p-card header="Registration Summary" class="mb-4">
-        <div class="summary-header mb-4">
-          <h3 class="text-2xl font-semibold m-0 mb-2">Account Setup Review</h3>
-          <p class="text-600 m-0">Review all account registrations and submit for e-signature when ready.</p>
+      <div class="summary-header">
+        <h3>Account Setup Review</h3>
+        <p>Review all account registrations and submit for e-signature when ready.</p>
+      </div>
+
+      <!-- Overall Progress -->
+      <div class="overall-progress">
+        <div class="progress-info">
+          <span class="progress-label">Overall Progress</span>
+          <span class="progress-percentage">{{getOverallCompletionPercentage()}}%</span>
         </div>
-
-        <!-- Overall Progress -->
-        <div class="overall-progress-card mb-4">
-          <div class="flex justify-content-between align-items-center mb-3">
-            <h4 class="text-lg font-medium m-0">Overall Progress</h4>
-            <span class="text-lg font-semibold">{{getOverallCompletionPercentage()}}%</span>
-          </div>
-          <p-progressBar 
-            [value]="getOverallCompletionPercentage()" 
-            [showValue]="false"
-            styleClass="mb-2">
-          </p-progressBar>
-          <div class="text-sm text-600">
-            {{getCompletedAccountsCount()}} of {{accountSummaries.length}} accounts ready for submission
-          </div>
+        <div class="progress-bar">
+          <div class="progress-fill" [style.width.%]="getOverallCompletionPercentage()"></div>
         </div>
+        <div class="progress-summary">
+          {{getCompletedAccountsCount()}} of {{accountSummaries.length}} accounts ready for submission
+        </div>
+      </div>
 
-        <!-- Account Summaries -->
-        <div class="accounts-grid">
-          <div *ngFor="let account of accountSummaries" class="account-summary-card">
-            <div class="account-header">
-              <div class="account-info">
-                <div class="account-icon">
-                  <i [class]="account.icon"></i>
-                </div>
-                <div class="account-details">
-                  <h5 class="account-name">{{account.name}}</h5>
-                  <p class="account-owners">{{account.owners}}</p>
-                  <span class="account-type-badge">{{account.accountType}}</span>
-                </div>
-              </div>
-              <div class="account-progress">
-                <div class="progress-circle" [class.complete]="account.completionPercentage === 100">
-                  <span class="progress-text">{{account.completionPercentage}}%</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="account-progress-bar mb-3">
-              <p-progressBar 
-                [value]="account.completionPercentage" 
-                [showValue]="false"
-                [styleClass]="account.completionPercentage === 100 ? 'complete' : ''">
-              </p-progressBar>
-              <div class="text-xs text-600 mt-1">
-                {{account.completedSections}} of {{account.totalSections}} sections complete
-              </div>
-            </div>
-
-            <!-- Missing Fields Count -->
-            <div *ngIf="account.missingFields.length > 0" class="missing-fields mb-3">
-              <div class="text-xs font-medium text-orange-600 m-0">
-                <i class="pi pi-exclamation-triangle mr-1"></i>
-                {{account.missingFields.length}} Missing Required Fields
-              </div>
-            </div>
-
-            <!-- Action Buttons -->
-            <div class="account-actions">
-              <p-button 
-                [label]="account.hasMissingFields ? 'Edit' : 'Review & Edit'" 
-                icon="pi pi-pencil"
-                severity="secondary"
-                size="small"
-                styleClass="mr-2 compact-button"
-                (onClick)="onEditAccount(account.id)">
-              </p-button>
-              
-              <p-button 
-                [label]="account.canSubmit ? 'Send for E-Sign' : 'Cannot Submit'"
-                [icon]="account.canSubmit ? 'pi pi-send' : 'pi pi-times'"
-                [severity]="account.canSubmit ? 'success' : 'danger'"
-                [disabled]="!account.canSubmit"
-                size="small"
-                styleClass="compact-button"
-                [pTooltip]="account.canSubmit ? 'Ready to submit for e-signature' : 'Complete all required fields first'"
-                tooltipPosition="top"
-                (onClick)="onSubmitForESign(account.id)">
-              </p-button>
+      <!-- Account List -->
+      <div class="accounts-list">
+        <div *ngFor="let account of accountSummaries" class="account-row">
+          <div class="account-info">
+            <div class="account-basic">
+              <h4 class="account-name">{{account.name}}</h4>
+              <span class="account-owners">{{account.owners}}</span>
+              <span class="account-type">{{account.accountType}}</span>
             </div>
           </div>
+          
+          <div class="account-status">
+            <div class="completion-info">
+              <span class="completion-text">{{account.completionPercentage}}% Complete</span>
+              <span class="sections-text">{{account.completedSections}}/{{account.totalSections}} sections</span>
+            </div>
+            
+            <div *ngIf="account.missingFields.length > 0" class="missing-info">
+              <span class="missing-text">{{account.missingFields.length}} missing fields</span>
+            </div>
+          </div>
+
+          <div class="account-actions">
+            <button class="btn-edit" (click)="onEditAccount(account.id)">
+              {{account.hasMissingFields ? 'Complete' : 'Review'}}
+            </button>
+            
+            <button 
+              class="btn-submit" 
+              [class.disabled]="!account.canSubmit"
+              [disabled]="!account.canSubmit"
+              (click)="onSubmitForESign(account.id)">
+              {{account.canSubmit ? 'Send for E-Sign' : 'Cannot Submit'}}
+            </button>
+          </div>
         </div>
-
-
-      </p-card>
+      </div>
     </div>
   `,
   styles: [`
     .review-summary-section {
-      padding: 0;
+      padding: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
     }
 
     .summary-header {
-      border-bottom: 1px solid var(--surface-border);
+      margin-bottom: 2rem;
+      border-bottom: 1px solid #e5e7eb;
       padding-bottom: 1rem;
     }
 
-    .overall-progress-card {
-      background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-      border: 1px solid var(--surface-border);
-      border-radius: 8px;
+    .summary-header h3 {
+      margin: 0 0 0.5rem 0;
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #111827;
+    }
+
+    .summary-header p {
+      margin: 0;
+      color: #6b7280;
+      font-size: 0.95rem;
+    }
+
+    .overall-progress {
+      margin-bottom: 2rem;
       padding: 1.5rem;
-    }
-
-    .accounts-grid {
-      display: grid;
-      gap: 1rem;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    }
-
-    .account-summary-card {
-      border: 1px solid var(--surface-border);
+      background: #fafafa;
       border-radius: 8px;
-      padding: 1rem;
-      background: white;
-      transition: all 0.3s ease;
     }
 
-    .account-summary-card:hover {
-      border-color: var(--primary-color);
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    .account-header {
+    .progress-info {
       display: flex;
       justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 1rem;
+      align-items: center;
+      margin-bottom: 0.75rem;
+    }
+
+    .progress-label {
+      font-size: 1rem;
+      font-weight: 500;
+      color: #374151;
+    }
+
+    .progress-percentage {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: #111827;
+    }
+
+    .progress-bar {
+      height: 8px;
+      background: #e5e7eb;
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: 0.5rem;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: #10b981;
+      transition: width 0.3s ease;
+    }
+
+    .progress-summary {
+      font-size: 0.875rem;
+      color: #6b7280;
+    }
+
+    .accounts-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      background: #e5e7eb;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .account-row {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      padding: 1.5rem 2rem;
+      background: white;
+      transition: background-color 0.2s ease;
+    }
+
+    .account-row:hover {
+      background: #f9fafb;
     }
 
     .account-info {
-      display: flex;
-      gap: 1rem;
-      flex: 1;
+      flex: 2;
+      min-width: 0;
     }
 
-    .account-icon {
-      width: 48px;
-      height: 48px;
-      background: var(--primary-color);
-      border-radius: 8px;
+    .account-basic {
       display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-size: 1.25rem;
-    }
-
-    .account-details {
-      flex: 1;
+      flex-direction: column;
+      gap: 0.25rem;
     }
 
     .account-name {
-      font-size: 1.1rem;
+      font-size: 1.125rem;
       font-weight: 600;
-      margin: 0 0 0.25rem 0;
-      color: var(--text-color);
+      color: #111827;
+      margin: 0;
     }
 
     .account-owners {
       font-size: 0.875rem;
-      color: var(--text-color-secondary);
-      margin: 0 0 0.5rem 0;
+      color: #6b7280;
     }
 
-    .account-type-badge {
-      background: var(--blue-100);
-      color: var(--blue-800);
-      padding: 0.25rem 0.5rem;
-      border-radius: 4px;
+    .account-type {
       font-size: 0.75rem;
-      font-weight: 500;
+      color: #9ca3af;
       text-transform: uppercase;
-      letter-spacing: 0.025em;
+      letter-spacing: 0.05em;
+      font-weight: 500;
     }
 
-    .account-progress {
-      margin-left: 1rem;
-    }
-
-    .progress-circle {
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      border: 3px solid var(--surface-300);
+    .account-status {
+      flex: 1.5;
       display: flex;
-      align-items: center;
-      justify-content: center;
-      background: white;
-      position: relative;
+      flex-direction: column;
+      gap: 0.5rem;
     }
 
-    .progress-circle.complete {
-      border-color: var(--green-500);
-      background: var(--green-50);
+    .completion-info {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
     }
 
-    .progress-text {
-      font-size: 0.875rem;
-      font-weight: 600;
-      color: var(--text-color);
+    .completion-text {
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: #374151;
     }
 
-    .progress-circle.complete .progress-text {
-      color: var(--green-700);
+    .sections-text {
+      font-size: 0.8rem;
+      color: #6b7280;
     }
 
-    .missing-fields {
-      background: var(--orange-50);
-      border: 1px solid var(--orange-200);
-      border-radius: 4px;
-      padding: 0.5rem 0.75rem;
+    .missing-info {
+      margin-top: 0.25rem;
     }
 
+    .missing-text {
+      font-size: 0.8rem;
+      color: #dc2626;
+    }
 
     .account-actions {
+      flex: 1;
       display: flex;
-      gap: 0.5rem;
-      flex-wrap: wrap;
+      gap: 0.75rem;
+      justify-content: flex-end;
     }
 
-
-    ::ng-deep .p-progressbar.complete .p-progressbar-value {
-      background: var(--green-500) !important;
+    .btn-edit, .btn-submit {
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      border: 1px solid transparent;
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
     }
 
-    ::ng-deep .compact-button .p-button {
-      padding: 0.375rem 0.75rem !important;
-      font-size: 0.75rem !important;
+    .btn-edit {
+      background: white;
+      color: #374151;
+      border-color: #d1d5db;
     }
 
-    ::ng-deep .compact-button .p-button-label {
-      font-weight: 500 !important;
+    .btn-edit:hover {
+      background: #f3f4f6;
+      border-color: #9ca3af;
+    }
+
+    .btn-submit {
+      background: #10b981;
+      color: white;
+    }
+
+    .btn-submit:hover {
+      background: #059669;
+    }
+
+    .btn-submit.disabled {
+      background: #e5e7eb;
+      color: #9ca3af;
+      cursor: not-allowed;
+    }
+
+    .btn-submit.disabled:hover {
+      background: #e5e7eb;
+    }
+
+    @media (max-width: 768px) {
+      .account-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+        padding: 1rem;
+      }
+
+      .account-actions {
+        width: 100%;
+        justify-content: stretch;
+      }
+
+      .btn-edit, .btn-submit {
+        flex: 1;
+      }
     }
   `]
 })
