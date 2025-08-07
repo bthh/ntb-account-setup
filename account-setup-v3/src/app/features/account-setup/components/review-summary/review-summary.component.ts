@@ -34,16 +34,9 @@ interface AccountSummary {
         <p>Review all account registrations and submit for e-signature when ready.</p>
       </div>
 
-      <!-- Overall Progress -->
-      <div class="overall-progress">
-        <div class="progress-info">
-          <span class="progress-label">Overall Progress</span>
-          <span class="progress-percentage">{{getOverallCompletionPercentage()}}%</span>
-        </div>
-        <div class="progress-bar">
-          <div class="progress-fill" [style.width.%]="getOverallCompletionPercentage()"></div>
-        </div>
-        <div class="progress-summary">
+      <!-- Overall Summary -->
+      <div class="overall-summary">
+        <div class="summary-text">
           {{getCompletedAccountsCount()}} of {{accountSummaries.length}} accounts ready for submission
         </div>
       </div>
@@ -113,49 +106,17 @@ interface AccountSummary {
       font-size: 0.95rem;
     }
 
-    .overall-progress {
+    .overall-summary {
       margin-bottom: 2rem;
-      padding: 1.5rem;
+      padding: 1rem 1.5rem;
       background: #fafafa;
       border-radius: 8px;
     }
 
-    .progress-info {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 0.75rem;
-    }
-
-    .progress-label {
-      font-size: 1rem;
-      font-weight: 500;
-      color: #374151;
-    }
-
-    .progress-percentage {
-      font-size: 1.125rem;
-      font-weight: 600;
-      color: #111827;
-    }
-
-    .progress-bar {
-      height: 8px;
-      background: #e5e7eb;
-      border-radius: 4px;
-      overflow: hidden;
-      margin-bottom: 0.5rem;
-    }
-
-    .progress-fill {
-      height: 100%;
-      background: #10b981;
-      transition: width 0.3s ease;
-    }
-
-    .progress-summary {
-      font-size: 0.875rem;
+    .summary-text {
+      font-size: 0.95rem;
       color: #6b7280;
+      text-align: center;
     }
 
     .accounts-list {
