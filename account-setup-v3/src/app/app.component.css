@@ -283,14 +283,16 @@ app-funding :host :deep(.p-card:first-child) {
 
 /* Top-level household header */
 .household-title {
-  padding: 1rem 1rem 0.5rem 1rem;
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: #1f2937;
+  padding: 1.25rem 1.5rem 1rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #111827;
   text-align: left;
-  border-bottom: 1px solid #3b82f6;
-  margin-bottom: 0.5rem;
-  background: transparent;
+  border-bottom: 2px solid #0A8DFF;
+  margin-bottom: 1rem;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border-radius: 12px 12px 0 0;
+  position: relative;
 }
 
 /* Enhanced Sidebar Styling */
@@ -301,15 +303,15 @@ app-funding :host :deep(.p-card:first-child) {
 
 /* Professional Sidebar Container with Formatted Box */
 .sidebar-container {
-  background: linear-gradient(180deg, #ffffff 0%, #fafafa 100%);
+  background: #ffffff;
   border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  margin: 6px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  border-radius: 12px;
+  margin: 8px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   overflow-y: auto;
   overflow-x: hidden;
   position: fixed;
-  top: 160px; /* Restored to match full header height */  
+  top: 160px;
   left: 200px;
   height: calc(100vh - 172px); /* Adjusted to match restored top position */
   z-index: 998;
@@ -842,57 +844,131 @@ app-funding :host :deep(.p-card:first-child) {
   color: var(--text-color-secondary);
 }
 
-/* Override PrimeNG accordion styles for registration groups */
-::ng-deep .p-accordion .p-accordion-tab .p-accordion-header .p-accordion-header-link {
-  background: linear-gradient(135deg, var(--surface-50) 0%, var(--surface-100) 100%);
-  border: 1px solid var(--surface-200);
-  border-radius: 6px;
+/* Enhanced PrimeNG accordion styles */
+::ng-deep .p-accordion .p-accordion-tab {
   margin-bottom: 0.5rem;
-  padding: 1rem 1.25rem;
+}
+
+::ng-deep .p-accordion .p-accordion-tab .p-accordion-header .p-accordion-header-link {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  margin-bottom: 0.5rem;
+  padding: 1rem 1.5rem;
   min-height: 3.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease;
 }
 
 ::ng-deep .p-accordion .p-accordion-tab .p-accordion-header .p-accordion-header-link:not(.p-disabled):hover {
-  background: linear-gradient(135deg, var(--surface-100) 0%, var(--surface-200) 100%);
-  border-color: var(--primary-color);
+  background: #f8fafc;
+  border-color: #0A8DFF;
+  box-shadow: 0 2px 8px rgba(10, 141, 255, 0.1);
+  transform: translateY(-1px);
 }
 
 ::ng-deep .p-accordion .p-accordion-tab .p-accordion-header.p-highlight .p-accordion-header-link {
-  background: linear-gradient(135deg, var(--primary-50) 0%, var(--primary-100) 100%);
-  border-color: var(--primary-color);
+  background: linear-gradient(135deg, #ebf4ff 0%, #dbeafe 100%);
+  border-color: #0A8DFF;
+  box-shadow: 0 2px 12px rgba(10, 141, 255, 0.15);
+}
+
+::ng-deep .p-accordion .p-accordion-tab .p-accordion-content {
+  border: none;
+  padding: 0.5rem 0 1rem 0;
+  background: transparent;
 }
 
 /* Section Navigation Item Styles */
+/* Section Group Headers */
+.section-group-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 1.5rem 0.75rem 1.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #4b5563;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.5rem;
+}
+
+.section-group-header i {
+  font-size: 1rem;
+  color: #0A8DFF;
+}
+
+/* Entity Header Styling (for accordion headers) */
+.entity-header-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+
+.entity-name {
+  font-size: 0.925rem;
+  font-weight: 600;
+  color: #111827;
+  line-height: 1.4;
+}
+
+.entity-role {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+.entity-icon {
+  font-size: 1.125rem;
+  color: #0A8DFF;
+  flex-shrink: 0;
+}
+
 .section-nav-item {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.75rem 1rem;
-  margin: 0.25rem 0;
-  border-radius: 6px;
+  padding: 0.875rem 1.25rem;
+  margin: 0.125rem 1rem;
+  border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s ease;
   border: 1px solid transparent;
   background: transparent;
+  position: relative;
 }
 
 .section-nav-item:hover {
-  background: var(--surface-100);
-  border-color: var(--surface-300);
+  background: #f8fafc;
+  border-color: #e2e8f0;
   transform: translateX(2px);
 }
 
 .section-nav-item.active {
-  background: linear-gradient(135deg, var(--primary-50) 0%, var(--primary-100) 100%);
-  border-color: var(--primary-color);
-  color: var(--primary-700);
+  background: linear-gradient(135deg, #ebf4ff 0%, #dbeafe 100%);
+  border-color: #0A8DFF;
+  color: #1e40af;
   font-weight: 600;
-  box-shadow: 0 2px 4px rgba(59, 130, 246, 0.1);
+  box-shadow: 0 2px 8px rgba(10, 141, 255, 0.15);
 }
 
 .section-nav-item.active:hover {
-  background: linear-gradient(135deg, var(--primary-100) 0%, var(--primary-200) 100%);
-  transform: translateX(2px);
+  background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+  transform: translateX(3px);
+}
+
+.section-nav-item.active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: #0A8DFF;
+  border-radius: 0 2px 2px 0;
 }
 
 .section-nav-content {
