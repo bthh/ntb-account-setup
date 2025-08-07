@@ -262,14 +262,14 @@ interface AccountSummary {
     }
 
     .btn-edit {
-      background: white;
-      color: #374151;
-      border-color: #d1d5db;
+      background: #0A8DFF;
+      color: white;
+      border-color: #0A8DFF;
     }
 
     .btn-edit:hover {
-      background: #f3f4f6;
-      border-color: #9ca3af;
+      background: #087AE6;
+      border-color: #087AE6;
     }
 
     .btn-submit {

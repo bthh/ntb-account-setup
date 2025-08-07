@@ -705,13 +705,13 @@ interface FundingInstances {
     }
 
     .funding-type-button.existing-instance-button {
-      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-      border-color: #f59e0b;
+      background: #0A8DFF;
+      border-color: #0A8DFF;
     }
 
     .funding-type-button.existing-instance-button:hover {
-      background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
-      border-color: #d97706;
+      background: #087AE6;
+      border-color: #087AE6;
     }
 
     .funding-instances-table {

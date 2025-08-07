@@ -1214,13 +1214,13 @@ interface DropdownOption {
 
     /* Existing Instance Button Styles */
     .funding-type-button.existing-instance-button {
-      background: #8b5cf6;
-      border-color: #8b5cf6;
+      background: #0A8DFF;
+      border-color: #0A8DFF;
     }
 
     .funding-type-button.existing-instance-button:hover {
-      background: #7c3aed;
-      border-color: #7c3aed;
+      background: #087AE6;
+      border-color: #087AE6;
     }
 
     /* Copy Dropdown Section Styles */
