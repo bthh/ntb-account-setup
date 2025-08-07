@@ -1886,8 +1886,18 @@ export class AppComponent {
    * Expand member accordion with proper change detection and timing
    */
   private expandMemberAccordion(memberId: string) {
-    // Use actual memberData array instead of hardcoded array
-    const memberIndex = this.memberData.findIndex(m => m.id === memberId);
+    // Special handling: John Smith is not in the accordion (he's non-expandable)
+    if (memberId === 'john-smith') {
+      // Clear any accordion expansions when John Smith is selected
+      this.expandedMemberTabs = this.scrollablePagesMode ? null : [];
+      this.expandedAccountTabs = this.scrollablePagesMode ? null : [];
+      this.cdr.detectChanges();
+      return;
+    }
+    
+    // For other members, find index in the sliced array (excluding John Smith)
+    const otherMembers = this.memberData.slice(1);
+    const memberIndex = otherMembers.findIndex(m => m.id === memberId);
     
     if (memberIndex !== -1) {
       if (this.scrollablePagesMode) {
