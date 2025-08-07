@@ -553,8 +553,7 @@ export class AppComponent {
       role: 'Primary Account Holder',
       icon: 'pi pi-user',
       sections: [
-        { id: 'owner-details', name: 'Personal Details', icon: 'pi pi-user' },
-        { id: 'firm-details', name: 'Firm Details', icon: 'pi pi-building' }
+        { id: 'owner-details', name: 'Personal Details', icon: 'pi pi-user' }
       ]
     },
     {

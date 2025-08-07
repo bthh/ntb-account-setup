@@ -168,12 +168,28 @@
                 <i class="pi pi-users"></i>
                 Owner Information
               </div>
+              <!-- John Smith - Non-expandable since only one section -->
+              <div *ngIf="memberData[0]" 
+                   class="member-simple-item"
+                   [class.active]="currentMember === memberData[0].id"
+                   (click)="handleSectionNavigation('owner-details', memberData[0].id, '')">
+                <div class="flex align-items-center gap-2">
+                  <i [class]="memberData[0].icon + ' entity-icon'"></i>
+                  <div class="entity-header-info">
+                    <div class="entity-name">{{memberData[0].name}}</div>
+                    <div class="entity-role">{{memberData[0].role}}</div>
+                  </div>
+                </div>
+                <i [class]="getCompletionIcon(isEntityComplete('members', memberData[0].id)) + ' text-' + getCompletionSeverity(isEntityComplete('members', memberData[0].id)) + ' completion-icon'"></i>
+              </div>
+
+              <!-- Other members - Expandable accordion -->
               <p-accordion 
                 [multiple]="!scrollablePagesMode" 
                 [activeIndex]="expandedMemberTabs"
                 (onTabChange)="onMemberTabChange($event)">
                 <p-accordionTab 
-                  *ngFor="let member of memberData">
+                  *ngFor="let member of memberData.slice(1); let i = index">
                   <ng-template pTemplate="header">
                     <div class="flex align-items-center justify-content-between w-full" 
                          (click)="onMemberHeaderClick(member.id)">

@@ -927,6 +927,34 @@ app-funding :host :deep(.p-card:first-child) {
   flex-shrink: 0;
 }
 
+/* Simple member item (non-expandable) */
+.member-simple-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1.25rem;
+  margin-bottom: 0.5rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: #ffffff;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.member-simple-item:hover {
+  background: #f8fafc;
+  border-color: #0A8DFF;
+  box-shadow: 0 2px 8px rgba(10, 141, 255, 0.1);
+  transform: translateY(-1px);
+}
+
+.member-simple-item.active {
+  background: linear-gradient(135deg, #ebf4ff 0%, #dbeafe 100%);
+  border-color: #0A8DFF;
+  box-shadow: 0 2px 12px rgba(10, 141, 255, 0.15);
+}
+
 .section-nav-item {
   display: flex;
   align-items: center;
