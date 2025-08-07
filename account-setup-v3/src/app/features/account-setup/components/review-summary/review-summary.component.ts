@@ -72,7 +72,7 @@ interface AccountSummary {
 
           <div class="account-actions">
             <button class="btn-edit" (click)="onEditAccount(account.id)">
-              {{account.hasMissingFields ? 'Complete' : 'Review'}}
+              {{account.hasMissingFields ? 'Needs Attention' : 'Review'}}
             </button>
             
             <button 
