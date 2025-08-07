@@ -1385,9 +1385,8 @@ export class AppComponent {
   onEditAccountQuickReview(accountId: string) {
     this.hideReviewSummary();
     
-    // Force enable scrollable mode, registration group mode, and review mode for quick review
+    // Force enable scrollable mode and review mode for quick review (but not registration group mode)
     this.scrollablePagesMode = true;
-    this.registrationGroupMode = true;
     this.isReviewMode = true;
     
     console.log('Quick Review Mode enabled for account:', accountId);
