@@ -977,6 +977,7 @@ interface DropdownOption {
         [instanceType]="'address'"
         [instances]="existingInstances"
         [currentRegistration]="getCurrentRegistration()"
+        [enableMultiSelect]="false"
         (instanceSelected)="onExistingAddressSelected($event)"
         (modalClosed)="onExistingModalClosed()">
       </app-existing-instance-modal>

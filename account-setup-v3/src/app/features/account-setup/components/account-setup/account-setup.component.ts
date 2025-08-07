@@ -941,7 +941,9 @@ interface DropdownOption {
         [(visible)]="showExistingModal"
         instanceType="beneficiary"
         [instances]="existingInstances"
+        [enableMultiSelect]="true"
         (instanceSelected)="onExistingBeneficiarySelected($event)"
+        (instancesSelected)="onExistingBeneficiariesSelected($event)"
         (modalClosed)="onExistingModalClosed()">
       </app-existing-instance-modal>
     </div>
@@ -1645,6 +1647,66 @@ export class AccountSetupComponent implements OnInit, OnChanges {
   }
 
   onExistingBeneficiarySelected(instance: ExistingInstance) {
+    const result = this.addBeneficiaryInstance(instance);
+    if (result.added) {
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Beneficiary Added',
+        detail: `${result.name} added from ${instance.sourceRegistration}`,
+        life: 3000
+      });
+    } else {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Beneficiary Already Exists',
+        detail: `${result.name} is already added to this account`,
+        life: 3000
+      });
+    }
+    this.showExistingModal = false;
+  }
+
+  onExistingBeneficiariesSelected(instances: ExistingInstance[]) {
+    let addedCount = 0;
+    let skippedCount = 0;
+    const addedNames: string[] = [];
+    const skippedNames: string[] = [];
+
+    instances.forEach(instance => {
+      const result = this.addBeneficiaryInstance(instance);
+      if (result.added) {
+        addedCount++;
+        addedNames.push(result.name);
+      } else {
+        skippedCount++;
+        skippedNames.push(result.name);
+      }
+    });
+
+    // Show success message for added beneficiaries
+    if (addedCount > 0) {
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Beneficiaries Added',
+        detail: `${addedCount} beneficiar${addedCount > 1 ? 'ies' : 'y'} added successfully`,
+        life: 3000
+      });
+    }
+
+    // Show warning for skipped beneficiaries
+    if (skippedCount > 0) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Some Beneficiaries Already Exist',
+        detail: `${skippedCount} beneficiar${skippedCount > 1 ? 'ies were' : 'y was'} already in this account`,
+        life: 3000
+      });
+    }
+
+    this.showExistingModal = false;
+  }
+
+  private addBeneficiaryInstance(instance: ExistingInstance): {added: boolean, name: string} {
     if (instance.type === 'beneficiary') {
       // Add the existing beneficiary to this account
       const beneficiaryData = { ...instance.data };
@@ -1655,27 +1717,15 @@ export class AccountSetupComponent implements OnInit, OnChanges {
         b.ssn === beneficiaryData.ssn
       );
       
-      if (existingBeneficiary) {
-        this.messageService.add({
-          severity: 'warn',
-          summary: 'Beneficiary Already Exists',
-          detail: 'This beneficiary is already added to this account',
-          life: 3000
-        });
-      } else {
+      if (!existingBeneficiary) {
         this.beneficiaries.push(beneficiaryData);
         this.updateFormData();
-        
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Beneficiary Added',
-          detail: `${beneficiaryData.name} added from ${instance.sourceRegistration}`,
-          life: 3000
-        });
+        return { added: true, name: beneficiaryData.name };
+      } else {
+        return { added: false, name: beneficiaryData.name };
       }
     }
-    
-    this.showExistingModal = false;
+    return { added: false, name: 'Unknown' };
   }
 
   onExistingModalClosed() {

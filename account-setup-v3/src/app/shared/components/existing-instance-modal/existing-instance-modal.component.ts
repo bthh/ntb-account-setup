@@ -65,18 +65,40 @@ export interface ExistingInstance {
           <p class="text-600 m-0">No existing instances found</p>
         </div>
 
+        <!-- Multi-select Toggle -->
+        <div *ngIf="filteredInstances.length > 1" class="multi-select-toggle mb-3">
+          <label class="flex align-items-center cursor-pointer">
+            <input 
+              type="checkbox" 
+              [(ngModel)]="enableMultiSelect" 
+              class="mr-2">
+            <span class="text-sm text-600">Enable multi-select ({{selectedInstances.length}} selected)</span>
+          </label>
+        </div>
+
         <!-- Instance Cards -->
         <div *ngIf="filteredInstances.length > 0" class="instances-grid">
           <p-card 
             *ngFor="let instance of filteredInstances" 
             class="instance-card cursor-pointer"
             (click)="onInstanceClick(instance)"
-            [styleClass]="selectedInstance?.id === instance.id ? 'border-primary selected-instance' : 'hover:border-primary transition-colors'">
+            [styleClass]="getCardStyleClass(instance)">
             
             <div class="instance-header flex justify-content-between align-items-start mb-3">
-              <div class="instance-info flex-1">
-                <h4 class="instance-title m-0 mb-1">{{instance.title}}</h4>
-                <p *ngIf="instance.subtitle" class="instance-subtitle text-600 text-sm m-0">{{instance.subtitle}}</p>
+              <div class="instance-info flex-1 flex align-items-start">
+                <!-- Multi-select checkbox -->
+                <input 
+                  *ngIf="enableMultiSelect"
+                  type="checkbox" 
+                  [checked]="isInstanceSelected(instance)"
+                  (click)="$event.stopPropagation()"
+                  (change)="onCheckboxChange(instance, $event)"
+                  class="mr-2 mt-1">
+                
+                <div class="flex-1">
+                  <h4 class="instance-title m-0 mb-1">{{instance.title}}</h4>
+                  <p *ngIf="instance.subtitle" class="instance-subtitle text-600 text-sm m-0">{{instance.subtitle}}</p>
+                </div>
               </div>
               <p-badge 
                 [value]="instance.sourceRegistration" 
@@ -106,10 +128,10 @@ export interface ExistingInstance {
           (onClick)="onCancel()">
         </p-button>
         <p-button 
-          label="Add Selected" 
+          [label]="getAddButtonLabel()" 
           icon="pi pi-plus" 
           severity="primary"
-          [disabled]="!selectedInstance"
+          [disabled]="!canAddSelected()"
           (onClick)="onAddSelected()"
           styleClass="ml-2">
         </p-button>
@@ -200,6 +222,27 @@ export interface ExistingInstance {
       background-color: var(--primary-50, rgba(var(--primary-color-rgb), 0.05));
       box-shadow: 0 0 0 1px var(--primary-color);
     }
+
+    /* Multi-select toggle styling */
+    .multi-select-toggle {
+      padding: 0.75rem;
+      background-color: var(--surface-50);
+      border-radius: 6px;
+      border: 1px solid var(--surface-200);
+    }
+
+    .multi-select-toggle label {
+      margin: 0;
+      font-weight: 500;
+    }
+
+    /* Checkbox styling */
+    .instance-card input[type="checkbox"] {
+      width: 1rem;
+      height: 1rem;
+      accent-color: var(--primary-color);
+      cursor: pointer;
+    }
   `]
 })
 export class ExistingInstanceModalComponent implements OnInit {
@@ -207,14 +250,18 @@ export class ExistingInstanceModalComponent implements OnInit {
   @Input() instanceType: 'funding' | 'trustee' | 'beneficiary' | 'address' = 'funding';
   @Input() instances: ExistingInstance[] = [];
   @Input() currentRegistration = '';
+  @Input() enableMultiSelect = false;
   
   @Output() visibleChange = new EventEmitter<boolean>();
   @Output() instanceSelected = new EventEmitter<ExistingInstance>();
+  @Output() instancesSelected = new EventEmitter<ExistingInstance[]>();
   @Output() modalClosed = new EventEmitter<void>();
 
   searchTerm = '';
   filteredInstances: ExistingInstance[] = [];
   selectedInstance: ExistingInstance | null = null;
+  selectedInstances: ExistingInstance[] = [];
+  multiSelectMode = false;
 
   get instanceTypeLabel(): string {
     const labels = {
@@ -276,11 +323,79 @@ export class ExistingInstanceModalComponent implements OnInit {
   }
 
   onInstanceClick(instance: ExistingInstance) {
-    this.selectedInstance = instance;
+    if (this.enableMultiSelect) {
+      // Toggle selection in multi-select mode
+      this.toggleInstanceSelection(instance);
+    } else {
+      // Single select mode
+      this.selectedInstance = instance;
+    }
+  }
+
+  onCheckboxChange(instance: ExistingInstance, event: any) {
+    if (event.target.checked) {
+      this.addToSelection(instance);
+    } else {
+      this.removeFromSelection(instance);
+    }
+  }
+
+  toggleInstanceSelection(instance: ExistingInstance) {
+    if (this.isInstanceSelected(instance)) {
+      this.removeFromSelection(instance);
+    } else {
+      this.addToSelection(instance);
+    }
+  }
+
+  addToSelection(instance: ExistingInstance) {
+    if (!this.isInstanceSelected(instance)) {
+      this.selectedInstances.push(instance);
+    }
+  }
+
+  removeFromSelection(instance: ExistingInstance) {
+    const index = this.selectedInstances.findIndex(i => i.id === instance.id);
+    if (index > -1) {
+      this.selectedInstances.splice(index, 1);
+    }
+  }
+
+  isInstanceSelected(instance: ExistingInstance): boolean {
+    return this.selectedInstances.some(i => i.id === instance.id);
+  }
+
+  getCardStyleClass(instance: ExistingInstance): string {
+    const baseClasses = 'hover:border-primary transition-colors';
+    
+    if (this.enableMultiSelect) {
+      return this.isInstanceSelected(instance) 
+        ? 'border-primary selected-instance ' + baseClasses
+        : baseClasses;
+    } else {
+      return this.selectedInstance?.id === instance.id 
+        ? 'border-primary selected-instance ' + baseClasses
+        : baseClasses;
+    }
+  }
+
+  getAddButtonLabel(): string {
+    if (this.enableMultiSelect) {
+      const count = this.selectedInstances.length;
+      return count === 1 ? 'Add 1 Selected' : `Add ${count} Selected`;
+    }
+    return 'Add Selected';
+  }
+
+  canAddSelected(): boolean {
+    return this.enableMultiSelect ? this.selectedInstances.length > 0 : !!this.selectedInstance;
   }
 
   onAddSelected() {
-    if (this.selectedInstance) {
+    if (this.enableMultiSelect && this.selectedInstances.length > 0) {
+      this.instancesSelected.emit([...this.selectedInstances]);
+      this.close();
+    } else if (!this.enableMultiSelect && this.selectedInstance) {
       this.instanceSelected.emit(this.selectedInstance);
       this.close();
     }
@@ -305,5 +420,7 @@ export class ExistingInstanceModalComponent implements OnInit {
     this.modalClosed.emit();
     this.searchTerm = '';
     this.selectedInstance = null;
+    this.selectedInstances = [];
+    this.enableMultiSelect = false;
   }
 }

@@ -626,7 +626,9 @@ interface FundingInstances {
       [instanceType]="'funding'"
       [instances]="existingInstances"
       [currentRegistration]="getCurrentRegistration()"
+      [enableMultiSelect]="true"
       (instanceSelected)="onExistingInstanceSelected($event)"
+      (instancesSelected)="onExistingInstancesSelected($event)"
       (modalClosed)="onExistingModalClosed()">
     </app-existing-instance-modal>
   `,
@@ -1298,6 +1300,31 @@ export class FundingComponent implements OnInit, OnChanges {
   }
 
   onExistingInstanceSelected(instance: ExistingInstance) {
+    this.addFundingInstance(instance);
+    this.messageService.add({
+      severity: 'success',
+      summary: 'Instance Added',
+      detail: `${instance.title} has been added successfully`,
+      life: 3000
+    });
+  }
+
+  onExistingInstancesSelected(instances: ExistingInstance[]) {
+    let addedCount = 0;
+    instances.forEach(instance => {
+      this.addFundingInstance(instance);
+      addedCount++;
+    });
+    
+    this.messageService.add({
+      severity: 'success',
+      summary: 'Instances Added',
+      detail: `${addedCount} funding instance${addedCount > 1 ? 's' : ''} added successfully`,
+      life: 3000
+    });
+  }
+
+  private addFundingInstance(instance: ExistingInstance) {
     // Apply the selected instance data to create a new funding instance
     const fundingData = instance.data;
     
@@ -1313,15 +1340,10 @@ export class FundingComponent implements OnInit, OnChanges {
     const fundingInstances = this.fundingInstances as any;
     fundingInstances[fundingType].push({
       ...fundingData,
-      id: `${fundingType}-${Date.now()}` // Generate unique ID
+      id: `${fundingType}-${Date.now()}-${Math.random()}` // Generate unique ID
     });
 
     this.updateFormData();
-    this.messageService.add({
-      severity: 'success',
-      summary: 'Success',
-      detail: `Existing funding instance added successfully`
-    });
   }
 
   onExistingModalClosed() {
