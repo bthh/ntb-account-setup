@@ -34,13 +34,6 @@ interface AccountSummary {
         <p>Review all account registrations and submit for e-signature when ready.</p>
       </div>
 
-      <!-- Overall Summary -->
-      <div class="overall-summary">
-        <div class="summary-text">
-          {{getCompletedAccountsCount()}} of {{accountSummaries.length}} accounts ready for submission
-        </div>
-      </div>
-
       <!-- Account List -->
       <div class="accounts-list">
         <div *ngFor="let account of accountSummaries" class="account-row">
@@ -106,18 +99,6 @@ interface AccountSummary {
       font-size: 0.95rem;
     }
 
-    .overall-summary {
-      margin-bottom: 2rem;
-      padding: 1rem 1.5rem;
-      background: #fafafa;
-      border-radius: 8px;
-    }
-
-    .summary-text {
-      font-size: 0.95rem;
-      color: #6b7280;
-      text-align: center;
-    }
 
     .accounts-list {
       display: flex;
